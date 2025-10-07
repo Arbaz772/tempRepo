@@ -12,8 +12,7 @@ export default function Footer() {
             <Link href="/">
               <a className="flex items-center gap-2 cursor-pointer w-fit group">
                 <div className="relative h-10 w-10 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20 overflow-visible group-hover:scale-110 transition-transform duration-300">
-                  <Cloud className="absolute -top-1 -left-1 h-5 w-5 text-primary-foreground/40 group-hover:translate-x-1 transition-transform duration-500" />
-                  <Cloud className="absolute -bottom-1 -right-1 h-4 w-4 text-primary-foreground/30 group-hover:-translate-x-1 transition-transform duration-500" />
+                  <Cloud className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-6 text-white z-0 group-hover:-translate-x-0.5 transition-transform duration-300" />
                   <Plane className="h-6 w-6 text-primary-foreground relative z-10 group-hover:translate-x-0.5 transition-transform duration-300" />
                 </div>
                 <span className="text-2xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">

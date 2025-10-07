@@ -16,8 +16,7 @@ export default function Header() {
           <Link href="/">
             <a className="flex items-center gap-2 group cursor-pointer">
               <div className="relative h-8 w-8 rounded-lg bg-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/20 overflow-visible">
-                <Cloud className="absolute -top-1 -left-1 h-4 w-4 text-primary-foreground/40 group-hover:translate-x-1 transition-transform duration-500" />
-                <Cloud className="absolute -bottom-1 -right-1 h-3 w-3 text-primary-foreground/30 group-hover:-translate-x-1 transition-transform duration-500" />
+                <Cloud className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-white z-0 group-hover:-translate-x-0.5 transition-transform duration-300" />
                 <Plane className="h-5 w-5 text-primary-foreground relative z-10 group-hover:translate-x-0.5 transition-transform duration-300" />
               </div>
               <span className="text-xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent" data-testid="text-logo">SkyFind</span>
