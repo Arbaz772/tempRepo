@@ -19,9 +19,11 @@ export default function Home() {
         <FlightSearchForm onSearch={handleSearch} />
       </Hero>
 
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-4" data-testid="text-features-title">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent opacity-50 pointer-events-none" />
+        
+        <div className="text-center mb-12 relative">
+          <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 bg-gradient-to-r from-foreground via-foreground to-primary/80 bg-clip-text text-transparent" data-testid="text-features-title">
             Why Choose SkyFind?
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -29,7 +31,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
           <FeatureCard
             icon={Brain}
             title="AI Price Predictions"
@@ -63,9 +65,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-card/50">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-4" data-testid="text-cta-title">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-card/50 via-primary/5 to-card/50 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-50" />
+        
+        <div className="max-w-7xl mx-auto text-center relative">
+          <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent" data-testid="text-cta-title">
             Ready to Find Your Perfect Flight?
           </h2>
           <p className="text-muted-foreground mb-8">

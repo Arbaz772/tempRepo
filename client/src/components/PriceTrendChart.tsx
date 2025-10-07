@@ -17,10 +17,10 @@ export default function PriceTrendChart({ route, data, predictedData = [] }: Pri
   const allData = [...data, ...predictedData.map(d => ({ ...d, isPrediction: true }))];
   
   return (
-    <Card className="p-6">
+    <Card className="p-6 bg-gradient-to-br from-card via-card to-primary/5 hover:shadow-lg transition-all duration-300">
       <div className="space-y-4">
         <div>
-          <h3 className="text-xl font-semibold font-display" data-testid="text-chart-title">Price Trend for {route}</h3>
+          <h3 className="text-xl font-semibold font-display bg-gradient-to-r from-foreground to-primary/80 bg-clip-text text-transparent" data-testid="text-chart-title">Price Trend for {route}</h3>
           <p className="text-sm text-muted-foreground">30-day price history and 7-day forecast</p>
         </div>
 

@@ -43,11 +43,14 @@ export default function FlightCard({
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <Card className={`p-6 hover-elevate transition-all ${isBestDeal ? 'border-primary border-2' : ''}`}>
+    <Card className={`p-6 hover-elevate transition-all duration-300 hover:shadow-xl hover:scale-[1.01] ${isBestDeal ? 'border-primary border-2 shadow-primary/20 shadow-lg' : ''}`}>
       {isBestDeal && (
-        <Badge className="mb-4 bg-primary text-primary-foreground" data-testid="badge-best-deal">
-          AI Recommended - Best Deal
-        </Badge>
+        <div className="mb-4 flex items-center gap-2">
+          <Badge className="bg-primary text-primary-foreground animate-pulse" data-testid="badge-best-deal">
+            AI Recommended - Best Deal
+          </Badge>
+          <div className="h-2 w-2 rounded-full bg-primary animate-ping" />
+        </div>
       )}
       
       <div className="flex flex-col lg:flex-row lg:items-center gap-6">

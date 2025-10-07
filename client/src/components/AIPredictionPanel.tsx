@@ -37,10 +37,10 @@ export default function AIPredictionPanel({ route, prediction }: AIPredictionPan
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
+    <Card className="p-6 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/30 shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all duration-300">
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center animate-pulse shadow-lg shadow-primary/30">
             <Brain className="h-5 w-5 text-primary" />
           </div>
           <div>

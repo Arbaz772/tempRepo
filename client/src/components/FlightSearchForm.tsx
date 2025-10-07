@@ -31,7 +31,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
   };
 
   return (
-    <Card className="backdrop-blur-lg bg-card/90 border-card-border p-6 rounded-2xl">
+    <Card className="backdrop-blur-xl bg-card/95 border-card-border p-6 rounded-2xl shadow-2xl shadow-black/20 hover:shadow-3xl transition-shadow duration-300">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="space-y-2">
           <Label htmlFor="origin" className="text-sm font-medium">From</Label>
