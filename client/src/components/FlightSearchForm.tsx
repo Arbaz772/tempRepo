@@ -15,10 +15,12 @@ interface FlightSearchFormProps {
     departDate: Date | undefined;
     returnDate: Date | undefined;
     passengers: number;
+    tripType: "one-way" | "round-trip";
   }) => void;
 }
 
 export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
+  const [tripType, setTripType] = useState<"one-way" | "round-trip">("round-trip");
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [departDate, setDepartDate] = useState<Date>();
@@ -26,13 +28,33 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
   const [passengers, setPassengers] = useState(1);
 
   const handleSearch = () => {
-    onSearch?.({ origin, destination, departDate, returnDate, passengers });
-    console.log("Search triggered", { origin, destination, departDate, returnDate, passengers });
+    onSearch?.({ origin, destination, departDate, returnDate: tripType === "round-trip" ? returnDate : undefined, passengers, tripType });
+    console.log("Search triggered", { origin, destination, departDate, returnDate: tripType === "round-trip" ? returnDate : undefined, passengers, tripType });
   };
 
   return (
     <Card className="backdrop-blur-xl bg-card/95 border-card-border p-6 rounded-2xl shadow-2xl shadow-black/20 hover:shadow-3xl transition-shadow duration-300">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="flex gap-4 mb-6">
+        <Button
+          type="button"
+          variant={tripType === "one-way" ? "default" : "outline"}
+          onClick={() => setTripType("one-way")}
+          data-testid="button-one-way"
+          className="flex-1"
+        >
+          One-Way
+        </Button>
+        <Button
+          type="button"
+          variant={tripType === "round-trip" ? "default" : "outline"}
+          onClick={() => setTripType("round-trip")}
+          data-testid="button-round-trip"
+          className="flex-1"
+        >
+          Round-Trip
+        </Button>
+      </div>
+      <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${tripType === "one-way" ? "lg:grid-cols-4" : "lg:grid-cols-5"}`}>
         <div className="space-y-2">
           <Label htmlFor="origin" className="text-sm font-medium">From</Label>
           <div className="relative">
@@ -87,29 +109,32 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
           </Popover>
         </div>
 
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Return</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                data-testid="button-return-date"
-                className="w-full justify-start text-left font-normal"
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {returnDate ? format(returnDate, "PPP") : <span>Pick a date</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={returnDate}
-                onSelect={setReturnDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
+        {tripType === "round-trip" && (
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Return</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  data-testid="button-return-date"
+                  className="w-full justify-start text-left font-normal"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {returnDate ? format(returnDate, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={returnDate}
+                  onSelect={setReturnDate}
+                  initialFocus
+                  disabled={(date) => departDate ? date < departDate : false}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label htmlFor="passengers" className="text-sm font-medium">Passengers</Label>
