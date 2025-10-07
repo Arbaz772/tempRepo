@@ -7,6 +7,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Home from "@/pages/Home";
 import Flights from "@/pages/Flights";
+import Predictions from "@/pages/Predictions";
+import Deals from "@/pages/Deals";
+import About from "@/pages/About";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -14,6 +17,9 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/flights" component={Flights} />
+      <Route path="/predictions" component={Predictions} />
+      <Route path="/deals" component={Deals} />
+      <Route path="/about" component={About} />
       <Route component={NotFound} />
     </Switch>
   );

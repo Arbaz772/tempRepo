@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plane, Mail, MapPin, Phone, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Footer() {
   return (
@@ -8,14 +9,16 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                <Plane className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <span className="text-2xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                SkyFind
-              </span>
-            </div>
+            <Link href="/">
+              <a className="flex items-center gap-2 cursor-pointer w-fit">
+                <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                  <Plane className="h-6 w-6 text-primary-foreground" />
+                </div>
+                <span className="text-2xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                  SkyFind
+                </span>
+              </a>
+            </Link>
             <p className="text-muted-foreground max-w-sm">
               Your intelligent flight booking companion. Compare prices, predict trends, and book the best deals across India with AI-powered insights.
             </p>
@@ -39,19 +42,25 @@ export default function Footer() {
             <h3 className="font-semibold font-display mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <button className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-flights">
-                  Search Flights
-                </button>
+                <Link href="/flights">
+                  <a className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-flights">
+                    Search Flights
+                  </a>
+                </Link>
               </li>
               <li>
-                <button className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-predictions">
-                  Price Predictions
-                </button>
+                <Link href="/predictions">
+                  <a className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-predictions">
+                    Price Predictions
+                  </a>
+                </Link>
               </li>
               <li>
-                <button className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-deals">
-                  Best Deals
-                </button>
+                <Link href="/deals">
+                  <a className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-deals">
+                    Best Deals
+                  </a>
+                </Link>
               </li>
               <li>
                 <button className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-alerts">
@@ -65,9 +74,11 @@ export default function Footer() {
             <h3 className="font-semibold font-display mb-4">Company</h3>
             <ul className="space-y-2">
               <li>
-                <button className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-about">
-                  About Us
-                </button>
+                <Link href="/about">
+                  <a className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-about">
+                    About Us
+                  </a>
+                </Link>
               </li>
               <li>
                 <button className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-careers">
