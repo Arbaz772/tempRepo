@@ -1,21 +1,18 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
+    "outDir": "../dist",
     "target": "ES2020",
     "module": "ES2020",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "strict": false,
-    "outDir": "../dist",
     "resolveJsonModule": true,
-    "sourceMap": false
+    "sourceMap": false,
+    "noEmit": false
   },
-  "include": [
-    "./**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts"
-  ]
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules", "**/*.test.ts"]
 }
+JSON
