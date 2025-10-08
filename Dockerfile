@@ -34,4 +34,4 @@ ENV PORT=3000
 EXPOSE 3000
 
 # start the compiled server (adjust path if your entry is different)
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/server/index.js"]
