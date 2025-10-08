@@ -1,6 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import * as routes from './routes.js';
-import viteMiddleware from './vite.js';
+import * as viteMiddleware from './vite.js';
 
 const app = express();
 app.use(express.json());

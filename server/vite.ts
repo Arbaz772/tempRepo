@@ -8,6 +8,11 @@ import { nanoid } from "nanoid";
 
 const viteLogger = createLogger();
 
+function log(msg: string) { console.log(msg); }
+function registerRoutes(app: any, routes: any) { /* ... */ }
+function setupVite(app: any, viteMiddleware: any) { /* ... */ }
+function serveStatic(app: any) { /* ... */ }
+
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
