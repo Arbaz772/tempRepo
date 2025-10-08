@@ -17,4 +17,3 @@ COPY --from=build /usr/src/app/client ./client
 COPY --from=build /usr/src/app/shared ./shared
 EXPOSE 3000
 CMD ["node","dist/index.js"]
-EOF
