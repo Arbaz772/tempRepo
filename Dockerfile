@@ -25,8 +25,7 @@ ENV PORT=3000
 # Copy only necessary files from build stage
 COPY --from=build /usr/src/app/package*.json ./
 COPY --from=build /usr/src/app/dist ./dist
-COPY --from=build /usr/src/app/client ./client  # if you have static client assets
-COPY --from=build /usr/src/app/public ./public  # optional if you serve static files
+
 
 RUN npm ci --only=production
 
