@@ -2,6 +2,10 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../dist",
+	"baseUrl": ".",
+    "paths": {
+      "@shared/schema": ["../shared/schema"]
+    },
     "target": "ES2020",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
