@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # install all dependencies (dev + prod) required for build
-RUN npm install
+RUN npm ci
 
 # copy source files
 COPY . .
@@ -31,7 +31,7 @@ USER arbaz
 # expose port
 ENV NODE_ENV=production
 ENV PORT=8001
-EXPOSE 8001
+EXPOSE = 8001
 
 # start the compiled server (adjust path if your entry is different)
 CMD ["node", "dist/server/index.js"]
