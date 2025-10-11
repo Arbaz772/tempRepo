@@ -1,4 +1,4 @@
-FROM node:18-bullseye
+FROM node:20-bullseye
 
 # create non-root user for safety
 RUN groupadd -r appgroup && useradd -r -g appgroup -m arbaz
