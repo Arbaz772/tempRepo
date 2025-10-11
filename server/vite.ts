@@ -69,7 +69,7 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "public");
+  const distPath = path.resolve(import.meta.dirname, "dist/public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
@@ -85,10 +85,3 @@ export function serveStatic(app: Express) {
   });
 }
 
-export default defineConfig({
-  // other config...
-  build: {
-    outDir: 'dist/public', // ensure this matches server's expected static folder
-    emptyOutDir: true,
-  },
-});
