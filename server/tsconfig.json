@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist/server",
+    "outDir": "./dist/public",
     "paths": {
       "@shared/schema": ["../shared/schema"]
     },
