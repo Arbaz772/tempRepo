@@ -29,7 +29,6 @@ export default defineConfig({
   root: path.resolve(import.meta.dirname, "client"),
   build: {
     outDir: path.resolve(import.meta.dirname, "server/public"),
-	console.log("Vite build output directory:", path.resolve(import.meta.dirname, "server/public"));
     emptyOutDir: true,
   },
   server: {
