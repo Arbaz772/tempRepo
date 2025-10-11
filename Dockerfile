@@ -18,9 +18,6 @@ COPY . .
 # run the build (vite + tsc). This must produce dist/index.js
 RUN npm run build
 
-# optional: remove devDependencies to shrink image
-# Note: 'npm prune --production' removes devDeps but keeps node_modules present.
-RUN npm prune --production
 
 # make sure files are accessible by non-root user
 RUN chown -R arbaz:appgroup /usr/src/app
