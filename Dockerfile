@@ -31,4 +31,4 @@ ENV PORT=8001
 EXPOSE 8001
 
 # start the compiled server (adjust path if your entry is different)
-CMD ["node", "dist/server/index.js"]
+CMD ["node", "./dist/server/index.js"]
