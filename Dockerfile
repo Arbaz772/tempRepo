@@ -26,7 +26,10 @@ ENV NODE_ENV=production
 ENV PORT=8001
 EXPOSE 8001
 
-RUN groupadd -g 500 appgroup && useradd -r -u 500 -g appgroup arbaz
-USER 500:500  # Non-root user (adjust as needed)
+# create non-root user for safety
+RUN groupadd -r appgroup && useradd -r -g appgroup -m arbaz
+RUN chown -R arbaz:appgroup /usr/src/app
+USER arbaz
+
 
 CMD ["node", "./dist/server/index.js"]
