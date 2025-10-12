@@ -5,6 +5,12 @@ RUN groupadd -r appgroup && useradd -r -g appgroup -m arbaz
 
 WORKDIR /usr/src/app
 
+# copy package files first for caching
+COPY package*.json .
+
+# install all dependencies (dev + prod) required for build
+RUN npm ci
+
 # copy source files
 COPY . .
 
