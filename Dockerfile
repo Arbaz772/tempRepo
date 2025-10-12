@@ -6,7 +6,7 @@ RUN groupadd -r appgroup && useradd -r -g appgroup -m arbaz
 WORKDIR /usr/src/app
 
 # copy package files first for caching
-COPY package*.json ./
+COPY package*.json .
 
 # install all dependencies (dev + prod) required for build
 RUN npm ci
@@ -17,6 +17,7 @@ COPY . .
 # ensure server tsconfig exists (you already created it)
 # run the build (vite + tsc). This must produce dist/index.js
 RUN npm run build
+
 RUN ls -R dist
 
 # make sure files are accessible by non-root user
