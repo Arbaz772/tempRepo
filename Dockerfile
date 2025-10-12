@@ -18,6 +18,7 @@ COPY . .
 # run the build (vite + tsc). This must produce dist/index.js
 RUN npm run build
 
+RUN ls -R dist
 
 # make sure files are accessible by non-root user
 RUN chown -R arbaz:appgroup /usr/src/app
