@@ -1,35 +1,31 @@
-FROM node:20-bullseye
-
-# create non-root user for safety
-RUN groupadd -r appgroup && useradd -r -g appgroup -m arbaz
+# Stage 1: Build both frontend and backend
+FROM node:20-bullseye AS builder
 
 WORKDIR /usr/src/app
 
-# copy package files first for caching
-COPY package*.json .
-
-# install all dependencies (dev + prod) required for build
+COPY package*.json ./
 RUN npm ci
 
-# copy source files
 COPY . .
 
-# ensure server tsconfig exists (you already created it)
-# run the build (vite + tsc). This must produce dist/index.js
 RUN npm run build
 
 RUN ls -R dist
 
-# make sure files are accessible by non-root user
-RUN chown -R arbaz:appgroup /usr/src/app
+# Stage 2: Setup production runtime image
+FROM node:20-bullseye
 
-# switch to non-root user
-USER arbaz
+WORKDIR /usr/src/app
 
-# expose port
+# Copy only the built artifacts and production dependencies
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/package*.json ./
+
 ENV NODE_ENV=production
 ENV PORT=8001
 EXPOSE 8001
 
-# start the compiled server (adjust path if your entry is different)
+USER 1000:1000  # Non-root user (adjust as needed)
+
 CMD ["node", "./dist/server/index.js"]
