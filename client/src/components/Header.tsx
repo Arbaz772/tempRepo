@@ -16,7 +16,7 @@ export default function Header() {
           <Link href="/">
             <a className="flex items-center gap-2 group cursor-pointer">
               <div className="relative h-8 w-8 rounded-lg bg-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/20 overflow-visible">
-                <img src="assets/SkaiLinker_Icon.png" alt="Custom Icon" className="h-8 w-8 object-contain z-10 rounded-lg" />
+                <img src="../public/assets/SkaiLinker_Icon.png" alt="Custom Icon" className="h-8 w-8 object-contain z-10 rounded-lg" />
               </div>
               <span className="text-xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent" data-testid="text-logo">
                 SkaiLinker
