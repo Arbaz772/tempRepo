@@ -19,7 +19,7 @@ export default function Header() {
                 <Cloud className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-white z-0 group-hover:-translate-x-0.5 transition-transform duration-300" />
                 <Plane className="h-5 w-5 text-primary-foreground relative z-10 group-hover:translate-x-0.5 transition-transform duration-300" />
               </div>
-              <span className="text-xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent" data-testid="text-logo">SkyFind</span>
+              <span className="text-xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent" data-testid="text-logo">SkaiLinker</span>
             </a>
           </Link>
 

@@ -16,7 +16,7 @@ export default function Footer() {
                   <Plane className="h-6 w-6 text-primary-foreground relative z-10 group-hover:translate-x-0.5 transition-transform duration-300" />
                 </div>
                 <span className="text-2xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                  SkyFind
+                  SkaiLinker
                 </span>
               </a>
             </Link>
@@ -30,7 +30,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
-                <span>support@skyfind.com</span>
+                <span>support@SkaiLinker.com</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4 text-primary" />
@@ -130,7 +130,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <p className="text-sm text-muted-foreground">
-                © {new Date().getFullYear()} SkyFind. All rights reserved.
+                © {new Date().getFullYear()} SkaiLinker. All rights reserved.
               </p>
             </div>
 
