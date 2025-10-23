@@ -24,7 +24,7 @@ export default function Home() {
         
         <div className="text-center mb-12 relative">
           <h2 className="text-3xl md:text-4xl font-bold font-display mb-4 bg-gradient-to-r from-foreground via-foreground to-primary/80 bg-clip-text text-transparent" data-testid="text-features-title">
-            Why Choose SkyFind?
+            Why Choose SkaiLinker?
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Powered by advanced AI to help you find the best flight deals across India

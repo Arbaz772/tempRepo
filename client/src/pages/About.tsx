@@ -48,7 +48,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent" data-testid="text-about-title">
-              About SkyFind
+              About SkaiLinker
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Revolutionizing flight booking with artificial intelligence
@@ -63,7 +63,7 @@ export default function About() {
             <div className="max-w-3xl mx-auto space-y-6 text-center">
               <h2 className="text-3xl font-bold font-display">Our Mission</h2>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                At SkyFind, we believe that finding the perfect flight shouldn't be complicated or expensive. 
+                At SkaiLinker, we believe that finding the perfect flight shouldn't be complicated or expensive. 
                 Our mission is to democratize travel by providing everyone with access to AI-powered insights 
                 that were once only available to industry professionals.
               </p>
