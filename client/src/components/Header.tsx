@@ -13,28 +13,27 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-           <Link href="/">
-      <a className="flex items-center gap-2 group cursor-pointer">
-        <div className="relative h-8 w-8 rounded-lg bg-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/20 overflow-visible">
-          <img src=".../public/assets/SkaiLinker_Icon.png"
-            alt="Custom Icon"
-            className="h-8 w-8 object-contain z-10 rounded-lg"
-          />
-        </div>
-        <span
-          className="text-xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent"
-          data-testid="text-logo"
-        >
-          SkaiLinker
-        </span>
-      </a>
-    </Link>
+          <Link href="/">
+            <a className="flex items-center gap-2 group cursor-pointer">
+              <div className="relative h-8 w-8 rounded-lg bg-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/20 overflow-visible">
+                <img src="/assets/SkaiLinker_Icon.png"
+                  alt="Custom Icon"
+                  className="h-8 w-8 object-contain z-10 rounded-lg" />
+              </div>
+              <span
+                className="text-xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent"
+                data-testid="text-logo"
+              >
+                SkaiLinker
+              </span>
+            </a>
+          </Link>
 
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/flights">
               <a>
-                <Button 
-                  variant={isActive("/flights") ? "default" : "ghost"} 
+                <Button
+                  variant={isActive("/flights") ? "default" : "ghost"}
                   data-testid="link-flights"
                 >
                   Flights
@@ -43,8 +42,8 @@ export default function Header() {
             </Link>
             <Link href="/predictions">
               <a>
-                <Button 
-                  variant={isActive("/predictions") ? "default" : "ghost"} 
+                <Button
+                  variant={isActive("/predictions") ? "default" : "ghost"}
                   data-testid="link-predictions"
                 >
                   Predictions
@@ -53,8 +52,8 @@ export default function Header() {
             </Link>
             <Link href="/deals">
               <a>
-                <Button 
-                  variant={isActive("/deals") ? "default" : "ghost"} 
+                <Button
+                  variant={isActive("/deals") ? "default" : "ghost"}
                   data-testid="link-deals"
                 >
                   Deals
@@ -63,8 +62,8 @@ export default function Header() {
             </Link>
             <Link href="/about">
               <a>
-                <Button 
-                  variant={isActive("/about") ? "default" : "ghost"} 
+                <Button
+                  variant={isActive("/about") ? "default" : "ghost"}
                   data-testid="link-about"
                 >
                   About
