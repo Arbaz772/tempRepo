@@ -26,15 +26,11 @@ export default function Footer() {
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4 text-primary" />
-                <span>Mumbai, Maharashtra, India</span>
+                <span>Pune, Maharashtra, India</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
-                <span>support@SkaiLinker.com</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Phone className="h-4 w-4 text-primary" />
-                <span>+91 1800 123 4567</span>
+                <span>contact@skailinker.org</span>
               </div>
             </div>
           </div>
