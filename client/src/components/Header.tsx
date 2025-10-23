@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Plane, Menu, X, Cloud } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import skaiLinkerIcon from "/public/assets/SkaiLinker_Icon.png";
+import skaiLinkerIcon from ".../public/assets/SkaiLinker_Icon.png";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
