@@ -43,7 +43,7 @@ export default function Predictions() {
               <Brain className="h-8 w-8 text-primary animate-pulse" />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent" data-testid="text-predictions-title">
-              AI Price Predictions
+              AI-Powered Flight Price Predictions
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Get intelligent insights on when to book your flights for the best prices

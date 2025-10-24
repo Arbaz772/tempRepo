@@ -27,7 +27,7 @@ export default function Home() {
             Why Choose SkaiLinker?
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Powered by advanced AI to help you find the best flight deals across India
+            Powered by advanced AI to help you find the best flight booking deals world-wide
           </p>
         </div>
 
@@ -35,12 +35,12 @@ export default function Home() {
           <FeatureCard
             icon={Brain}
             title="AI Price Predictions"
-            description="Advanced algorithms predict price trends to help you book at the perfect time."
+            description="Advanced algorithms predict price trends to help you book flight at the perfect time."
           />
           <FeatureCard
             icon={TrendingDown}
             title="Multi-Source Comparison"
-            description="Compare flights from all major airlines and booking platforms in one place."
+            description="Compare flight prices from all major airlines and booking platforms in one place."
           />
           <FeatureCard
             icon={Bell}
@@ -50,7 +50,7 @@ export default function Home() {
           <FeatureCard
             icon={Shield}
             title="Secure Booking"
-            description="Book with confidence through our secure payment gateway and trusted partners."
+            description="Book with confidence through our secure and trusted partners."
           />
           <FeatureCard
             icon={Clock}
@@ -59,8 +59,8 @@ export default function Home() {
           />
           <FeatureCard
             icon={Globe}
-            title="Pan-India Coverage"
-            description="Search and compare flights across all major Indian cities and airports."
+            title="World-Wide Coverage"
+            description="Search and compare flights across all major cities and airports."
           />
         </div>
       </section>
@@ -73,7 +73,7 @@ export default function Home() {
             Ready to Find Your Perfect Flight?
           </h2>
           <p className="text-muted-foreground mb-8">
-            Join thousands of travelers who save money with AI-powered flight search
+            Join thousands of travelers who save money with AI-powered flight search and book
           </p>
         </div>
       </section>

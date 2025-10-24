@@ -63,14 +63,14 @@ export default function About() {
             <div className="max-w-3xl mx-auto space-y-6 text-center">
               <h2 className="text-3xl font-bold font-display">Our Mission</h2>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                At SkaiLinker, we believe that finding the perfect flight shouldn't be complicated or expensive. 
-                Our mission is to democratize travel by providing everyone with access to AI-powered insights 
-                that were once only available to industry professionals.
+               SkaiLinker — discover smarter, book faster,and fly farther!
+               At SkaiLinker, we believe booking the perfect flight should be simple, affordable, and accessible to everyone.
               </p>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                We combine cutting-edge artificial intelligence with real-time data from multiple sources to 
-                help you make informed decisions about when and where to book your flights, ensuring you always 
-                get the best possible deal.
+                Our mission is to democratize travel by providing everyone with access to AI-powered insights that were once 
+                only available to industry professionals. We combine cutting-edge artificial intelligence with real-time data 
+                from multiple sources using comparison tools to help you make informed decisions about when and where to book 
+                your flights.
               </p>
             </div>
           </Card>

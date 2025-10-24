@@ -26,13 +26,13 @@ export default function Hero({ children }: HeroProps) {
               <Sparkles className="h-6 w-6 text-primary animate-pulse" />
               <div className="absolute inset-0 h-6 w-6 text-primary animate-ping opacity-30" />
             </div>
-            <span className="text-primary font-medium tracking-wide">AI-Powered Flight Search</span>
+            <span className="text-primary font-medium tracking-wide">AI-Powered Flight Booking</span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display text-white mb-4 animate-[fadeIn_1.2s_ease-out] bg-gradient-to-r from-white via-white to-primary/80 bg-clip-text text-transparent" data-testid="text-hero-title">
             Find Your Perfect Flight
           </h1>
           <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto animate-[fadeIn_1.4s_ease-out]" data-testid="text-hero-subtitle">
-            Compare prices across all airlines. Get AI predictions for the best booking time.
+            Compare prices across all airlines. Get AI predictions for the best flight booking time.
           </p>
         </div>
 
