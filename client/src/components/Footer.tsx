@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plane, Mail, MapPin, Phone, Facebook, Twitter, Instagram, Linkedin, Cloud } from "lucide-react";
 import { Link } from "wouter";
+import skailinker_icon from "@assets/generated_images/SkaiLinker_Icon.png";
 
 export default function Footer() {
   return (
@@ -9,17 +10,16 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2 space-y-4">
-            <Link href="/">
-              <a className="flex items-center gap-2 cursor-pointer w-fit group">
-                <div className="relative h-10 w-10 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20 overflow-visible group-hover:scale-110 transition-transform duration-300">
-                  <Cloud className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-6 text-white z-0 group-hover:-translate-x-0.5 transition-transform duration-300" />
-                  <Plane className="h-6 w-6 text-primary-foreground relative z-10 group-hover:translate-x-0.5 transition-transform duration-300" />
-                </div>
-                <span className="text-2xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                  SkaiLinker
-                </span>
-              </a>
-            </Link>
+           <Link href="/">
+            <a className="flex items-center gap-2 group cursor-pointer">
+              <div className="relative h-8 w-8 rounded-lg bg-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/20 overflow-visible">
+                <img src={skailinker_icon} alt="Custom Icon" className="h-8 w-8 object-contain z-10 rounded-lg" />
+              </div>
+              <span className="text-xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent" data-testid="text-logo">
+                SkaiLinker
+              </span>
+            </a>
+          </Link>
             <p className="text-muted-foreground max-w-sm">
               Your intelligent flight booking companion. Compare prices, predict trends, and book the best deals across India with AI-powered insights.
             </p>
