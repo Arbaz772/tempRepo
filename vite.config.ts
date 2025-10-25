@@ -7,15 +7,10 @@ export default defineConfig({
   plugins: [
     react(),
     runtimeErrorOverlay(),
-    ...(process.env.NODE_ENV !== "production" &&
-    process.env.REPL_ID !== undefined
+    ...(process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined
       ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
-          ),
-          await import("@replit/vite-plugin-dev-banner").then((m) =>
-            m.devBanner(),
-          ),
+          (await import("@replit/vite-plugin-cartographer")).cartographer(),
+          (await import("@replit/vite-plugin-dev-banner")).devBanner(),
         ]
       : []),
   ],
@@ -30,6 +25,13 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "./dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        entryFileNames: "assets/[name].js",   // avoids hash in JS entry files
+        chunkFileNames: "assets/[name].js",   // avoids hash in chunks
+        assetFileNames: "assets/[name].[ext]" // avoids hash in all assets like icons, images, css
+      }
+    }
   },
   server: {
     fs: {
