@@ -16,7 +16,7 @@ RUN npm ci
 COPY . .
 
 # ensure server tsconfig exists (you already created it)
-# run the build (vite + tsc). This must produce dist/index.js
+# run the build (vite + tsc). This must produce dist/server/index.js
 RUN npm run build
 
 RUN ls -R dist
