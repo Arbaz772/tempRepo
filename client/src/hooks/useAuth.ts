@@ -1,54 +1,50 @@
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import AuthGuard from "@/components/AuthGuard";
-import Home from "@/pages/Home";
-import Flights from "@/pages/Flights";
-import Predictions from "@/pages/Predictions";
-import Deals from "@/pages/Deals";
-import About from "@/pages/About";
-import NotFound from "@/pages/not-found";
+import { useState, useEffect } from 'react';
 
-// Replace this with your actual Google Client ID from Google Cloud Console
-const GOOGLE_CLIENT_ID = '598503571962-1pkj41acqql4csulutspvt4g4ffbcggp.apps.googleusercontent.com';
-
-function Router() {
-  return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/flights" component={Flights} />
-      <Route path="/predictions" component={Predictions} />
-      <Route path="/deals" component={Deals} />
-      <Route path="/about" component={About} />
-      <Route component={NotFound} />
-    </Switch>
-  );
+interface UserData {
+  name: string;
+  email: string;
+  picture: string;
+  sub: string;
+  credential: string;
 }
 
-function App() {
-  return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <AuthGuard>
-            <div className="min-h-screen bg-background flex flex-col">
-              <Header />
-              <div className="flex-1">
-                <Router />
-              </div>
-              <Footer />
-            </div>
-          </AuthGuard>
-          <Toaster />
-        </TooltipProvider>
-      </QueryClientProvider>
-    </GoogleOAuthProvider>
-  );
-}
+export function useAuth() {
+  const [user, setUser] = useState<UserData | null>(null);
 
-export default App;
+  useEffect(() => {
+    const savedUser = localStorage.getItem('skailinker_user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+
+    // Listen for storage changes (logout from another tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'skailinker_user') {
+        if (e.newValue) {
+          try {
+            setUser(JSON.parse(e.newValue));
+          } catch (error) {
+            console.error('Error parsing user data:', error);
+          }
+        } else {
+          setUser(null);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  return { 
+    user, 
+    isAuthenticated: !!user,
+    email: user?.email,
+    name: user?.name,
+    picture: user?.picture
+  };
+}
