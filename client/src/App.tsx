@@ -15,7 +15,7 @@ import About from "@/pages/About";
 import NotFound from "@/pages/not-found";
 
 // Replace this with your actual Google Client ID from Google Cloud Console
-const GOOGLE_CLIENT_ID = '598503571962-1pkj41acqql4csulutspvt4g4ffbcggp.apps.googleusercontent.com.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '598503571962-1pkj41acqql4csulutspvt4g4ffbcggp.apps.googleusercontent.com';
 
 function Router() {
   return (
