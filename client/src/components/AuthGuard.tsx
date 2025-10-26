@@ -93,7 +93,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
             <div className="text-center md:text-left space-y-6">
               <div className="inline-flex items-center gap-4 mb-4">
                 <img 
-                  src="/SkaiLinker_Icon.png" 
+                  src="/assets/SkaiLinker_Icon.png" 
                   alt="SkaiLinker Logo" 
                   className="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-lg"
                   onError={(e) => {
@@ -152,7 +152,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
                   <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-20 h-20 mb-4">
                       <img 
-                        src="/SkaiLinker_Icon.png" 
+                        src="/assets/SkaiLinker_Icon.png" 
                         alt="SkaiLinker" 
                         className="w-full h-full object-contain drop-shadow-xl"
                       />

@@ -28,7 +28,7 @@ export default function Header() {
           <Link href="/">
             <a className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <img 
-                src="/SkaiLinker_Icon.png" 
+                src="/assets/SkaiLinker_Icon.png" 
                 alt="SkaiLinker" 
                 className="h-10 w-10 object-contain"
                 onError={(e) => {
