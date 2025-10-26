@@ -44,15 +44,24 @@ function App() {
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <AuthGuard>
-            <div className="min-h-screen bg-background flex flex-col">
-              <Header />
-              <div className="flex-1">
-                <Router />
-              </div>
-              <Footer />
-            </div>
-          </AuthGuard>
+          <Switch>
+            {/* Public pages - no auth required */}
+            <Route path="/privacy" component={Privacy} />
+            <Route path="/terms" component={Terms} />
+            
+            {/* Protected pages - require auth */}
+            <Route>
+              <AuthGuard>
+                <div className="min-h-screen bg-background flex flex-col">
+                  <Header />
+                  <div className="flex-1">
+                    <Router />
+                  </div>
+                  <Footer />
+                </div>
+              </AuthGuard>
+            </Route>
+          </Switch>
           <Toaster />
         </TooltipProvider>
       </QueryClientProvider>
