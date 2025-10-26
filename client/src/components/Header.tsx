@@ -31,6 +31,9 @@ export default function Header() {
                 src="/SkaiLinker_Icon.png" 
                 alt="SkaiLinker" 
                 className="h-10 w-10 object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://via.placeholder.com/40x40/3B82F6/FFFFFF?text=SK';
+                }}
               />
               <span className="text-xl font-bold">
                 Skai<span className="text-primary">Linker</span>

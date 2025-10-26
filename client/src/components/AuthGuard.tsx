@@ -96,6 +96,9 @@ export default function AuthGuard({ children }: AuthGuardProps) {
                   src="/SkaiLinker_Icon.png" 
                   alt="SkaiLinker Logo" 
                   className="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-lg"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/100x100/3B82F6/FFFFFF?text=SK';
+                  }}
                 />
                 <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
                   SkaiLinker
