@@ -155,6 +155,9 @@ export default function AuthGuard({ children }: AuthGuardProps) {
                         src="/assets/SkaiLinker_Icon.png" 
                         alt="SkaiLinker" 
                         className="w-full h-full object-contain drop-shadow-xl"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://via.placeholder.com/100x100/3B82F6/FFFFFF?text=SK';
+                        }}
                       />
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -192,9 +195,9 @@ export default function AuthGuard({ children }: AuthGuardProps) {
                     
                     <p className="text-xs text-center text-gray-500 dark:text-gray-400 px-4">
                       By continuing, you agree to our{' '}
-                      <a href="#" className="text-primary hover:underline">Terms of Service</a>
+                      <a href="/terms" className="text-primary hover:underline">Terms of Service</a>
                       {' '}and{' '}
-                      <a href="#" className="text-primary hover:underline">Privacy Policy</a>
+                      <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>
                     </p>
                   </div>
                 </div>

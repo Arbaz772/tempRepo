@@ -12,10 +12,14 @@ import Flights from "@/pages/Flights";
 import Predictions from "@/pages/Predictions";
 import Deals from "@/pages/Deals";
 import About from "@/pages/About";
+import Privacy from "@/pages/Privacy";
+import Terms from "@/pages/Terms";
 import NotFound from "@/pages/not-found";
 
-// Replace this with your actual Google Client ID from Google Cloud Console
+
 const GOOGLE_CLIENT_ID = '598503571962-1pkj41acqql4csulutspvt4g4ffbcggp.apps.googleusercontent.com';
+
+
 
 function Router() {
   return (
