@@ -34,37 +34,40 @@ function App() {
 
   useEffect(() => {
     keycloak
-      .init({ onLoad: "login-required", pkceMethod: "S256" })
+      .init({ onLoad: "check-sso", pkceMethod: "S256", checkLoginIframe: false })
       .then((auth) => {
         setAuthenticated(auth);
-        setKeycloakInitialized(true);
-        if (!auth) {
-          keycloak.login();
-        }
       })
-      .catch(() => {
+      .finally(() => {
         setKeycloakInitialized(true);
-        setAuthenticated(false);
       });
   }, []);
+
+  const handleUserClick = () => {
+    if (!authenticated) {
+      keycloak.login();
+    }
+  };
 
   if (!keycloakInitialized) {
     return <div>Loading authentication...</div>;
   }
 
-  if (!authenticated) {
-    return <div>Redirecting to login...</div>;
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="min-h-screen bg-background flex flex-col">
-          <Header />
-          <div className="flex-1">
-            <Router />
-          </div>
-          <Footer />
+        <div className="min-h-screen bg-background flex flex-col" onClick={handleUserClick}>
+          {authenticated ? (
+            <>
+              <Header />
+              <div className="flex-1">
+                <Router />
+              </div>
+              <Footer />
+            </>
+          ) : (
+            <div>Please click anywhere to login or sign up</div>
+          )}
         </div>
         <Toaster />
       </TooltipProvider>
