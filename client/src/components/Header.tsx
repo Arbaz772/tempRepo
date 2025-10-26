@@ -1,125 +1,124 @@
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Plane, Menu, X, Cloud } from "lucide-react";
-import { useState } from "react";
-import { Link, useLocation } from "wouter";
-import skailinker_icon from "@assets/generated_images/SkaiLinker_Icon.png";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
+import { LogOut, User, Settings } from "lucide-react";
 
 export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [location] = useLocation();
+  const { user, isAuthenticated } = useAuth();
 
-  const isActive = (path: string) => location === path;
+  const handleLogout = () => {
+    localStorage.removeItem('skailinker_user');
+    window.location.reload(); // Reload to trigger auth check
+  };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
+          {/* Logo */}
           <Link href="/">
-            <a className="flex items-center gap-2 group cursor-pointer">
-              <div className="relative h-8 w-8 rounded-lg bg-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/20 overflow-visible">
-                <img src={skailinker_icon} alt="Custom Icon" className="h-8 w-8 object-contain z-10 rounded-lg" />
-              </div>
-              <span className="text-xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent" data-testid="text-logo">
-                SkaiLinker
+            <a className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <img 
+                src="/SkaiLinker_Icon.png" 
+                alt="SkaiLinker" 
+                className="h-10 w-10 object-contain"
+              />
+              <span className="text-xl font-bold">
+                Skai<span className="text-primary">Linker</span>
               </span>
             </a>
           </Link>
 
+          {/* Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/flights">
-              <a>
-                <Button
-                  variant={isActive("/flights") ? "default" : "ghost"}
-                  data-testid="link-flights"
-                >
-                  Flights
-                </Button>
+              <a className="text-sm font-medium hover:text-primary transition-colors">
+                Flights
               </a>
             </Link>
             <Link href="/predictions">
-              <a>
-                <Button
-                  variant={isActive("/predictions") ? "default" : "ghost"}
-                  data-testid="link-predictions"
-                >
-                  Predictions
-                </Button>
+              <a className="text-sm font-medium hover:text-primary transition-colors">
+                Predictions
               </a>
             </Link>
             <Link href="/deals">
-              <a>
-                <Button
-                  variant={isActive("/deals") ? "default" : "ghost"}
-                  data-testid="link-deals"
-                >
-                  Deals
-                </Button>
+              <a className="text-sm font-medium hover:text-primary transition-colors">
+                Deals
               </a>
             </Link>
             <Link href="/about">
-              <a>
-                <Button
-                  variant={isActive("/about") ? "default" : "ghost"}
-                  data-testid="link-about"
-                >
-                  About
-                </Button>
+              <a className="text-sm font-medium hover:text-primary transition-colors">
+                About
               </a>
             </Link>
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" data-testid="button-login">Login</Button>
-            <Button data-testid="button-signup">Sign Up</Button>
+          {/* User Profile or Auth Buttons */}
+          <div className="flex items-center gap-3">
+            {isAuthenticated && user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    className="relative h-10 w-10 rounded-full"
+                  >
+                    <Avatar className="h-10 w-10 border-2 border-primary/20">
+                      <AvatarImage src={user.picture} alt={user.name} />
+                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                        {user.name?.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.name}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={handleLogout}
+                    className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/signup">Sign Up</Link>
+                </Button>
+              </>
+            )}
           </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            data-testid="button-mobile-menu"
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
         </div>
-
-        {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-2">
-            <Link href="/flights">
-              <a className="block">
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  Flights
-                </Button>
-              </a>
-            </Link>
-            <Link href="/predictions">
-              <a className="block">
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  Predictions
-                </Button>
-              </a>
-            </Link>
-            <Link href="/deals">
-              <a className="block">
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  Deals
-                </Button>
-              </a>
-            </Link>
-            <Link href="/about">
-              <a className="block">
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  About
-                </Button>
-              </a>
-            </Link>
-            <div className="pt-2 space-y-2">
-              <Button variant="ghost" className="w-full">Login</Button>
-              <Button className="w-full">Sign Up</Button>
-            </div>
-          </div>
-        )}
       </div>
     </header>
   );

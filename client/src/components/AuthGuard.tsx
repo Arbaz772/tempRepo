@@ -248,31 +248,6 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     );
   }
 
-  // User is logged in - show minimal user bar
-  return (
-    <div>
-      <div className="bg-background/95 backdrop-blur-sm border-b sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-2 flex justify-end items-center gap-3">
-          <Avatar className="h-8 w-8 border-2 border-primary/20">
-            <AvatarImage src={user.picture} alt={user.name} />
-            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-              {user.name?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-sm font-medium hidden sm:inline text-foreground">
-            {user.name}
-          </span>
-          <Button 
-            onClick={handleLogout} 
-            variant="outline" 
-            size="sm"
-            className="text-xs hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 transition-colors"
-          >
-            Logout
-          </Button>
-        </div>
-      </div>
-      {children}
-    </div>
-  );
+  // User is logged in - just render children (Header will show user profile)
+  return <>{children}</>;
 }
