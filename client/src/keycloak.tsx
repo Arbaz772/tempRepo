@@ -6,10 +6,4 @@ const keycloak = new Keycloak({
   clientId: "skailinker-clientId",
 });
 
-keycloak.init({
-  onLoad: "login-required",
-  pkceMethod: "S256",
-  checkLoginIframe: false, 
-});
-
 export default keycloak;
