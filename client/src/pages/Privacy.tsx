@@ -131,7 +131,7 @@ export default function Privacy() {
               <li><strong>Data Portability:</strong> Receive your data in a portable format</li>
             </ul>
             <p className="text-muted-foreground">
-              To exercise these rights, contact us at: <strong>privacy@skailinker.org</strong>
+              To exercise these rights, contact us at: <strong>contact@skailinker.org</strong>
             </p>
           </section>
 
@@ -166,7 +166,7 @@ export default function Privacy() {
             </p>
             <div className="bg-muted p-4 rounded-lg">
               <p className="text-muted-foreground">
-                <strong>Email:</strong> privacy@skailinker.org<br />
+                <strong>Email:</strong> contact@skailinker.org<br />
                 <strong>Website:</strong> https://www.skailinker.org<br />
                 <strong>Address:</strong> [Your Business Address]
               </p>

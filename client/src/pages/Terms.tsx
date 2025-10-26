@@ -211,7 +211,7 @@ export default function Terms() {
             </p>
             <div className="bg-muted p-4 rounded-lg">
               <p className="text-muted-foreground">
-                <strong>Email:</strong> legal@skailinker.org<br />
+                <strong>Email:</strong> contact@skailinker.org<br />
                 <strong>Website:</strong> https://www.skailinker.org<br />
                 <strong>Address:</strong> [Your Business Address]
               </p>
