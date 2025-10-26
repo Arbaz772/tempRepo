@@ -50,11 +50,21 @@ export default function AuthGuard({ children }: AuthGuardProps) {
 
   const handleLoginSuccess = (credentialResponse: any) => {
     try {
+      // Parse JWT token manually (simple base64 decode)
+      const token = credentialResponse.credential;
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      
+      const decoded = JSON.parse(jsonPayload);
+      
       const userData: UserData = {
-        name: 'Demo User',
-        email: 'demo@skailinker.com',
-        picture: 'https://via.placeholder.com/100',
-        sub: 'demo-123',
+        name: decoded.name || 'User',
+        email: decoded.email || 'user@example.com',
+        picture: decoded.picture || 'https://via.placeholder.com/100',
+        sub: decoded.sub || 'user-' + Date.now(),
         credential: credentialResponse.credential
       };
       
