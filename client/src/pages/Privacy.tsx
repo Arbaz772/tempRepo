@@ -24,9 +24,10 @@ export default function Privacy() {
               When you sign in with Google, we collect:
             </p>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li>SM Arbaz Alam</li>
-              <li>syedarbaz772@gmail.com</li>
-              <li>Syed Arbaz</li>
+              <li>Your name</li>
+              <li>Your email address</li>
+              <li>Your profile picture</li>
+              <li>Your Google account ID</li>
             </ul>
 
             <h3 className="text-xl font-semibold mt-4">Usage Information</h3>
