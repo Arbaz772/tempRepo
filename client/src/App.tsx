@@ -15,32 +15,20 @@ import NotFound from "@/pages/not-found";
 import keycloak from "./keycloak";
 import ProtectedRoute from "./ProtectedRoute";
 
-function Router() {
-  return (
-    <Switch>
-      <ProtectedRoute path="/" component={Home} />
-      <ProtectedRoute path="/flights" component={Flights} />
-      <ProtectedRoute path="/predictions" component={Predictions} />
-      <ProtectedRoute path="/deals" component={Deals} />
-      <ProtectedRoute path="/about" component={About} />
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
-
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [keycloakInitialized, setKeycloakInitialized] = useState(false);
 
+  const initialized = useRef(false);
+
   useEffect(() => {
-    keycloak
-      .init({ onLoad: "check-sso", pkceMethod: "S256", checkLoginIframe: false })
-      .then((auth) => {
-        setAuthenticated(auth);
-      })
-      .finally(() => {
-        setKeycloakInitialized(true);
-      });
+    if (!initialized.current) {
+      initialized.current = true;
+      keycloak
+        .init({ onLoad: "check-sso", pkceMethod: "S256", checkLoginIframe: false })
+        .then(auth => setAuthenticated(auth))
+        .finally(() => setKeycloakInitialized(true));
+    }
   }, []);
 
   const handleUserClick = () => {
@@ -74,5 +62,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-export default App;
