@@ -101,10 +101,12 @@ export default function AuthGuard({ children }: AuthGuardProps) {
           <div className="max-w-6xl w-full grid md:grid-cols-2 gap-8 items-center">
             {/* Left side - Branding and features */}
             <div className="text-center md:text-left space-y-6">
-              <div className="inline-flex items-center gap-3 mb-4">
-                <div className="bg-primary/10 p-3 rounded-2xl backdrop-blur-sm">
-                  <Plane className="w-8 h-8 text-primary" />
-                </div>
+              <div className="inline-flex items-center gap-4 mb-4">
+                <img 
+                  src="/SkaiLinker_Icon.png" 
+                  alt="SkaiLinker Logo" 
+                  className="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-lg"
+                />
                 <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
                   SkaiLinker
                 </h1>
@@ -158,8 +160,12 @@ export default function AuthGuard({ children }: AuthGuardProps) {
                 <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-800/50 p-8 md:p-10">
                   {/* Header */}
                   <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-4 shadow-lg">
-                      <Sparkles className="w-8 h-8 text-white" />
+                    <div className="inline-flex items-center justify-center w-20 h-20 mb-4">
+                      <img 
+                        src="/SkaiLinker_Icon.png" 
+                        alt="SkaiLinker" 
+                        className="w-full h-full object-contain drop-shadow-xl"
+                      />
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                       Welcome Back
