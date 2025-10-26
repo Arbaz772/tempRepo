@@ -15,10 +15,22 @@ import NotFound from "@/pages/not-found";
 import keycloak from "./keycloak";
 import ProtectedRoute from "./ProtectedRoute";
 
+function Router() {
+  return (
+    <Switch>
+      <ProtectedRoute path="/" component={Home} />
+      <ProtectedRoute path="/flights" component={Flights} />
+      <ProtectedRoute path="/predictions" component={Predictions} />
+      <ProtectedRoute path="/deals" component={Deals} />
+      <ProtectedRoute path="/about" component={About} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [keycloakInitialized, setKeycloakInitialized] = useState(false);
-
   const initialized = useRef(false);
 
   useEffect(() => {
