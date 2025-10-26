@@ -108,15 +108,19 @@ export default function Footer() {
                   Contact Us
                 </button>
               </li>
-              <li>
-                <button className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-privacy">
-                  Privacy Policy
-                </button>
+              <li>  
+              <Link href="/privacy">
+                  <a className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-deals">
+                    Privacy Policy
+                  </a>
+                </Link>
               </li>
               <li>
-                <button className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-terms">
-                  Terms of Service
-                </button>
+                <Link href="/service">
+                  <a className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-deals">
+                    Terms of Service
+                  </a>
+                </Link>
               </li>
             </ul>
           </div>
