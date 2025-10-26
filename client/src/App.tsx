@@ -16,10 +16,13 @@ import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
 import NotFound from "@/pages/not-found";
 
-
+// IMPORTANT: Replace with your actual Google Client ID
+// Get it from: https://console.cloud.google.com/apis/credentials
+// Should look like: 123456789012-xxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
 const GOOGLE_CLIENT_ID = '598503571962-1pkj41acqql4csulutspvt4g4ffbcggp.apps.googleusercontent.com';
 
-
+// For development, you can also check if running locally
+// const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'YOUR_CLIENT_ID';
 
 function Router() {
   return (
@@ -29,6 +32,8 @@ function Router() {
       <Route path="/predictions" component={Predictions} />
       <Route path="/deals" component={Deals} />
       <Route path="/about" component={About} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       <Route component={NotFound} />
     </Switch>
   );
