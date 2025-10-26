@@ -116,7 +116,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/service">
+                <Link href="/terms">
                   <a className="text-muted-foreground hover:text-primary transition-colors text-sm" data-testid="footer-link-deals">
                     Terms of Service
                   </a>
