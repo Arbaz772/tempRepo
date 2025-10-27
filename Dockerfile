@@ -9,6 +9,7 @@ WORKDIR /usr/src/app
 # copy package files first for caching
 COPY package*.json .
 
+
 # install all dependencies (dev + prod) required for build
 RUN npm ci
 
@@ -29,6 +30,9 @@ USER arbaz
 
 # expose port
 ENV NODE_ENV=production
+ENV AMADEUS_API_KEY=CUf5GH27hbyBEQIAkZ6FA8GoOPJX3qIS
+ENV AMADEUS_API_SECRET=XKLCaCkmIzN6QFvd
+ENV AFFILIATE_ID=6640998
 ENV PORT=8001
 EXPOSE 8001
 
