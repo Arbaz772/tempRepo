@@ -11,7 +11,8 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "noEmit": false,
-    "allowImportingTsExtensions": false
+    "allowImportingTsExtensions": false,
+    "typeRoots": ["./types", "../node_modules/@types"]
   },
-  "include": ["./**/*.ts"]
+  "include": ["./**/*.ts", "./types/**/*.d.ts"]
 }
