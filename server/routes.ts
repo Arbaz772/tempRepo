@@ -1,3 +1,4 @@
+// server/routes.ts
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from './storage.js';
@@ -24,17 +25,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ==========================================
   // AIRPORT SEARCH ENDPOINT
   // ==========================================
-  /**
-   * Search airports by city name with better error handling
-   * GET /api/airports/search?city=Delhi
-   */
   app.get("/api/airports/search", async (req, res) => {
     try {
       const { city } = req.query;
       
       console.log("🔍 Airport search request:", { city });
       
-      // Validation
       if (!city || typeof city !== 'string') {
         return res.status(400).json({ 
           success: false,
@@ -51,22 +47,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Try to get airports from Amadeus
       try {
         const airports = await getAirportByCity(city);
-        
         console.log(`✅ Found ${airports.length} airports for "${city}"`);
         
-        // Return even if empty array
         return res.json({
           success: true,
           data: airports || [],
           count: airports?.length || 0
         });
       } catch (amadeusError: any) {
-        // If Amadeus fails, return popular airports as fallback
-        console.warn("⚠️ Amadeus airport search failed, using fallback", amadeusError.message);
-        
+        console.warn("⚠️ Amadeus failed, using fallback", amadeusError.message);
         const fallbackAirports = getFallbackAirports(city);
         
         return res.json({
@@ -79,16 +70,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     } catch (error: any) {
       console.error("❌ Airport search error:", error);
-      
-      // Return fallback airports even on error
       const fallbackAirports = getFallbackAirports(req.query.city as string || '');
       
       res.json({ 
         success: true,
         data: fallbackAirports,
         count: fallbackAirports.length,
-        fallback: true,
-        warning: "Using cached airport data"
+        fallback: true
       });
     }
   });
@@ -96,10 +84,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ==========================================
   // FLIGHT SEARCH ENDPOINT
   // ==========================================
-  /**
-   * Search flights based on user input
-   * POST /api/flights/search
-   */
   app.post("/api/flights/search", async (req, res) => {
     try {
       const { 
@@ -114,7 +98,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log("📥 Flight search request:", req.body);
 
-      // Validate required fields
       if (!origin || !destination || !departDate) {
         return res.status(400).json({ 
           success: false,
@@ -123,7 +106,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Search flights using Amadeus API
       const flights = await searchFlights({
         origin,
         destination,
@@ -154,10 +136,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ==========================================
   // GET FLIGHT OFFER DETAILS
   // ==========================================
-  /**
-   * Get specific flight offer details
-   * GET /api/flights/offer/:id
-   */
   app.get("/api/flights/offer/:id", async (req, res) => {
     try {
       const { id } = req.params;
@@ -170,5 +148,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     } catch (error: any) {
       console.error("❌ Get flight offer error:", error);
+      res.status(500).json({ 
+        success: false,
+        error: error.message || "Failed to get flight offer",
+        message: error.message
+      });
     }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}
+
+// ==========================================
+// FALLBACK AIRPORTS
+// ==========================================
+function getFallbackAirports(query: string): any[] {
+  const airports = [
+    { iataCode: 'DEL', name: 'Indira Gandhi International Airport', address: { cityName: 'Delhi', countryName: 'India' } },
+    { iataCode: 'BOM', name: 'Chhatrapati Shivaji Maharaj International Airport', address: { cityName: 'Mumbai', countryName: 'India' } },
+    { iataCode: 'BLR', name: 'Kempegowda International Airport', address: { cityName: 'Bangalore', countryName: 'India' } },
+    { iataCode: 'MAA', name: 'Chennai International Airport', address: { cityName: 'Chennai', countryName: 'India' } },
+    { iataCode: 'HYD', name: 'Rajiv Gandhi International Airport', address: { cityName: 'Hyderabad', countryName: 'India' } },
+    { iataCode: 'CCU', name: 'Netaji Subhas Chandra Bose International Airport', address: { cityName: 'Kolkata', countryName: 'India' } },
+    { iataCode: 'PNQ', name: 'Pune Airport', address: { cityName: 'Pune', countryName: 'India' } },
+    { iataCode: 'AMD', name: 'Sardar Vallabhbhai Patel International Airport', address: { cityName: 'Ahmedabad', countryName: 'India' } },
+    { iataCode: 'GOI', name: 'Dabolim Airport', address: { cityName: 'Goa', countryName: 'India' } },
+    { iataCode: 'COK', name: 'Cochin International Airport', address: { cityName: 'Kochi', countryName: 'India' } },
+    { iataCode: 'JAI', name: 'Jaipur International Airport', address: { cityName: 'Jaipur', countryName: 'India' } },
+    { iataCode: 'LKO', name: 'Chaudhary Charan Singh International Airport', address: { cityName: 'Lucknow', countryName: 'India' } },
+    { iataCode: 'IXC', name: 'Chandigarh International Airport', address: { cityName: 'Chandigarh', countryName: 'India' } },
+    { iataCode: 'SXR', name: 'Sheikh ul-Alam International Airport', address: { cityName: 'Srinagar', countryName: 'India' } },
+    { iataCode: 'TRV', name: 'Trivandrum International Airport', address: { cityName: 'Thiruvananthapuram', countryName: 'India' } },
+    { iataCode: 'DXB', name: 'Dubai International Airport', address: { cityName: 'Dubai', countryName: 'UAE' } },
+    { iataCode: 'SIN', name: 'Singapore Changi Airport', address: { cityName: 'Singapore', countryName: 'Singapore' } },
+    { iataCode: 'LHR', name: 'London Heathrow Airport', address: { cityName: 'London', countryName: 'United Kingdom' } },
+    { iataCode: 'JFK', name: 'John F Kennedy International Airport', address: { cityName: 'New York', countryName: 'USA' } },
+    { iataCode: 'DOH', name: 'Hamad International Airport', address: { cityName: 'Doha', countryName: 'Qatar' } }
+  ];
+
+  if (!query || query.length < 2) {
+    return airports.slice(0, 10);
   }
+
+  const searchTerm = query.toLowerCase();
+  const filtered = airports.filter(airport => 
+    airport.iataCode.toLowerCase().includes(searchTerm) ||
+    airport.name.toLowerCase().includes(searchTerm) ||
+    airport.address.cityName.toLowerCase().includes(searchTerm)
+  );
+
+  return filtered.slice(0, 10);
+}
