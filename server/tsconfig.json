@@ -12,7 +12,8 @@
     "resolveJsonModule": true,
     "noEmit": false,
     "allowImportingTsExtensions": false,
-    "typeRoots": ["./types", "../node_modules/@types"] 
+    "typeRoots": ["./types", "../node_modules/@types"],
+    "types": ["node"]
   },
   "include": ["./**/*.ts","./types/**/*.d.ts"]
 }
