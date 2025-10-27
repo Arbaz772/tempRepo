@@ -27,10 +27,28 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
   const [returnDate, setReturnDate] = useState<Date>();
   const [passengers, setPassengers] = useState(1);
 
-  const handleSearch = () => {
-    onSearch?.({ origin, destination, departDate, returnDate: tripType === "round-trip" ? returnDate : undefined, passengers, tripType });
-    console.log("Search triggered", { origin, destination, departDate, returnDate: tripType === "round-trip" ? returnDate : undefined, passengers, tripType });
-  };
+
+  const handleSearch = async (params) => {
+  try {
+    const response = await fetch('/api/flights/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        origin: params.origin,
+        destination: params.destination,
+        departDate: format(params.departDate, 'yyyy-MM-dd'),
+        returnDate: params.returnDate ? format(params.returnDate, 'yyyy-MM-dd') : undefined,
+        passengers: params.passengers,
+        tripType: params.tripType
+      })
+    });
+    
+    const data = await response.json();
+    // Update state with data.data (flight results)
+  } catch (error) {
+    console.error('Search failed:', error);
+  }
+};
 
   return (
     <Card className="backdrop-blur-xl bg-card/95 border-card-border p-6 rounded-2xl shadow-2xl shadow-black/20 hover:shadow-3xl transition-shadow duration-300">
