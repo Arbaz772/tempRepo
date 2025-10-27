@@ -26,29 +26,82 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
   const [departDate, setDepartDate] = useState<Date>();
   const [returnDate, setReturnDate] = useState<Date>();
   const [passengers, setPassengers] = useState(1);
+  const [isSearching, setIsSearching] = useState(false);
 
+  const handleSearch = async () => {
+    try {
+      // Validation
+      if (!origin || !destination) {
+        alert("Please enter origin and destination");
+        return;
+      }
 
-  const handleSearch = async (params) => {
-  try {
-    const response = await fetch('/api/flights/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        origin: params.origin,
-        destination: params.destination,
-        departDate: format(params.departDate, 'yyyy-MM-dd'),
-        returnDate: params.returnDate ? format(params.returnDate, 'yyyy-MM-dd') : undefined,
-        passengers: params.passengers,
-        tripType: params.tripType
-      })
-    });
-    
-    const data = await response.json();
-    // Update state with data.data (flight results)
-  } catch (error) {
-    console.error('Search failed:', error);
-  }
-};
+      if (!departDate) {
+        alert("Please select a departure date");
+        return;
+      }
+
+      if (tripType === "round-trip" && !returnDate) {
+        alert("Please select a return date for round-trip");
+        return;
+      }
+
+      setIsSearching(true);
+
+      // Prepare search params
+      const searchParams = {
+        origin: origin.trim().toUpperCase(),
+        destination: destination.trim().toUpperCase(),
+        departDate: format(departDate, 'yyyy-MM-dd'),
+        returnDate: tripType === "round-trip" && returnDate 
+          ? format(returnDate, 'yyyy-MM-dd') 
+          : undefined,
+        passengers,
+        tripType
+      };
+
+      console.log("🔍 Searching flights with:", searchParams);
+
+      // Call API
+      const response = await fetch('/api/flights/search', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(searchParams)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || 'Search failed');
+      }
+
+      console.log("✅ Flight results:", data);
+
+      // Call parent callback
+      if (onSearch) {
+        onSearch({
+          origin,
+          destination,
+          departDate,
+          returnDate: tripType === "round-trip" ? returnDate : undefined,
+          passengers,
+          tripType
+        });
+      }
+
+      // TODO: Navigate to results page or show results
+      // For now, show alert with count
+      alert(`Found ${data.count} flights! Check console for details.`);
+
+    } catch (error: any) {
+      console.error('❌ Search failed:', error);
+      alert(`Search failed: ${error.message}`);
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   return (
     <Card className="backdrop-blur-xl bg-card/95 border-card-border p-6 rounded-2xl shadow-2xl shadow-black/20 hover:shadow-3xl transition-shadow duration-300">
@@ -122,6 +175,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
                 selected={departDate}
                 onSelect={setDepartDate}
                 initialFocus
+                disabled={(date) => date < new Date()}
               />
             </PopoverContent>
           </Popover>
@@ -147,7 +201,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
                   selected={returnDate}
                   onSelect={setReturnDate}
                   initialFocus
-                  disabled={(date) => departDate ? date < departDate : false}
+                  disabled={(date) => departDate ? date < departDate : date < new Date()}
                 />
               </PopoverContent>
             </Popover>
@@ -188,9 +242,10 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         data-testid="button-search-flights"
         className="w-full mt-6 bg-primary hover:bg-primary/90"
         size="lg"
+        disabled={isSearching}
       >
-        Search Flights
-        <ArrowRight className="ml-2 h-4 w-4" />
+        {isSearching ? "Searching..." : "Search Flights"}
+        {!isSearching && <ArrowRight className="ml-2 h-4 w-4" />}
       </Button>
     </Card>
   );
