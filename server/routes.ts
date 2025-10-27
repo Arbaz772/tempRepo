@@ -9,49 +9,56 @@ import {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  app.post("/api/flights/search", async (req, res) => {
-    try {
-      const { 
-        origin, 
-        destination, 
-        departDate, 
-        returnDate, 
-        passengers = 1,
-        tripType = "round-trip",
-        maxResults = 20 
-      } = req.body;
+ app.post("/api/flights/search", async (req, res) => {
+  try {
+    const { 
+      origin, 
+      destination, 
+      departDate, 
+      returnDate, 
+      passengers = 1,
+      tripType = "round-trip",
+      maxResults = 20 
+    } = req.body;
 
-      // Validate required fields
-      if (!origin || !destination || !departDate) {
-        return res.status(400).json({ 
-          error: "Missing required fields: origin, destination, departDate" 
-        });
-      }
+    console.log("📥 Flight search request:", req.body);
 
-      // Search flights using Amadeus API
-      const flights = await searchFlights({
-        origin,
-        destination,
-        departDate,
-        returnDate: tripType === "round-trip" ? returnDate : undefined,
-        passengers,
-        maxResults
-      });
-
-      res.json({
-        success: true,
-        data: flights,
-        count: flights.length
-      });
-
-    } catch (error: any) {
-      console.error("Flight search error:", error);
-      res.status(500).json({ 
-        error: "Failed to search flights", 
-        message: error.message 
+    // Validate required fields
+    if (!origin || !destination || !departDate) {
+      return res.status(400).json({ 
+        success: false,
+        error: "Missing required fields",
+        message: "Please provide origin, destination, and departure date" 
       });
     }
-  });
+
+    // Search flights using Amadeus API
+    const flights = await searchFlights({
+      origin,
+      destination,
+      departDate,
+      returnDate: tripType === "round-trip" ? returnDate : undefined,
+      passengers,
+      maxResults
+    });
+
+    console.log(`✅ Found ${flights.length} flights`);
+
+    res.json({
+      success: true,
+      data: flights,
+      count: flights.length
+    });
+
+  } catch (error: any) {
+    console.error("❌ Flight search error:", error);
+    res.status(500).json({ 
+      success: false,
+      error: error.message || "Failed to search flights",
+      message: error.message || "An error occurred while searching for flights"
+    });
+  }
+});
 
   /**
    * Get specific flight offer details

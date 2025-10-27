@@ -68,6 +68,16 @@ export async function searchFlights(params: FlightSearchParams): Promise<FlightO
       maxResults = 20 
     } = params;
 
+    console.log("🔍 Amadeus API Request:", {
+      originLocationCode: origin.toUpperCase(),
+      destinationLocationCode: destination.toUpperCase(),
+      departureDate: departDate,
+      returnDate: returnDate || undefined,
+      adults: passengers.toString(),
+      max: maxResults.toString(),
+      currencyCode: 'INR'
+    });
+
     // Call Amadeus Flight Offers Search API
     const response = await amadeus.shopping.flightOffersSearch.get({
       originLocationCode: origin.toUpperCase(),
@@ -79,63 +89,49 @@ export async function searchFlights(params: FlightSearchParams): Promise<FlightO
       currencyCode: 'INR'
     });
 
+    console.log("✅ Amadeus API Response:", {
+      count: response.data?.length || 0,
+      status: response.result?.statusCode
+    });
+
     const flightOffers = response.data;
     
+    if (!flightOffers || flightOffers.length === 0) {
+      console.warn("⚠️ No flights found for this route");
+      return [];
+    }
+
     // Transform Amadeus response to our format
     const transformedFlights: FlightOffer[] = flightOffers.map((offer: any) => {
-      const firstSegment = offer.itineraries[0].segments[0];
-      const lastSegment = offer.itineraries[0].segments[offer.itineraries[0].segments.length - 1];
-      
-      // Calculate total stops
-      const stops = offer.itineraries[0].segments.length - 1;
-      
-      // Get airline info
-      const airlineCode = firstSegment.carrierCode;
-      const airlineName = getAirlineName(airlineCode);
-      
-      // Format times
-      const departTime = formatTime(firstSegment.departure.at);
-      const arriveTime = formatTime(lastSegment.arrival.at);
-      
-      // Calculate duration
-      const duration = formatDuration(offer.itineraries[0].duration);
-      
-      // Get price
-      const price = parseFloat(offer.price.total);
-      
-      // Generate booking URL (affiliate link)
-      const bookingUrl = generateAffiliateLink(offer.id, origin, destination);
-      
-      return {
-        id: offer.id,
-        airline: airlineName,
-        airlineLogo: getAirlineLogo(airlineCode),
-        flightNumber: `${airlineCode} ${firstSegment.number}`,
-        origin: firstSegment.departure.iataCode,
-        destination: lastSegment.arrival.iataCode,
-        departTime,
-        arriveTime,
-        duration,
-        stops,
-        price: Math.round(price),
-        currency: offer.price.currency,
-        aircraft: getAircraftName(firstSegment.aircraft.code),
-        baggage: offer.travelerPricings?.[0]?.fareDetailsBySegment?.[0]?.includedCheckedBags?.quantity 
-          ? `${offer.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity * 23} kg`
-          : '15 kg',
-        bookingUrl,
-        cabinClass: offer.travelerPricings?.[0]?.fareDetailsBySegment?.[0]?.cabin || 'ECONOMY',
-        segments: offer.itineraries[0].segments
-      };
+      // ... rest of your transformation code
     });
 
     return transformedFlights;
 
   } catch (error: any) {
-    console.error("Amadeus API Error:", error.response?.data || error.message);
+    // Enhanced error logging
+    console.error("❌ Amadeus API Error:", {
+      message: error.message,
+      description: error.description,
+      code: error.code,
+      response: error.response?.data,
+      statusCode: error.response?.statusCode
+    });
+
+    // Return user-friendly error message
+    if (error.response?.data) {
+      const amadeusError = error.response.data;
+      throw new Error(
+        amadeusError.errors?.[0]?.detail || 
+        amadeusError.errors?.[0]?.title || 
+        `Amadeus API error: ${error.message}`
+      );
+    }
+
     throw new Error(`Flight search failed: ${error.message}`);
   }
 }
+
 
 /**
  * Get specific flight offer details
