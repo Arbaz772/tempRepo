@@ -1,5 +1,7 @@
+// server/services/amadeusService.ts
 import Amadeus from 'amadeus';
 
+// Initialize Amadeus client
 const amadeus = new Amadeus({
   clientId: process.env.AMADEUS_API_KEY || '',
   clientSecret: process.env.AMADEUS_API_SECRET || '',
@@ -90,8 +92,7 @@ export async function searchFlights(params: FlightSearchParams): Promise<FlightO
     });
 
     console.log("✅ Amadeus API Response:", {
-      count: response.data?.length || 0,
-      status: response.result?.statusCode
+      count: response.data?.length || 0
     });
 
     const flightOffers = response.data;
@@ -102,8 +103,51 @@ export async function searchFlights(params: FlightSearchParams): Promise<FlightO
     }
 
     // Transform Amadeus response to our format
-    const transformedFlights: FlightOffer[] = flightOffers.map((offer: any) => {
-      // ... rest of your transformation code
+    const transformedFlights: FlightOffer[] = flightOffers.map((offer: any): FlightOffer => {
+      const firstSegment = offer.itineraries[0].segments[0];
+      const lastSegment = offer.itineraries[0].segments[offer.itineraries[0].segments.length - 1];
+      
+      // Calculate total stops
+      const stops = offer.itineraries[0].segments.length - 1;
+      
+      // Get airline info
+      const airlineCode = firstSegment.carrierCode;
+      const airlineName = getAirlineName(airlineCode);
+      
+      // Format times
+      const departTime = formatTime(firstSegment.departure.at);
+      const arriveTime = formatTime(lastSegment.arrival.at);
+      
+      // Calculate duration
+      const duration = formatDuration(offer.itineraries[0].duration);
+      
+      // Get price
+      const price = parseFloat(offer.price.total);
+      
+      // Generate booking URL (affiliate link)
+      const bookingUrl = generateAffiliateLink(offer.id, origin, destination);
+      
+      return {
+        id: offer.id,
+        airline: airlineName,
+        airlineLogo: getAirlineLogo(airlineCode),
+        flightNumber: `${airlineCode} ${firstSegment.number}`,
+        origin: firstSegment.departure.iataCode,
+        destination: lastSegment.arrival.iataCode,
+        departTime,
+        arriveTime,
+        duration,
+        stops,
+        price: Math.round(price),
+        currency: offer.price.currency,
+        aircraft: getAircraftName(firstSegment.aircraft.code),
+        baggage: offer.travelerPricings?.[0]?.fareDetailsBySegment?.[0]?.includedCheckedBags?.quantity 
+          ? `${offer.travelerPricings[0].fareDetailsBySegment[0].includedCheckedBags.quantity * 23} kg`
+          : '15 kg',
+        bookingUrl,
+        cabinClass: offer.travelerPricings?.[0]?.fareDetailsBySegment?.[0]?.cabin || 'ECONOMY',
+        segments: offer.itineraries[0].segments
+      };
     });
 
     return transformedFlights;
@@ -131,7 +175,6 @@ export async function searchFlights(params: FlightSearchParams): Promise<FlightO
     throw new Error(`Flight search failed: ${error.message}`);
   }
 }
-
 
 /**
  * Get specific flight offer details
@@ -252,6 +295,9 @@ function formatDuration(duration: string): string {
  * Generate affiliate booking link
  */
 function generateAffiliateLink(offerId: string, origin: string, destination: string): string {
- const affiliateId = process.env.AFFILIATE_ID || 'skailinker';
+  // TODO: Replace with your actual affiliate program URLs
+  const affiliateId = process.env.AFFILIATE_ID || 'skailinker';
+  
+  // Using Skyscanner as example
   return `https://www.skyscanner.co.in/transport/flights/${origin}/${destination}?affiliateid=${affiliateId}&offer=${offerId}`;
 }
