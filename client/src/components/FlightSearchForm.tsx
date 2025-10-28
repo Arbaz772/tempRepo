@@ -45,8 +45,26 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
   const [isLoadingOrigin, setIsLoadingOrigin] = useState(false);
   const [isLoadingDestination, setIsLoadingDestination] = useState(false);
   
+  // Modal state
+  const [showResultsModal, setShowResultsModal] = useState(false);
+  const [flightResults, setFlightResults] = useState<any[]>([]);
+  const [isMockData, setIsMockData] = useState(false);
+  const [searchedParams, setSearchedParams] = useState<any>(null);
+  
+  // Validation state
+  const [validationError, setValidationError] = useState<string>("");
+  
   const originRef = useRef<HTMLDivElement>(null);
   const destinationRef = useRef<HTMLDivElement>(null);
+
+  // Debug modal state
+  useEffect(() => {
+    console.log("🎭 Modal state:", { 
+      showResultsModal, 
+      flightsCount: flightResults.length,
+      isMock: isMockData 
+    });
+  }, [showResultsModal, flightResults, isMockData]);
 
   // Debounced airport search
   useEffect(() => {
@@ -125,15 +143,12 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
     }
   };
 
-  // Validation state
-  const [validationError, setValidationError] = useState<string>("");
-
   const handleSearch = async () => {
     try {
       // Clear previous errors
       setValidationError("");
 
-      // Validation with beautiful error messages
+      // Validation
       if (!origin || !destination) {
         setValidationError("✈️ Please enter both origin and destination airports");
         setTimeout(() => setValidationError(""), 4000);
@@ -154,7 +169,6 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
 
       setIsSearching(true);
 
-      // Prepare search params
       const searchParams = {
         origin: origin.trim().toUpperCase(),
         destination: destination.trim().toUpperCase(),
@@ -168,7 +182,6 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
 
       console.log("🔍 Searching flights with:", searchParams);
 
-      // Call API
       const response = await fetch('/api/flights/search', {
         method: 'POST',
         headers: { 
@@ -179,11 +192,29 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
 
       const data = await response.json();
 
+      console.log("📦 API Response:", data);
+
       if (!response.ok) {
         throw new Error(data.message || data.error || 'Search failed');
       }
 
       console.log("✅ Flight results:", data);
+      console.log("🔢 Number of flights:", data.data?.length);
+
+      // Store results and show modal
+      setFlightResults(data.data || []);
+      setIsMockData(data.mock || false);
+      setSearchedParams({
+        origin: searchParams.origin,
+        destination: searchParams.destination,
+        departDate: searchParams.departDate,
+        returnDate: searchParams.returnDate,
+        passengers: searchParams.passengers
+      });
+      
+      console.log("🚀 Opening modal with", data.data?.length, "flights");
+      setShowResultsModal(true);
+      setValidationError("");
 
       // Call parent callback
       if (onSearch) {
@@ -196,10 +227,6 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
           tripType
         });
       }
-
-      // Show success message
-      setValidationError("");
-      // TODO: Navigate to results page
 
     } catch (error: any) {
       console.error('❌ Search failed:', error);
@@ -233,6 +260,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
           </div>
         </div>
       )}
+
       <div className="flex gap-4 mb-6">
         <Button
           type="button"
@@ -274,7 +302,6 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
             )}
           </div>
           
-          {/* Origin Suggestions Dropdown */}
           {showOriginSuggestions && originSuggestions.length > 0 && (
             <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto">
               {originSuggestions.map((airport) => (
@@ -320,7 +347,6 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
             )}
           </div>
           
-          {/* Destination Suggestions Dropdown */}
           {showDestinationSuggestions && destinationSuggestions.length > 0 && (
             <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto">
               {destinationSuggestions.map((airport) => (
@@ -370,7 +396,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
           </Popover>
         </div>
 
-        {/* RETURN DATE (only for round-trip) */}
+        {/* RETURN DATE */}
         {tripType === "round-trip" && (
           <div className="space-y-2">
             <Label className="text-sm font-medium">Return</Label>
@@ -443,6 +469,51 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
           </>
         )}
       </Button>
+
+      {/* DEBUG: Test Modal Button */}
+      <Button
+        onClick={() => {
+          console.log("🧪 Manual modal test");
+          setFlightResults([
+            {
+              id: "test-1",
+              airline: "Test Airline",
+              flightNumber: "TEST 123",
+              origin: "DEL",
+              destination: "BOM",
+              departTime: "10:00",
+              arriveTime: "12:00",
+              duration: "2h",
+              stops: 0,
+              price: 5000,
+              currency: "INR",
+              aircraft: "Test Aircraft",
+              bookingUrl: "https://example.com",
+              cabinClass: "ECONOMY"
+            }
+          ]);
+          setSearchedParams({
+            origin: "DEL",
+            destination: "BOM",
+            departDate: "2025-10-30",
+            passengers: 1
+          });
+          setShowResultsModal(true);
+        }}
+        variant="outline"
+        className="w-full mt-2"
+      >
+        🧪 Test Modal
+      </Button>
+
+      {/* Flight Results Modal */}
+      <FlightResultsModal
+        open={showResultsModal}
+        onClose={() => setShowResultsModal(false)}
+        flights={flightResults}
+        searchParams={searchedParams}
+        isMock={isMockData}
+      />
     </Card>
   );
 }
