@@ -8,6 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarIcon, Plane, Users, ArrowRight, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import FlightResultsModal from "./FlightResultsModal";
 
 interface Airport {
   iataCode: string;
