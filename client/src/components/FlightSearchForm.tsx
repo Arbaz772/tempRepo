@@ -470,42 +470,6 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         )}
       </Button>
 
-      {/* DEBUG: Test Modal Button */}
-      <Button
-        onClick={() => {
-          console.log("🧪 Manual modal test");
-          setFlightResults([
-            {
-              id: "test-1",
-              airline: "Test Airline",
-              flightNumber: "TEST 123",
-              origin: "DEL",
-              destination: "BOM",
-              departTime: "10:00",
-              arriveTime: "12:00",
-              duration: "2h",
-              stops: 0,
-              price: 5000,
-              currency: "INR",
-              aircraft: "Test Aircraft",
-              bookingUrl: "https://example.com",
-              cabinClass: "ECONOMY"
-            }
-          ]);
-          setSearchedParams({
-            origin: "DEL",
-            destination: "BOM",
-            departDate: "2025-10-30",
-            passengers: 1
-          });
-          setShowResultsModal(true);
-        }}
-        variant="outline"
-        className="w-full mt-2"
-      >
-        🧪 Test Modal
-      </Button>
-
       {/* Flight Results Modal */}
       <FlightResultsModal
         open={showResultsModal}
