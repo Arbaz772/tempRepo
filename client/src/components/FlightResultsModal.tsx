@@ -1,10 +1,8 @@
-// client/src/components/FlightResultsModal.tsx
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+// client/src/components/FlightResults.tsx
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plane, Clock, ArrowRight, ExternalLink, AlertCircle } from "lucide-react";
-import { format } from "date-fns";
 
 interface FlightOffer {
   id: string;
@@ -24,9 +22,7 @@ interface FlightOffer {
   segments?: any[];
 }
 
-interface FlightResultsModalProps {
-  open: boolean;
-  onClose: () => void;
+interface FlightResultsProps {
   flights: FlightOffer[];
   searchParams?: {
     origin: string;
@@ -36,25 +32,16 @@ interface FlightResultsModalProps {
     passengers: number;
   };
   isMock?: boolean;
+  isLoading?: boolean;
 }
 
-export default function FlightResultsModal({
-  open,
-  onClose,
+export default function FlightResults({
   flights,
   searchParams,
-  isMock = false
-}: FlightResultsModalProps) {
+  isMock = false,
+  isLoading = false
+}: FlightResultsProps) {
   
-  // Debug logging
-  console.log("🎭 FlightResultsModal rendered:", {
-    open,
-    flightsCount: flights?.length,
-    isMock,
-    searchParams,
-    firstFlight: flights?.[0]
-  });
-
   // Format currency
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat('en-IN', {
@@ -65,149 +52,227 @@ export default function FlightResultsModal({
     }).format(price);
   };
 
+  // Don't render anything if no flights and not loading
+  if (!isLoading && (!flights || flights.length === 0)) {
+    return null;
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Plane className="h-5 w-5" />
-              <span>Flight Results</span>
+    <div className="w-full max-w-7xl mx-auto px-4 py-8">
+      {/* Header Section */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Plane className="h-6 w-6" />
+              Flight Results
               {isMock && (
                 <Badge variant="outline" className="ml-2">
                   <AlertCircle className="h-3 w-3 mr-1" />
                   Mock Data
                 </Badge>
               )}
-            </div>
+            </h2>
             {searchParams && (
-              <div className="text-sm font-normal text-muted-foreground">
+              <p className="text-sm text-muted-foreground mt-1">
                 {searchParams.origin} → {searchParams.destination} • {searchParams.passengers} passenger{searchParams.passengers > 1 ? 's' : ''}
-              </div>
-            )}
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="space-y-4 mt-4">
-          {!flights || flights.length === 0 ? (
-            <div className="text-center py-12">
-              <Plane className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Flights Found</h3>
-              <p className="text-muted-foreground">
-                Try adjusting your search criteria or dates
               </p>
-            </div>
-          ) : (
-            <>
-              <div className="text-sm text-muted-foreground mb-4">
-                Found {flights.length} flight{flights.length !== 1 ? 's' : ''}
+            )}
+          </div>
+          
+          {!isLoading && flights && flights.length > 0 && (
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground">
+                {flights.length} flight{flights.length !== 1 ? 's' : ''} found
+              </span>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm">
+                  <span className="text-xs">Sort by: Recommended</span>
+                </Button>
               </div>
-              
-              {flights.map((flight) => (
-                <Card key={flight.id} className="p-6 hover:shadow-lg transition-shadow">
-                  <div className="flex flex-col gap-4">
-                    {/* Flight Header */}
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="font-semibold text-lg">{flight.airline}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {flight.flightNumber}
-                          {flight.aircraft && ` • ${flight.aircraft}`}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-primary">
-                          {formatPrice(flight.price, flight.currency)}
-                        </div>
-                        {flight.cabinClass && (
-                          <Badge variant="secondary" className="mt-1">
-                            {flight.cabinClass}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Flight Route */}
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1">
-                        <div className="text-2xl font-bold">{flight.departTime}</div>
-                        <div className="text-sm text-muted-foreground">{flight.origin}</div>
-                      </div>
-                      
-                      <div className="flex-1 flex flex-col items-center">
-                        <div className="text-xs text-muted-foreground mb-1">{flight.duration}</div>
-                        <div className="w-full flex items-center">
-                          <div className="flex-1 border-t-2 border-dashed"></div>
-                          <Plane className="h-4 w-4 text-muted-foreground rotate-90 mx-2" />
-                          <div className="flex-1 border-t-2 border-dashed"></div>
-                        </div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {flight.stops === 0 ? (
-                            <span className="text-green-600 font-medium">Non-stop</span>
-                          ) : (
-                            <span className="text-orange-600 font-medium">
-                              {flight.stops} stop{flight.stops > 1 ? 's' : ''}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="flex-1 text-right">
-                        <div className="text-2xl font-bold">{flight.arriveTime}</div>
-                        <div className="text-sm text-muted-foreground">{flight.destination}</div>
-                      </div>
-                    </div>
-
-                    {/* Segments Info (if available) */}
-                    {flight.segments && flight.segments.length > 0 && (
-                      <div className="pt-4 border-t">
-                        <div className="text-xs font-semibold text-muted-foreground mb-2">
-                          FLIGHT DETAILS
-                        </div>
-                        <div className="space-y-2">
-                          {flight.segments.map((segment: any, idx: number) => (
-                            <div key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Clock className="h-3 w-3" />
-                              <span>
-                                {segment.departure?.iataCode} → {segment.arrival?.iataCode}
-                              </span>
-                              <span className="text-xs">
-                                ({segment.duration})
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Book Button */}
-                    {flight.bookingUrl && (
-                      <Button 
-                        className="w-full" 
-                        onClick={() => window.open(flight.bookingUrl, '_blank')}
-                      >
-                        Book Now
-                        <ExternalLink className="ml-2 h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </Card>
-              ))}
-            </>
+            </div>
           )}
         </div>
+      </div>
 
-        {isMock && (
-          <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-900 rounded-lg">
-            <div className="flex gap-2">
-              <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0" />
-              <div className="text-sm text-yellow-800 dark:text-yellow-200">
-                <strong>Note:</strong> These are sample results. Actual flight availability and prices may vary.
+      {/* Loading State */}
+      {isLoading && (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="p-6 animate-pulse">
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <div className="space-y-2">
+                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+                  </div>
+                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+                </div>
+                <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
               </div>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Flight Results */}
+      {!isLoading && flights && flights.length > 0 && (
+        <div className="space-y-4">
+          {flights.map((flight, index) => (
+            <Card 
+              key={flight.id} 
+              className="p-6 hover:shadow-lg transition-all duration-200 border-2 hover:border-primary/50"
+            >
+              <div className="flex flex-col gap-4">
+                {/* Badge for Best Deal */}
+                {index === 0 && (
+                  <div className="flex gap-2">
+                    <Badge className="bg-cyan-500 hover:bg-cyan-600">
+                      <span className="text-xs">AI Recommended - Best Deal</span>
+                    </Badge>
+                  </div>
+                )}
+
+                {/* Flight Header */}
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <div className="font-semibold text-lg">{flight.airline}</div>
+                      {flight.cabinClass && (
+                        <Badge variant="secondary" className="text-xs">
+                          {flight.cabinClass}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="text-sm text-muted-foreground mt-1">
+                      {flight.flightNumber}
+                      {flight.aircraft && ` • ${flight.aircraft}`}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-3xl font-bold text-primary">
+                      {formatPrice(flight.price, flight.currency)}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      per person
+                    </div>
+                  </div>
+                </div>
+
+                {/* Flight Route */}
+                <div className="flex items-center gap-4 py-2">
+                  {/* Departure */}
+                  <div className="flex-1">
+                    <div className="text-3xl font-bold">{flight.departTime}</div>
+                    <div className="text-sm font-medium text-muted-foreground mt-1">
+                      {flight.origin}
+                    </div>
+                  </div>
+                  
+                  {/* Duration & Stops */}
+                  <div className="flex-1 flex flex-col items-center px-4">
+                    <div className="text-xs text-muted-foreground mb-2">{flight.duration}</div>
+                    <div className="w-full flex items-center">
+                      <div className="flex-1 border-t-2 border-dashed border-gray-300"></div>
+                      <div className="mx-2">
+                        <Plane className="h-5 w-5 text-primary rotate-90" />
+                      </div>
+                      <div className="flex-1 border-t-2 border-dashed border-gray-300"></div>
+                    </div>
+                    <div className="text-xs mt-2">
+                      {flight.stops === 0 ? (
+                        <span className="text-green-600 font-semibold">Non-stop</span>
+                      ) : (
+                        <span className="text-orange-600 font-semibold">
+                          {flight.stops} stop{flight.stops > 1 ? 's' : ''}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Arrival */}
+                  <div className="flex-1 text-right">
+                    <div className="text-3xl font-bold">{flight.arriveTime}</div>
+                    <div className="text-sm font-medium text-muted-foreground mt-1">
+                      {flight.destination}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Info */}
+                {flight.segments && flight.segments.length > 0 && (
+                  <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
+                    <details className="group">
+                      <summary className="flex items-center justify-between cursor-pointer text-sm font-medium text-muted-foreground hover:text-foreground">
+                        <span className="flex items-center gap-2">
+                          <Clock className="h-4 w-4" />
+                          Flight Details
+                        </span>
+                        <span className="text-xs group-open:rotate-180 transition-transform">▼</span>
+                      </summary>
+                      <div className="mt-3 space-y-2 pl-6">
+                        {flight.segments.map((segment: any, idx: number) => (
+                          <div key={idx} className="flex items-center gap-3 text-sm">
+                            <div className="w-2 h-2 rounded-full bg-primary"></div>
+                            <span className="text-muted-foreground">
+                              {segment.departure?.iataCode} → {segment.arrival?.iataCode}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              ({segment.duration})
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-2">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                  >
+                    View Details
+                  </Button>
+                  <Button 
+                    className="flex-1 bg-cyan-500 hover:bg-cyan-600" 
+                    onClick={() => flight.bookingUrl && window.open(flight.bookingUrl, '_blank')}
+                  >
+                    Book Now
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Mock Data Notice */}
+      {isMock && !isLoading && flights && flights.length > 0 && (
+        <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-900 rounded-lg">
+          <div className="flex gap-2">
+            <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0" />
+            <div className="text-sm text-yellow-800 dark:text-yellow-200">
+              <strong>Note:</strong> These are sample results. Actual flight availability and prices may vary.
             </div>
           </div>
-        )}
-      </DialogContent>
-    </Dialog>
+        </div>
+      )}
+
+      {/* Empty State (when not loading and no results) */}
+      {!isLoading && (!flights || flights.length === 0) && (
+        <Card className="p-12">
+          <div className="text-center">
+            <Plane className="h-16 w-16 mx-auto text-muted-foreground mb-4 opacity-50" />
+            <h3 className="text-xl font-semibold mb-2">No Flights Found</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Try adjusting your search criteria or dates to find more options
+            </p>
+          </div>
+        </Card>
+      )}
+    </div>
   );
 }
