@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FlightSearchForm from "@/components/FlightSearchForm";
 import FlightResultsInline from "@/components/FlightResultsInline";
 import FilterPanel from "@/components/FilterPanel";
@@ -12,21 +12,41 @@ export default function Flights() {
   const [isMock, setIsMock] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // 🔍 DEBUG: Watch state changes
+  useEffect(() => {
+    console.log("🎯 Flights state changed:", {
+      flightsCount: flights.length,
+      hasSearchParams: !!searchParams,
+      loading,
+      isMock,
+      flights: flights.length > 0 ? flights : "No flights"
+    });
+  }, [flights, searchParams, loading]);
+
   // Handler when search starts
   const handleSearchStart = () => {
+    console.log("🚀 handleSearchStart called");
     setLoading(true);
   };
 
   // Handler when search completes
   const handleSearchComplete = (data: any) => {
+    console.log("🔥 handleSearchComplete CALLED!", data);
+    console.log("🔥 Flights data:", data.flights);
+    console.log("🔥 Number of flights:", data.flights?.length);
+    
     setFlights(data.flights);
     setSearchParams(data.searchParams);
     setIsMock(data.isMock);
     setLoading(false);
     
+    console.log("🔥 State updated - flights set to:", data.flights?.length, "flights");
+    
     // Scroll to results section after a delay
     setTimeout(() => {
-      document.getElementById('flight-results-section')?.scrollIntoView({ 
+      const element = document.getElementById('flight-results-section');
+      console.log("📍 Scrolling to results section, element found:", !!element);
+      element?.scrollIntoView({ 
         behavior: 'smooth',
         block: 'start'
       });
@@ -35,6 +55,7 @@ export default function Flights() {
 
   // Handler when search has error
   const handleSearchError = (error: string) => {
+    console.log("❌ handleSearchError called:", error);
     setLoading(false);
     setFlights([]);
   };
@@ -56,6 +77,9 @@ export default function Flights() {
     { date: 'Feb 5', price: 4300 },
   ];
 
+  // 🔍 DEBUG: Log render
+  console.log("🎨 Flights component rendering, flights.length:", flights.length);
+
   return (
     <div className="bg-background">
       {/* SEARCH FORM SECTION */}
@@ -69,9 +93,13 @@ export default function Flights() {
         </div>
       </div>
 
+      {/* 🔍 DEBUG: Show condition check */}
+      {console.log("🔍 Checking condition - flights.length > 0:", flights.length > 0)}
+
       {/* RESULTS SECTION - Only show after search */}
       {flights.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {console.log("✅ RENDERING RESULTS SECTION with", flights.length, "flights")}
           <div className="grid lg:grid-cols-4 gap-8">
             
             {/* LEFT SIDEBAR - Filters */}
@@ -105,6 +133,7 @@ export default function Flights() {
 
               {/* FLIGHT RESULTS WITH PAGINATION */}
               <div id="flight-results-section">
+                {console.log("🎭 About to render FlightResultsInline with", flights.length, "flights")}
                 <FlightResultsInline
                   flights={flights}
                   searchParams={searchParams}
@@ -120,6 +149,7 @@ export default function Flights() {
       {/* EMPTY STATE - Before any search */}
       {flights.length === 0 && !loading && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          {console.log("📭 RENDERING EMPTY STATE")}
           <div className="max-w-2xl mx-auto text-center">
             <div className="text-7xl mb-6">✈️</div>
             <h2 className="text-2xl font-semibold mb-3">Start Your Journey</h2>

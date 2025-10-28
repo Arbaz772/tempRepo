@@ -1,157 +1,133 @@
-import { useState } from "react";
-import FlightSearchForm from "@/components/FlightSearchForm";
-import FlightResultsInline from "@/components/FlightResultsInline";
-import FilterPanel from "@/components/FilterPanel";
-import AIPredictionPanel from "@/components/AIPredictionPanel";
-import PriceTrendChart from "@/components/PriceTrendChart";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import FlightCard from "@/components/FlightCard";
+import { Sparkles, Clock, TrendingDown, Percent } from "lucide-react";
 
-export default function Flights() {
-  // Flight results state
-  const [flights, setFlights] = useState<any[]>([]);
-  const [searchParams, setSearchParams] = useState<any>(null);
-  const [isMock, setIsMock] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  // Handler when search starts
-  const handleSearchStart = () => {
-    setLoading(true);
-  };
-
-  // Handler when search completes
-  const handleSearchComplete = (data: any) => {
-    setFlights(data.flights);
-    setSearchParams(data.searchParams);
-    setIsMock(data.isMock);
-    setLoading(false);
-    
-    // Scroll to results section after a delay
-    setTimeout(() => {
-      document.getElementById('flight-results-section')?.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 300);
-  };
-
-  // Handler when search has error
-  const handleSearchError = (error: string) => {
-    setLoading(false);
-    setFlights([]);
-  };
-
-  // Price trend data (you can make this dynamic based on search)
-  const priceData = [
-    { date: 'Jan 1', price: 5200 },
-    { date: 'Jan 5', price: 4800 },
-    { date: 'Jan 10', price: 5500 },
-    { date: 'Jan 15', price: 4900 },
-    { date: 'Jan 20', price: 4500 },
-    { date: 'Jan 25', price: 4700 },
-    { date: 'Jan 30', price: 4400 },
+export default function Deals() {
+  const topDeals = [
+    {
+      id: "deal-1",
+      airline: "Air India",
+      flightNumber: "AI 860",
+      origin: "DEL",
+      destination: "BOM",
+      departTime: "06:00",
+      arriveTime: "08:15",
+      duration: "2h 15m",
+      stops: 0,
+      price: 3200,
+      aircraft: "Boeing 737",
+      prediction: {
+        trend: "down" as const,
+        message: "Flash Deal - 40% Off"
+      },
+      isBestDeal: true
+    },
+    {
+      id: "deal-2",
+      airline: "IndiGo",
+      flightNumber: "6E 2134",
+      origin: "BLR",
+      destination: "HYD",
+      departTime: "10:30",
+      arriveTime: "11:45",
+      duration: "1h 15m",
+      stops: 0,
+      price: 2800,
+      aircraft: "Airbus A320",
+      prediction: {
+        trend: "down" as const,
+        message: "Limited Time - 35% Off"
+      }
+    },
+    {
+      id: "deal-3",
+      airline: "Vistara",
+      flightNumber: "UK 993",
+      origin: "DEL",
+      destination: "GOI",
+      departTime: "14:15",
+      arriveTime: "17:30",
+      duration: "3h 15m",
+      stops: 0,
+      price: 4500,
+      aircraft: "Airbus A320neo",
+      prediction: {
+        trend: "down" as const,
+        message: "Weekend Special - 30% Off"
+      }
+    }
   ];
 
-  const predictedData = [
-    { date: 'Feb 1', price: 4200 },
-    { date: 'Feb 3', price: 4100 },
-    { date: 'Feb 5', price: 4300 },
+  const dealCategories = [
+    { icon: Clock, title: "Last Minute Deals", count: 15, color: "text-orange-500" },
+    { icon: TrendingDown, title: "Price Drops", count: 23, color: "text-green-500" },
+    { icon: Percent, title: "Seasonal Offers", count: 12, color: "text-blue-500" },
   ];
 
   return (
-    <div className="bg-background">
-      {/* SEARCH FORM SECTION */}
-      <div className="bg-card/30 border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <FlightSearchForm 
-            onSearchStart={handleSearchStart}
-            onSearchComplete={handleSearchComplete}
-            onSearchError={handleSearchError}
-          />
+    <div className="min-h-screen bg-background">
+      <div className="bg-gradient-to-br from-primary/10 via-background to-background border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Sparkles className="h-8 w-8 text-primary animate-pulse" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold font-display bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent" data-testid="text-deals-title">
+              Best Flight Deals
+            </h1>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Discover amazing discounts and limited-time offers on flights across India
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* RESULTS SECTION - Only show after search */}
-      {flights.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid lg:grid-cols-4 gap-8">
-            
-            {/* LEFT SIDEBAR - Filters */}
-            <aside className="lg:col-span-1">
-              <div className="space-y-6 sticky top-24">
-                <FilterPanel onFilterChange={(filters) => console.log('Filters:', filters)} />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid md:grid-cols-3 gap-6 mb-12">
+          {dealCategories.map((category, idx) => (
+            <Card key={idx} className="p-6 hover-elevate transition-all duration-300 cursor-pointer">
+              <div className="flex items-center gap-4">
+                <div className={`h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center ${category.color}`}>
+                  <category.icon className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold" data-testid={`text-category-${idx}`}>{category.title}</h3>
+                  <p className="text-sm text-muted-foreground">{category.count} active deals</p>
+                </div>
               </div>
-            </aside>
+            </Card>
+          ))}
+        </div>
 
-            {/* MAIN CONTENT - Predictions, Trends, and Results */}
-            <main className="lg:col-span-3 space-y-6">
-              
-              {/* AI PREDICTION & PRICE TRENDS */}
-              <div className="grid lg:grid-cols-2 gap-6">
-                <AIPredictionPanel
-                  route={`${searchParams?.origin} → ${searchParams?.destination}`}
-                  prediction={{
-                    recommendation: "book_now",
-                    confidence: 87,
-                    bestTimeToBook: "Within next 48 hours",
-                    expectedSavings: 850,
-                    priceDirection: "down"
-                  }}
-                />
-                <PriceTrendChart 
-                  route={`${searchParams?.origin} → ${searchParams?.destination}`}
-                  data={priceData} 
-                  predictedData={predictedData}
-                />
-              </div>
-
-              {/* FLIGHT RESULTS WITH PAGINATION */}
-              <div id="flight-results-section">
-                <FlightResultsInline
-                  flights={flights}
-                  searchParams={searchParams}
-                  isMock={isMock}
-                  loading={loading}
-                />
-              </div>
-            </main>
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold font-display">Top Deals Today</h2>
+            <Badge className="bg-primary text-primary-foreground animate-pulse" data-testid="badge-live-deals">
+              🔥 Live Now
+            </Badge>
+          </div>
+          <div className="space-y-4">
+            {topDeals.map((deal) => (
+              <FlightCard key={deal.id} {...deal} />
+            ))}
           </div>
         </div>
-      )}
 
-      {/* EMPTY STATE - Before any search */}
-      {flights.length === 0 && !loading && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="text-7xl mb-6">✈️</div>
-            <h2 className="text-2xl font-semibold mb-3">Start Your Journey</h2>
-            <p className="text-muted-foreground mb-6">
-              Enter your travel details above to find the best flight options
+        <Card className="p-8 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20">
+          <div className="text-center space-y-4">
+            <h3 className="text-2xl font-bold font-display">Never Miss a Deal</h3>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Get instant notifications when prices drop on your favorite routes
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="p-4 border rounded-lg">
-                <div className="text-3xl mb-2">🔍</div>
-                <div className="font-medium mb-1">Smart Search</div>
-                <div className="text-xs text-muted-foreground">
-                  AI-powered flight recommendations
-                </div>
-              </div>
-              <div className="p-4 border rounded-lg">
-                <div className="text-3xl mb-2">💰</div>
-                <div className="font-medium mb-1">Best Prices</div>
-                <div className="text-xs text-muted-foreground">
-                  Compare across multiple airlines
-                </div>
-              </div>
-              <div className="p-4 border rounded-lg">
-                <div className="text-3xl mb-2">📊</div>
-                <div className="font-medium mb-1">Price Insights</div>
-                <div className="text-xs text-muted-foreground">
-                  Predict future price changes
-                </div>
-              </div>
-            </div>
+            <Button size="lg" className="bg-primary hover:bg-primary/90" data-testid="button-setup-alerts">
+              <Sparkles className="mr-2 h-5 w-5" />
+              Set Up Price Alerts
+            </Button>
           </div>
-        </div>
-      )}
+        </Card>
+      </div>
     </div>
   );
 }
