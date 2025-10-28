@@ -161,17 +161,27 @@ export async function searchFlights(params: FlightSearchParams): Promise<FlightO
       body: error.response?.body
     });
 
-    // Return user-friendly error message
+    // ✅ FIXED: Preserve error properties when re-throwing
     if (error.response?.body?.errors) {
       const amadeusError = error.response.body.errors[0];
-      throw new Error(
+      const newError: any = new Error(
         amadeusError.detail || 
         amadeusError.title || 
         `Amadeus API error: ${error.message}`
       );
+      // ✅ CRITICAL: Preserve description and code for routes.ts to detect Code 141
+      newError.description = error.description || error.response?.body?.errors;
+      newError.code = error.code;
+      newError.response = error.response;
+      throw newError;
     }
 
-    throw new Error(`Flight search failed: ${error.message}`);
+    // ✅ FIXED: Preserve properties on generic error too
+    const newError: any = new Error(`Flight search failed: ${error.message}`);
+    newError.description = error.description;
+    newError.code = error.code;
+    newError.response = error.response;
+    throw newError;
   }
 }
 
