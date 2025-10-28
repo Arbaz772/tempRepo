@@ -2,17 +2,19 @@
 import Amadeus from 'amadeus';
 
 // Initialize Amadeus client with proper error handling
+const hostname = process.env.AMADEUS_HOSTNAME || (process.env.NODE_ENV === 'production' ? 'production' : 'test');
+
 const amadeus = new Amadeus({
   clientId: process.env.AMADEUS_API_KEY || process.env.AMADEUS_CLIENT_ID || '',
   clientSecret: process.env.AMADEUS_API_SECRET || process.env.AMADEUS_CLIENT_SECRET || '',
-  hostname: process.env.AMADEUS_HOSTNAME || (process.env.NODE_ENV === 'production' ? 'production' : 'test')
+  hostname: hostname as 'production' | 'test'
 });
 
 // Verify Amadeus configuration on startup
 console.log('🔧 Amadeus Configuration:', {
   clientId: (process.env.AMADEUS_API_KEY || process.env.AMADEUS_CLIENT_ID) ? '✓ Set' : '✗ Missing',
   clientSecret: (process.env.AMADEUS_API_SECRET || process.env.AMADEUS_CLIENT_SECRET) ? '✓ Set' : '✗ Missing',
-  hostname: amadeus.client.host,
+  hostname: hostname,
   environment: process.env.NODE_ENV || 'development'
 });
 
@@ -118,7 +120,8 @@ export async function searchFlights(params: FlightSearchParams): Promise<FlightO
     });
 
     const flightOffers = response.data;
-    const dictionaries = response.result?.dictionaries;
+    // Access dictionaries from response.result if available
+    const dictionaries = (response as any).result?.dictionaries;
     
     if (!flightOffers || flightOffers.length === 0) {
       console.warn("⚠️ No flights found for this route and date");
@@ -297,7 +300,7 @@ export async function searchAirports(keyword: string): Promise<any[]> {
     
     const response = await amadeus.referenceData.locations.get({
       keyword: keyword,
-      subType: Amadeus.location.any // Changed from string to enum
+      subType: 'AIRPORT,CITY'
     });
     
     console.log('✅ Found airports:', response.data?.length || 0);
@@ -313,8 +316,9 @@ export async function searchAirports(keyword: string): Promise<any[]> {
  */
 export async function getAirportByCode(iataCode: string): Promise<any> {
   try {
-    const response = await amadeus.referenceData.locations.airports.get({
-      keyword: iataCode
+    const response = await amadeus.referenceData.locations.get({
+      keyword: iataCode,
+      subType: 'AIRPORT'
     });
     
     return response.data?.[0];
@@ -510,7 +514,7 @@ export async function testAmadeusConnection(): Promise<boolean> {
     
     const response = await amadeus.referenceData.locations.get({
       keyword: 'DEL',
-      subType: Amadeus.location.airport
+      subType: 'AIRPORT'
     });
     
     console.log('✅ Amadeus connection successful');
