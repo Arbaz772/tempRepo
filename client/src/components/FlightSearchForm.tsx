@@ -8,7 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarIcon, Plane, Users, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
-import FlightResultsModal from "./FlightResultsModal";
+import FlightResultsInline from "./FlightResultsInline"; // ✅ CHANGED: Import inline component
 
 interface Airport {
   iataCode: string;
@@ -45,8 +45,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
   const [isLoadingOrigin, setIsLoadingOrigin] = useState(false);
   const [isLoadingDestination, setIsLoadingDestination] = useState(false);
   
-  // Modal state
-  const [showResultsModal, setShowResultsModal] = useState(false);
+  // ✅ CHANGED: Removed showResultsModal state, keeping flight data states
   const [flightResults, setFlightResults] = useState<any[]>([]);
   const [isMockData, setIsMockData] = useState(false);
   const [searchedParams, setSearchedParams] = useState<any>(null);
@@ -56,15 +55,6 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
   
   const originRef = useRef<HTMLDivElement>(null);
   const destinationRef = useRef<HTMLDivElement>(null);
-
-  // Debug modal state
-  useEffect(() => {
-    console.log("🎭 Modal state:", { 
-      showResultsModal, 
-      flightsCount: flightResults.length,
-      isMock: isMockData 
-    });
-  }, [showResultsModal, flightResults, isMockData]);
 
   // Debounced airport search
   useEffect(() => {
@@ -210,7 +200,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         return;
       }
 
-      // Store results and show modal
+      // ✅ CHANGED: Store results without opening modal
       setFlightResults(data.data || []);
       setIsMockData(data.mock || false);
       setSearchedParams({
@@ -221,11 +211,14 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         passengers: searchParams.passengers
       });
       
-      console.log("🚀 Opening modal with", data.data?.length, "flights");
+      console.log("🚀 Displaying", data.data?.length, "flights inline");
       
-      // Small delay to ensure state updates
+      // ✅ CHANGED: Scroll to results section
       setTimeout(() => {
-        setShowResultsModal(true);
+        document.getElementById('flight-results')?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
       }, 100);
       
       setValidationError("");
@@ -264,153 +257,128 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
   };
 
   return (
-    <Card className="p-6 bg-card shadow-lg">
-      {/* TRIP TYPE SELECTOR */}
-      <div className="flex gap-4 mb-6">
-        <Button
-          variant={tripType === "round-trip" ? "default" : "outline"}
-          onClick={() => setTripType("round-trip")}
-          className="flex-1"
-        >
-          Round Trip
-        </Button>
-        <Button
-          variant={tripType === "one-way" ? "default" : "outline"}
-          onClick={() => setTripType("one-way")}
-          className="flex-1"
-        >
-          One Way
-        </Button>
-      </div>
-
-      {/* VALIDATION ERROR DISPLAY */}
-      {validationError && (
-        <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-md flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-destructive font-medium flex-1">{validationError}</p>
+    <>
+      <Card className="p-6 bg-card shadow-lg">
+        {/* TRIP TYPE SELECTOR */}
+        <div className="flex gap-4 mb-6">
+          <Button
+            variant={tripType === "round-trip" ? "default" : "outline"}
+            onClick={() => setTripType("round-trip")}
+            className="flex-1"
+          >
+            Round Trip
+          </Button>
+          <Button
+            variant={tripType === "one-way" ? "default" : "outline"}
+            onClick={() => setTripType("one-way")}
+            className="flex-1"
+          >
+            One Way
+          </Button>
         </div>
-      )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* ORIGIN INPUT WITH AUTOCOMPLETE */}
-        <div className="space-y-2 relative" ref={originRef}>
-          <Label htmlFor="origin" className="text-sm font-medium">From</Label>
-          <div className="relative">
-            <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
-            <Input
-              id="origin"
-              placeholder="Delhi, Mumbai, or DEL"
-              value={origin}
-              onChange={(e) => {
-                setOrigin(e.target.value);
-                setShowOriginSuggestions(true);
-              }}
-              onFocus={() => origin.length >= 2 && setShowOriginSuggestions(true)}
-              className="pl-10 pr-10"
-            />
-            {isLoadingOrigin && (
-              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
-            )}
+        {/* VALIDATION ERROR DISPLAY */}
+        {validationError && (
+          <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-md flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-destructive font-medium flex-1">{validationError}</p>
           </div>
-          
-          {showOriginSuggestions && originSuggestions.length > 0 && (
-            <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto">
-              {originSuggestions.map((airport) => (
-                <button
-                  key={airport.iataCode}
-                  type="button"
-                  onClick={() => selectAirport(airport, 'origin')}
-                  className="w-full px-4 py-3 text-left hover:bg-accent transition-colors flex items-start gap-3 border-b last:border-b-0"
-                >
-                  <div className="flex items-center justify-center w-10 h-10 rounded bg-primary/10 text-primary font-bold text-sm flex-shrink-0">
-                    {airport.iataCode}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm truncate">{airport.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {airport.cityName}, {airport.countryName}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        )}
 
-        {/* DESTINATION INPUT WITH AUTOCOMPLETE */}
-        <div className="space-y-2 relative" ref={destinationRef}>
-          <Label htmlFor="destination" className="text-sm font-medium">To</Label>
-          <div className="relative">
-            <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rotate-90 z-10" />
-            <Input
-              id="destination"
-              placeholder="Delhi, Mumbai, or BOM"
-              value={destination}
-              onChange={(e) => {
-                setDestination(e.target.value);
-                setShowDestinationSuggestions(true);
-              }}
-              onFocus={() => destination.length >= 2 && setShowDestinationSuggestions(true)}
-              className="pl-10 pr-10"
-            />
-            {isLoadingDestination && (
-              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
-            )}
-          </div>
-          
-          {showDestinationSuggestions && destinationSuggestions.length > 0 && (
-            <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto">
-              {destinationSuggestions.map((airport) => (
-                <button
-                  key={airport.iataCode}
-                  type="button"
-                  onClick={() => selectAirport(airport, 'destination')}
-                  className="w-full px-4 py-3 text-left hover:bg-accent transition-colors flex items-start gap-3 border-b last:border-b-0"
-                >
-                  <div className="flex items-center justify-center w-10 h-10 rounded bg-primary/10 text-primary font-bold text-sm flex-shrink-0">
-                    {airport.iataCode}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm truncate">{airport.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {airport.cityName}, {airport.countryName}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* DEPARTURE DATE */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Departure</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-start text-left font-normal"
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {departDate ? format(departDate, "PPP") : <span>Pick a date</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={departDate}
-                onSelect={setDepartDate}
-                initialFocus
-                disabled={(date) => date < new Date()}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* ORIGIN INPUT WITH AUTOCOMPLETE */}
+          <div className="space-y-2 relative" ref={originRef}>
+            <Label htmlFor="origin" className="text-sm font-medium">From</Label>
+            <div className="relative">
+              <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+              <Input
+                id="origin"
+                placeholder="Delhi, Mumbai, or DEL"
+                value={origin}
+                onChange={(e) => {
+                  setOrigin(e.target.value);
+                  setShowOriginSuggestions(true);
+                }}
+                onFocus={() => origin.length >= 2 && setShowOriginSuggestions(true)}
+                className="pl-10 pr-10"
               />
-            </PopoverContent>
-          </Popover>
-        </div>
+              {isLoadingOrigin && (
+                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+              )}
+            </div>
+            
+            {showOriginSuggestions && originSuggestions.length > 0 && (
+              <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto">
+                {originSuggestions.map((airport) => (
+                  <button
+                    key={airport.iataCode}
+                    type="button"
+                    onClick={() => selectAirport(airport, 'origin')}
+                    className="w-full px-4 py-3 text-left hover:bg-accent transition-colors flex items-start gap-3 border-b last:border-b-0"
+                  >
+                    <div className="flex items-center justify-center w-10 h-10 rounded bg-primary/10 text-primary font-bold text-sm flex-shrink-0">
+                      {airport.iataCode}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-sm truncate">{airport.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {airport.cityName}, {airport.countryName}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
-        {/* RETURN DATE */}
-        {tripType === "round-trip" && (
+          {/* DESTINATION INPUT WITH AUTOCOMPLETE */}
+          <div className="space-y-2 relative" ref={destinationRef}>
+            <Label htmlFor="destination" className="text-sm font-medium">To</Label>
+            <div className="relative">
+              <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rotate-90 z-10" />
+              <Input
+                id="destination"
+                placeholder="Delhi, Mumbai, or BOM"
+                value={destination}
+                onChange={(e) => {
+                  setDestination(e.target.value);
+                  setShowDestinationSuggestions(true);
+                }}
+                onFocus={() => destination.length >= 2 && setShowDestinationSuggestions(true)}
+                className="pl-10 pr-10"
+              />
+              {isLoadingDestination && (
+                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+              )}
+            </div>
+            
+            {showDestinationSuggestions && destinationSuggestions.length > 0 && (
+              <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto">
+                {destinationSuggestions.map((airport) => (
+                  <button
+                    key={airport.iataCode}
+                    type="button"
+                    onClick={() => selectAirport(airport, 'destination')}
+                    className="w-full px-4 py-3 text-left hover:bg-accent transition-colors flex items-start gap-3 border-b last:border-b-0"
+                  >
+                    <div className="flex items-center justify-center w-10 h-10 rounded bg-primary/10 text-primary font-bold text-sm flex-shrink-0">
+                      {airport.iataCode}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-sm truncate">{airport.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {airport.cityName}, {airport.countryName}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* DEPARTURE DATE */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Return</Label>
+            <Label className="text-sm font-medium">Departure</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -418,77 +386,105 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
                   className="w-full justify-start text-left font-normal"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {returnDate ? format(returnDate, "PPP") : <span>Pick a date</span>}
+                  {departDate ? format(departDate, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={returnDate}
-                  onSelect={setReturnDate}
+                  selected={departDate}
+                  onSelect={setDepartDate}
                   initialFocus
-                  disabled={(date) => departDate ? date < departDate : date < new Date()}
+                  disabled={(date) => date < new Date()}
                 />
               </PopoverContent>
             </Popover>
           </div>
-        )}
 
-        {/* PASSENGERS */}
-        <div className="space-y-2">
-          <Label htmlFor="passengers" className="text-sm font-medium">Passengers</Label>
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={() => setPassengers(Math.max(1, passengers - 1))}
-            >
-              -
-            </Button>
-            <div className="flex-1 flex items-center justify-center gap-2 border rounded-md h-9 px-3">
-              <Users className="h-4 w-4 text-muted-foreground" />
-              <span>{passengers}</span>
+          {/* RETURN DATE */}
+          {tripType === "round-trip" && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Return</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {returnDate ? format(returnDate, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={returnDate}
+                    onSelect={setReturnDate}
+                    initialFocus
+                    disabled={(date) => departDate ? date < departDate : date < new Date()}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={() => setPassengers(Math.min(9, passengers + 1))}
-            >
-              +
-            </Button>
+          )}
+
+          {/* PASSENGERS */}
+          <div className="space-y-2">
+            <Label htmlFor="passengers" className="text-sm font-medium">Passengers</Label>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setPassengers(Math.max(1, passengers - 1))}
+              >
+                -
+              </Button>
+              <div className="flex-1 flex items-center justify-center gap-2 border rounded-md h-9 px-3">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span>{passengers}</span>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setPassengers(Math.min(9, passengers + 1))}
+              >
+                +
+              </Button>
+            </div>
           </div>
         </div>
+
+        <Button
+          onClick={handleSearch}
+          className="w-full mt-6 bg-primary hover:bg-primary/90"
+          size="lg"
+          disabled={isSearching}
+        >
+          {isSearching ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Searching...
+            </>
+          ) : (
+            <>
+              Search Flights
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </>
+          )}
+        </Button>
+      </Card>
+
+      {/* ✅ CHANGED: Inline Flight Results (replaces modal) */}
+      <div id="flight-results">
+        <FlightResultsInline
+          flights={flightResults}
+          searchParams={searchedParams}
+          isMock={isMockData}
+          loading={isSearching}
+        />
       </div>
-
-      <Button
-        onClick={handleSearch}
-        className="w-full mt-6 bg-primary hover:bg-primary/90"
-        size="lg"
-        disabled={isSearching}
-      >
-        {isSearching ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Searching...
-          </>
-        ) : (
-          <>
-            Search Flights
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </>
-        )}
-      </Button>
-
-      {/* Flight Results Modal */}
-      <FlightResultsModal
-        open={showResultsModal}
-        onClose={() => setShowResultsModal(false)}
-        flights={flightResults}
-        searchParams={searchedParams}
-        isMock={isMockData}
-      />
-    </Card>
+    </>
   );
 }
