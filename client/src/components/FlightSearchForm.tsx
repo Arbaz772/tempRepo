@@ -1,6 +1,5 @@
 // client/src/components/FlightSearchForm.tsx
-// UPDATED: Results are NOT rendered inside this component anymore
-// You'll add them separately in your parent page component
+// IMPROVED VERSION WITH RETRY LOGIC
 
 import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
@@ -9,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as CalendarIcon, Plane, Users, ArrowRight, Loader2, AlertCircle } from "lucide-react";
+import { Calendar as CalendarIcon, Plane, Users, ArrowRight, Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
 
 interface Airport {
@@ -50,8 +49,10 @@ export default function FlightSearchForm({
   const [isLoadingOrigin, setIsLoadingOrigin] = useState(false);
   const [isLoadingDestination, setIsLoadingDestination] = useState(false);
   
-  // Validation state
+  // Validation and retry state
   const [validationError, setValidationError] = useState<string>("");
+  const [canRetry, setCanRetry] = useState(false);
+  const [lastSearchParams, setLastSearchParams] = useState<any>(null);
   
   const originRef = useRef<HTMLDivElement>(null);
   const destinationRef = useRef<HTMLDivElement>(null);
@@ -133,47 +134,14 @@ export default function FlightSearchForm({
     }
   };
 
-  const handleSearch = async () => {
+  const performSearch = async (searchParams: any) => {
     try {
-      // Clear previous errors
-      setValidationError("");
-
-      // Validation
-      if (!origin || !destination) {
-        setValidationError("✈️ Please enter both origin and destination airports");
-        setTimeout(() => setValidationError(""), 4000);
-        return;
-      }
-
-      if (!departDate) {
-        setValidationError("📅 Please select a departure date");
-        setTimeout(() => setValidationError(""), 4000);
-        return;
-      }
-
-      if (tripType === "round-trip" && !returnDate) {
-        setValidationError("🔄 Please select a return date for round-trip");
-        setTimeout(() => setValidationError(""), 4000);
-        return;
-      }
-
       setIsSearching(true);
+      setCanRetry(false);
       
-      // Notify parent that search is starting
       if (onSearchStart) {
         onSearchStart();
       }
-
-      const searchParams = {
-        origin: origin.trim().toUpperCase(),
-        destination: destination.trim().toUpperCase(),
-        departDate: format(departDate, 'yyyy-MM-dd'),
-        returnDate: tripType === "round-trip" && returnDate 
-          ? format(returnDate, 'yyyy-MM-dd') 
-          : undefined,
-        passengers,
-        tripType
-      };
 
       console.log("🔍 Searching flights with:", searchParams);
 
@@ -185,12 +153,31 @@ export default function FlightSearchForm({
         body: JSON.stringify(searchParams)
       });
 
+      // Handle non-JSON responses (like HTML error pages)
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Server returned an invalid response. Please try again.');
+      }
+
       const data = await response.json();
 
       console.log("📦 API Response:", data);
 
+      // Handle 503 Service Unavailable (Amadeus system errors)
+      if (response.status === 503 || data.code === 'AMADEUS_SYSTEM_ERROR') {
+        setCanRetry(true);
+        setLastSearchParams(searchParams);
+        const errorMsg = data.error || "Flight search service is temporarily unavailable. Please try again.";
+        setValidationError(errorMsg);
+        if (onSearchError) {
+          onSearchError(errorMsg);
+        }
+        setTimeout(() => setValidationError(""), 8000);
+        return;
+      }
+
       if (!response.ok) {
-        const errorMessage = data.message || data.error || 'Search failed';
+        const errorMessage = data.error || data.message || 'Search failed';
         throw new Error(errorMessage);
       }
 
@@ -198,7 +185,7 @@ export default function FlightSearchForm({
 
       // Check if we got results
       if (!data.data || data.data.length === 0) {
-        const errorMsg = "😔 No flights found for this route and dates. Try different dates or airports.";
+        const errorMsg = data.message || "😔 No flights found for this route and dates. Try different dates or airports.";
         setValidationError(errorMsg);
         if (onSearchError) {
           onSearchError(errorMsg);
@@ -223,16 +210,27 @@ export default function FlightSearchForm({
       }
       
       setValidationError("");
+      setCanRetry(false);
 
     } catch (error: any) {
       console.error("❌ Search error:", error);
       
       let errorMessage = "Failed to search flights. ";
       
-      if (error.message.includes("SYSTEM ERROR")) {
-        errorMessage += "Amadeus API is experiencing issues. Please try again in a few moments or try a different route.";
+      if (error.message.includes("invalid response")) {
+        errorMessage = "Server error occurred. Please try again in a moment.";
+        setCanRetry(true);
+        setLastSearchParams(searchParams);
+      } else if (error.message.includes("SYSTEM ERROR") || error.message.includes("temporarily unavailable")) {
+        errorMessage = "Flight search service is temporarily down. Please try again.";
+        setCanRetry(true);
+        setLastSearchParams(searchParams);
       } else if (error.message.includes("No flights found")) {
         errorMessage = "😔 No flights found for this route and dates. Try different dates or airports.";
+      } else if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+        errorMessage = "Network error. Please check your connection and try again.";
+        setCanRetry(true);
+        setLastSearchParams(searchParams);
       } else {
         errorMessage += error.message || "Please try again.";
       }
@@ -241,9 +239,52 @@ export default function FlightSearchForm({
       if (onSearchError) {
         onSearchError(errorMessage);
       }
-      setTimeout(() => setValidationError(""), 8000);
+      setTimeout(() => setValidationError(""), 10000);
     } finally {
       setIsSearching(false);
+    }
+  };
+
+  const handleSearch = async () => {
+    // Clear previous errors
+    setValidationError("");
+
+    // Validation
+    if (!origin || !destination) {
+      setValidationError("✈️ Please enter both origin and destination airports");
+      setTimeout(() => setValidationError(""), 4000);
+      return;
+    }
+
+    if (!departDate) {
+      setValidationError("📅 Please select a departure date");
+      setTimeout(() => setValidationError(""), 4000);
+      return;
+    }
+
+    if (tripType === "round-trip" && !returnDate) {
+      setValidationError("🔄 Please select a return date for round-trip");
+      setTimeout(() => setValidationError(""), 4000);
+      return;
+    }
+
+    const searchParams = {
+      origin: origin.trim().toUpperCase(),
+      destination: destination.trim().toUpperCase(),
+      departDate: format(departDate, 'yyyy-MM-dd'),
+      returnDate: tripType === "round-trip" && returnDate 
+        ? format(returnDate, 'yyyy-MM-dd') 
+        : undefined,
+      passengers,
+      tripType
+    };
+
+    await performSearch(searchParams);
+  };
+
+  const handleRetry = () => {
+    if (lastSearchParams) {
+      performSearch(lastSearchParams);
     }
   };
 
@@ -269,9 +310,25 @@ export default function FlightSearchForm({
 
       {/* VALIDATION ERROR DISPLAY */}
       {validationError && (
-        <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-md flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-destructive font-medium flex-1">{validationError}</p>
+        <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-md">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm text-destructive font-medium">{validationError}</p>
+              {canRetry && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="mt-3"
+                  onClick={handleRetry}
+                  disabled={isSearching}
+                >
+                  <RefreshCw className="h-3 w-3 mr-2" />
+                  Retry Search
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       )}
 

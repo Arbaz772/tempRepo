@@ -118,7 +118,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ==========================================
-  // FLIGHT SEARCH ENDPOINT
+  // FLIGHT SEARCH ENDPOINT (IMPROVED ERROR HANDLING)
   // ==========================================
   app.post("/api/flights/search", async (req, res) => {
     try {
@@ -215,17 +215,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("❌ Flight search error:", {
         message: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        description: error.description,
+        code: error.code,
+        stack: process.env.NODE_ENV === 'development' ? error.stack?.substring(0, 200) : undefined
       });
 
-      // Return error with helpful message
-      res.status(500).json({ 
+      // ✅ IMPROVED: Check for Amadeus system errors (Code 141)
+      const isAmadeusSystemError = 
+        error.message?.includes('SYSTEM ERROR') ||
+        error.description?.some((desc: any) => desc.code === 141 || desc.title?.includes('SYSTEM ERROR')) ||
+        error.code === 'ClientError';
+
+      if (isAmadeusSystemError) {
+        console.error("⚠️ Amadeus System Error (Code 141) - Service temporarily unavailable");
+        
+        // ✅ CRITICAL: Return 503 with proper JSON (not HTML)
+        return res.status(503).json({ 
+          success: false,
+          error: "Flight search service temporarily unavailable",
+          message: "The Amadeus API is experiencing temporary issues. Please try again in a few moments.",
+          code: "AMADEUS_SYSTEM_ERROR",
+          retry: true, // ✅ Tell frontend it can retry
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // Check for "no flights found" scenario
+      if (error.message?.includes('No flights found')) {
+        return res.status(200).json({
+          success: true,
+          data: [],
+          count: 0,
+          message: "No flights found for this route and date. Please try different dates or airports.",
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // ✅ CRITICAL: Always return JSON, never throw to default error handler
+      return res.status(500).json({ 
         success: false,
-        error: error.message || "Failed to search flights",
+        error: "Failed to search flights",
         message: "Unable to search flights at this time. Please try again later.",
+        code: "SEARCH_ERROR",
         details: process.env.NODE_ENV === 'development' ? {
           errorType: error.name,
           errorMessage: error.message,
+          errorCode: error.code,
           timestamp: new Date().toISOString()
         } : undefined
       });
@@ -259,6 +294,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     } catch (error: any) {
       console.error("❌ Get flight offer error:", error);
+      
+      // ✅ Always return JSON
       res.status(500).json({ 
         success: false,
         error: error.message || "Failed to get flight offer",
@@ -292,10 +329,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           timestamp: new Date().toISOString()
         });
       } catch (error: any) {
+        // ✅ Always return JSON in test endpoint too
         res.status(500).json({
           success: false,
           error: error.message,
-          stack: error.stack
+          description: error.description,
+          stack: error.stack?.substring(0, 500)
         });
       }
     });
