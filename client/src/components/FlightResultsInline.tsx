@@ -1,8 +1,9 @@
 // client/src/components/FlightResultsInline.tsx
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plane, Clock, ArrowRight, ExternalLink, AlertCircle } from "lucide-react";
+import { Plane, Clock, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface FlightOffer {
   id: string;
@@ -42,11 +43,27 @@ export default function FlightResultsInline({
   loading = false
 }: FlightResultsInlineProps) {
   
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  
+  // Calculate pagination
+  const totalPages = Math.ceil((flights?.length || 0) / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentFlights = flights?.slice(startIndex, endIndex) || [];
+
+  // Reset to page 1 when flights change
+  useState(() => {
+    setCurrentPage(1);
+  });
+
   // Debug logging
   console.log("🎭 FlightResultsInline rendered:", {
     flightsCount: flights?.length,
-    isMock,
-    searchParams,
+    currentPage,
+    totalPages,
+    currentFlights: currentFlights.length,
     loading
   });
 
@@ -58,6 +75,28 @@ export default function FlightResultsInline({
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(price);
+  };
+
+  // Pagination handlers
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of results
+    document.getElementById('flight-results')?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      goToPage(currentPage + 1);
+    }
+  };
+
+  const previousPage = () => {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
+    }
   };
 
   // Loading state
@@ -87,12 +126,6 @@ export default function FlightResultsInline({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <h2 className="text-2xl font-bold">Flight Results</h2>
-            {isMock && (
-              <Badge variant="outline" className="ml-2">
-                <AlertCircle className="h-3 w-3 mr-1" />
-                Mock Data
-              </Badge>
-            )}
           </div>
           {searchParams && (
             <div className="text-sm text-muted-foreground">
@@ -100,14 +133,21 @@ export default function FlightResultsInline({
             </div>
           )}
         </div>
-        <div className="text-sm text-muted-foreground">
-          Found {flights.length} flight{flights.length !== 1 ? 's' : ''}
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            Showing {startIndex + 1}-{Math.min(endIndex, flights.length)} of {flights.length} flight{flights.length !== 1 ? 's' : ''}
+          </div>
+          {totalPages > 1 && (
+            <div className="text-sm text-muted-foreground">
+              Page {currentPage} of {totalPages}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Flight Cards */}
       <div className="space-y-4">
-        {flights.map((flight) => (
+        {currentFlights.map((flight) => (
           <Card key={flight.id} className="p-6 hover:shadow-lg transition-shadow">
             <div className="flex flex-col gap-4">
               {/* Flight Header */}
@@ -199,14 +239,70 @@ export default function FlightResultsInline({
         ))}
       </div>
 
-      {/* Mock Data Warning */}
-      {isMock && (
-        <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-900 rounded-lg">
-          <div className="flex gap-2">
-            <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0" />
-            <div className="text-sm text-yellow-800 dark:text-yellow-200">
-              <strong>Note:</strong> These are sample results. Actual flight availability and prices may vary.
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="mt-6 flex items-center justify-between border-t pt-6">
+          <div className="text-sm text-muted-foreground">
+            Showing {startIndex + 1}-{Math.min(endIndex, flights.length)} of {flights.length} results
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={previousPage}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Previous
+            </Button>
+            
+            {/* Page Numbers */}
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                // Show first, last, current, and adjacent pages
+                const showPage = 
+                  page === 1 || 
+                  page === totalPages || 
+                  page === currentPage || 
+                  page === currentPage - 1 || 
+                  page === currentPage + 1;
+                
+                const showEllipsis = 
+                  (page === 2 && currentPage > 3) ||
+                  (page === totalPages - 1 && currentPage < totalPages - 2);
+
+                if (showEllipsis) {
+                  return <span key={page} className="px-2 text-muted-foreground">...</span>;
+                }
+
+                if (!showPage) {
+                  return null;
+                }
+
+                return (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => goToPage(page)}
+                    className="min-w-[40px]"
+                  >
+                    {page}
+                  </Button>
+                );
+              })}
             </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={nextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
           </div>
         </div>
       )}
