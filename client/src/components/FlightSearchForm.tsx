@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as CalendarIcon, Plane, Users, ArrowRight, Loader2 } from "lucide-react";
+import { Calendar as CalendarIcon, Plane, Users, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import FlightResultsModal from "./FlightResultsModal";
 
@@ -57,16 +57,14 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
   const originRef = useRef<HTMLDivElement>(null);
   const destinationRef = useRef<HTMLDivElement>(null);
 
-  // Debug modal state - watch for changes
+  // Debug modal state
   useEffect(() => {
-    console.log("🎭 FlightSearchForm Modal State Changed:", { 
+    console.log("🎭 Modal state:", { 
       showResultsModal, 
       flightsCount: flightResults.length,
-      isMock: isMockData,
-      hasSearchParams: !!searchedParams,
-      firstFlight: flightResults[0]
+      isMock: isMockData 
     });
-  }, [showResultsModal, flightResults, isMockData, searchedParams]);
+  }, [showResultsModal, flightResults, isMockData]);
 
   // Debounced airport search
   useEffect(() => {
@@ -147,8 +145,6 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
 
   const handleSearch = async () => {
     try {
-      console.log("🔍 STEP 1: handleSearch called");
-      
       // Clear previous errors
       setValidationError("");
 
@@ -171,7 +167,6 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         return;
       }
 
-      console.log("🔍 STEP 2: Validation passed, starting search");
       setIsSearching(true);
 
       const searchParams = {
@@ -185,7 +180,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         tripType
       };
 
-      console.log("🔍 STEP 3: Calling API with params:", searchParams);
+      console.log("🔍 Searching flights with:", searchParams);
 
       const response = await fetch('/api/flights/search', {
         method: 'POST',
@@ -195,55 +190,44 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         body: JSON.stringify(searchParams)
       });
 
-      console.log("🔍 STEP 4: API response received, status:", response.status);
-
       const data = await response.json();
-      console.log("🔍 STEP 5: API response parsed:", {
-        success: data.success,
-        dataLength: data.data?.length,
-        mock: data.mock,
-        count: data.count
-      });
+
+      console.log("📦 API Response:", data);
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || 'Search failed');
+        // Handle API errors
+        const errorMessage = data.message || data.error || 'Search failed';
+        throw new Error(errorMessage);
       }
 
-      console.log("🔍 STEP 6: Setting state with flights");
-      console.log("📊 Full API Data:", data);
-      console.log("✈️ Flight Data Array:", data.data);
-      console.log("🔢 Number of flights:", data.data?.length || 0);
+      console.log("✅ Flight results:", data);
+      console.log("🔢 Number of flights:", data.data?.length);
 
-      // CRITICAL: Set all state at once
-      const flights = data.data || [];
-      const mock = data.mock || false;
-      const params = {
+      // Check if we got results
+      if (!data.data || data.data.length === 0) {
+        setValidationError("😔 No flights found for this route and dates. Try different dates or airports.");
+        setTimeout(() => setValidationError(""), 6000);
+        return;
+      }
+
+      // Store results and show modal
+      setFlightResults(data.data || []);
+      setIsMockData(data.mock || false);
+      setSearchedParams({
         origin: searchParams.origin,
         destination: searchParams.destination,
         departDate: searchParams.departDate,
         returnDate: searchParams.returnDate,
         passengers: searchParams.passengers
-      };
-
-      console.log("🔍 STEP 7: About to set state:", {
-        flightsToSet: flights.length,
-        mockFlag: mock,
-        paramsToSet: params
       });
-
-      // Set state
-      setFlightResults(flights);
-      setIsMockData(mock);
-      setSearchedParams(params);
       
-      console.log("🔍 STEP 8: State set, opening modal");
+      console.log("🚀 Opening modal with", data.data?.length, "flights");
       
-      // Open modal AFTER state is set
+      // Small delay to ensure state updates
       setTimeout(() => {
-        console.log("🔍 STEP 9: Opening modal NOW");
         setShowResultsModal(true);
-      }, 100); // Small delay to ensure state is updated
-
+      }, 100);
+      
       setValidationError("");
 
       // Call parent callback
@@ -258,12 +242,22 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         });
       }
 
-      console.log("🔍 STEP 10: handleSearch completed successfully");
-
     } catch (error: any) {
       console.error("❌ Search error:", error);
-      setValidationError(error.message || "Failed to search flights. Please try again.");
-      setTimeout(() => setValidationError(""), 5000);
+      
+      // Show user-friendly error message
+      let errorMessage = "Failed to search flights. ";
+      
+      if (error.message.includes("SYSTEM ERROR")) {
+        errorMessage += "Amadeus API is experiencing issues. Please try again in a few moments or try a different route.";
+      } else if (error.message.includes("No flights found")) {
+        errorMessage = "😔 No flights found for this route and dates. Try different dates or airports.";
+      } else {
+        errorMessage += error.message || "Please try again.";
+      }
+      
+      setValidationError(errorMessage);
+      setTimeout(() => setValidationError(""), 8000);
     } finally {
       setIsSearching(false);
     }
@@ -291,8 +285,9 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
 
       {/* VALIDATION ERROR DISPLAY */}
       {validationError && (
-        <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
-          <p className="text-sm text-destructive font-medium">{validationError}</p>
+        <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-md flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-destructive font-medium flex-1">{validationError}</p>
         </div>
       )}
 
@@ -489,10 +484,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
       {/* Flight Results Modal */}
       <FlightResultsModal
         open={showResultsModal}
-        onClose={() => {
-          console.log("🚪 Modal closing");
-          setShowResultsModal(false);
-        }}
+        onClose={() => setShowResultsModal(false)}
         flights={flightResults}
         searchParams={searchedParams}
         isMock={isMockData}
