@@ -469,6 +469,15 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
           </>
         )}
       </Button>
+
+      {/* Flight Results Modal */}
+      <FlightResultsModal
+        open={showResultsModal}
+        onClose={() => setShowResultsModal(false)}
+        flights={flightResults}
+        searchParams={searchedParams}
+        isMock={isMockData}
+      />
     </Card>
   );
 }
