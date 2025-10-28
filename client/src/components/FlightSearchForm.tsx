@@ -57,14 +57,16 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
   const originRef = useRef<HTMLDivElement>(null);
   const destinationRef = useRef<HTMLDivElement>(null);
 
-  // Debug modal state
+  // Debug modal state - watch for changes
   useEffect(() => {
-    console.log("🎭 Modal state:", { 
+    console.log("🎭 FlightSearchForm Modal State Changed:", { 
       showResultsModal, 
       flightsCount: flightResults.length,
-      isMock: isMockData 
+      isMock: isMockData,
+      hasSearchParams: !!searchedParams,
+      firstFlight: flightResults[0]
     });
-  }, [showResultsModal, flightResults, isMockData]);
+  }, [showResultsModal, flightResults, isMockData, searchedParams]);
 
   // Debounced airport search
   useEffect(() => {
@@ -145,6 +147,8 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
 
   const handleSearch = async () => {
     try {
+      console.log("🔍 STEP 1: handleSearch called");
+      
       // Clear previous errors
       setValidationError("");
 
@@ -167,6 +171,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         return;
       }
 
+      console.log("🔍 STEP 2: Validation passed, starting search");
       setIsSearching(true);
 
       const searchParams = {
@@ -180,7 +185,7 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         tripType
       };
 
-      console.log("🔍 Searching flights with:", searchParams);
+      console.log("🔍 STEP 3: Calling API with params:", searchParams);
 
       const response = await fetch('/api/flights/search', {
         method: 'POST',
@@ -190,30 +195,55 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
         body: JSON.stringify(searchParams)
       });
 
-      const data = await response.json();
+      console.log("🔍 STEP 4: API response received, status:", response.status);
 
-      console.log("📦 API Response:", data);
+      const data = await response.json();
+      console.log("🔍 STEP 5: API response parsed:", {
+        success: data.success,
+        dataLength: data.data?.length,
+        mock: data.mock,
+        count: data.count
+      });
 
       if (!response.ok) {
         throw new Error(data.message || data.error || 'Search failed');
       }
 
-      console.log("✅ Flight results:", data);
-      console.log("🔢 Number of flights:", data.data?.length);
+      console.log("🔍 STEP 6: Setting state with flights");
+      console.log("📊 Full API Data:", data);
+      console.log("✈️ Flight Data Array:", data.data);
+      console.log("🔢 Number of flights:", data.data?.length || 0);
 
-      // Store results and show modal
-      setFlightResults(data.data || []);
-      setIsMockData(data.mock || false);
-      setSearchedParams({
+      // CRITICAL: Set all state at once
+      const flights = data.data || [];
+      const mock = data.mock || false;
+      const params = {
         origin: searchParams.origin,
         destination: searchParams.destination,
         departDate: searchParams.departDate,
         returnDate: searchParams.returnDate,
         passengers: searchParams.passengers
+      };
+
+      console.log("🔍 STEP 7: About to set state:", {
+        flightsToSet: flights.length,
+        mockFlag: mock,
+        paramsToSet: params
       });
+
+      // Set state
+      setFlightResults(flights);
+      setIsMockData(mock);
+      setSearchedParams(params);
       
-      console.log("🚀 Opening modal with", data.data?.length, "flights");
-      setShowResultsModal(true);
+      console.log("🔍 STEP 8: State set, opening modal");
+      
+      // Open modal AFTER state is set
+      setTimeout(() => {
+        console.log("🔍 STEP 9: Opening modal NOW");
+        setShowResultsModal(true);
+      }, 100); // Small delay to ensure state is updated
+
       setValidationError("");
 
       // Call parent callback
@@ -227,6 +257,8 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
           tripType
         });
       }
+
+      console.log("🔍 STEP 10: handleSearch completed successfully");
 
     } catch (error: any) {
       console.error("❌ Search error:", error);
@@ -457,7 +489,10 @@ export default function FlightSearchForm({ onSearch }: FlightSearchFormProps) {
       {/* Flight Results Modal */}
       <FlightResultsModal
         open={showResultsModal}
-        onClose={() => setShowResultsModal(false)}
+        onClose={() => {
+          console.log("🚪 Modal closing");
+          setShowResultsModal(false);
+        }}
         flights={flightResults}
         searchParams={searchedParams}
         isMock={isMockData}
