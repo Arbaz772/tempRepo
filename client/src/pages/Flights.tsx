@@ -1,79 +1,45 @@
 import { useState } from "react";
-import Header from "@/components/Header";
 import FlightSearchForm from "@/components/FlightSearchForm";
-import FlightCard from "@/components/FlightCard";
+import FlightResultsInline from "@/components/FlightResultsInline";
 import FilterPanel from "@/components/FilterPanel";
-import SortBar from "@/components/SortBar";
 import AIPredictionPanel from "@/components/AIPredictionPanel";
 import PriceTrendChart from "@/components/PriceTrendChart";
 
 export default function Flights() {
-  const [sortBy, setSortBy] = useState<"cheapest" | "fastest" | "best" | "recommended">("recommended");
+  // Flight results state
+  const [flights, setFlights] = useState<any[]>([]);
+  const [searchParams, setSearchParams] = useState<any>(null);
+  const [isMock, setIsMock] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const mockFlights = [
-    {
-      id: "1",
-      airline: "Air India",
-      flightNumber: "AI 860",
-      origin: "DEL",
-      destination: "BOM",
-      departTime: "06:00",
-      arriveTime: "08:15",
-      duration: "2h 15m",
-      stops: 0,
-      price: 4500,
-      aircraft: "Boeing 737",
-      prediction: {
-        trend: "down" as const,
-        message: "Price likely to drop 12% in next 3 days"
-      },
-      isBestDeal: true
-    },
-    {
-      id: "2",
-      airline: "IndiGo",
-      flightNumber: "6E 2134",
-      origin: "DEL",
-      destination: "BOM",
-      departTime: "10:30",
-      arriveTime: "12:50",
-      duration: "2h 20m",
-      stops: 0,
-      price: 5200,
-      aircraft: "Airbus A320"
-    },
-    {
-      id: "3",
-      airline: "Vistara",
-      flightNumber: "UK 993",
-      origin: "DEL",
-      destination: "BOM",
-      departTime: "14:15",
-      arriveTime: "16:30",
-      duration: "2h 15m",
-      stops: 0,
-      price: 6800,
-      aircraft: "Airbus A320neo",
-      prediction: {
-        trend: "up" as const,
-        message: "Price expected to rise 8%"
-      }
-    },
-    {
-      id: "4",
-      airline: "SpiceJet",
-      flightNumber: "SG 8162",
-      origin: "DEL",
-      destination: "BOM",
-      departTime: "18:45",
-      arriveTime: "21:15",
-      duration: "2h 30m",
-      stops: 0,
-      price: 4800,
-      aircraft: "Boeing 737 MAX"
-    }
-  ];
+  // Handler when search starts
+  const handleSearchStart = () => {
+    setLoading(true);
+  };
 
+  // Handler when search completes
+  const handleSearchComplete = (data: any) => {
+    setFlights(data.flights);
+    setSearchParams(data.searchParams);
+    setIsMock(data.isMock);
+    setLoading(false);
+    
+    // Scroll to results section after a delay
+    setTimeout(() => {
+      document.getElementById('flight-results-section')?.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 300);
+  };
+
+  // Handler when search has error
+  const handleSearchError = (error: string) => {
+    setLoading(false);
+    setFlights([]);
+  };
+
+  // Price trend data (you can make this dynamic based on search)
   const priceData = [
     { date: 'Jan 1', price: 5200 },
     { date: 'Jan 5', price: 4800 },
@@ -92,53 +58,100 @@ export default function Flights() {
 
   return (
     <div className="bg-background">
+      {/* SEARCH FORM SECTION */}
       <div className="bg-card/30 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <FlightSearchForm onSearch={(params) => console.log('Search:', params)} />
+          <FlightSearchForm 
+            onSearchStart={handleSearchStart}
+            onSearchComplete={handleSearchComplete}
+            onSearchError={handleSearchError}
+          />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
-          <aside className="lg:col-span-1">
-            <div className="space-y-6 sticky top-24">
-              <FilterPanel onFilterChange={(filters) => console.log('Filters:', filters)} />
-            </div>
-          </aside>
+      {/* RESULTS SECTION - Only show after search */}
+      {flights.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid lg:grid-cols-4 gap-8">
+            
+            {/* LEFT SIDEBAR - Filters */}
+            <aside className="lg:col-span-1">
+              <div className="space-y-6 sticky top-24">
+                <FilterPanel onFilterChange={(filters) => console.log('Filters:', filters)} />
+              </div>
+            </aside>
 
-          <main className="lg:col-span-3 space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
-              <AIPredictionPanel
-                route="Delhi → Mumbai"
-                prediction={{
-                  recommendation: "book_now",
-                  confidence: 87,
-                  bestTimeToBook: "Within next 48 hours",
-                  expectedSavings: 850,
-                  priceDirection: "down"
-                }}
-              />
-              <PriceTrendChart 
-                route="Delhi → Mumbai" 
-                data={priceData} 
-                predictedData={predictedData}
-              />
-            </div>
+            {/* MAIN CONTENT - Predictions, Trends, and Results */}
+            <main className="lg:col-span-3 space-y-6">
+              
+              {/* AI PREDICTION & PRICE TRENDS */}
+              <div className="grid lg:grid-cols-2 gap-6">
+                <AIPredictionPanel
+                  route={`${searchParams?.origin} → ${searchParams?.destination}`}
+                  prediction={{
+                    recommendation: "book_now",
+                    confidence: 87,
+                    bestTimeToBook: "Within next 48 hours",
+                    expectedSavings: 850,
+                    priceDirection: "down"
+                  }}
+                />
+                <PriceTrendChart 
+                  route={`${searchParams?.origin} → ${searchParams?.destination}`}
+                  data={priceData} 
+                  predictedData={predictedData}
+                />
+              </div>
 
-            <SortBar
-              resultCount={mockFlights.length}
-              activeSort={sortBy}
-              onSortChange={setSortBy}
-            />
-
-            <div className="space-y-4">
-              {mockFlights.map((flight) => (
-                <FlightCard key={flight.id} {...flight} />
-              ))}
-            </div>
-          </main>
+              {/* FLIGHT RESULTS WITH PAGINATION */}
+              <div id="flight-results-section">
+                <FlightResultsInline
+                  flights={flights}
+                  searchParams={searchParams}
+                  isMock={isMock}
+                  loading={loading}
+                />
+              </div>
+            </main>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* EMPTY STATE - Before any search */}
+      {flights.length === 0 && !loading && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="text-7xl mb-6">✈️</div>
+            <h2 className="text-2xl font-semibold mb-3">Start Your Journey</h2>
+            <p className="text-muted-foreground mb-6">
+              Enter your travel details above to find the best flight options
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="p-4 border rounded-lg">
+                <div className="text-3xl mb-2">🔍</div>
+                <div className="font-medium mb-1">Smart Search</div>
+                <div className="text-xs text-muted-foreground">
+                  AI-powered flight recommendations
+                </div>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <div className="text-3xl mb-2">💰</div>
+                <div className="font-medium mb-1">Best Prices</div>
+                <div className="text-xs text-muted-foreground">
+                  Compare across multiple airlines
+                </div>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <div className="text-3xl mb-2">📊</div>
+                <div className="font-medium mb-1">Price Insights</div>
+                <div className="text-xs text-muted-foreground">
+                  Predict future price changes
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
