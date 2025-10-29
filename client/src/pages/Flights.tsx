@@ -1,133 +1,203 @@
 // client/src/pages/Flights.tsx
-// This page has the search form and redirects to homepage with results
+// SIMPLE VERSION - No routing required, shows results on same page
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import FlightSearchForm from "@/components/FlightSearchForm";
+import FlightResultsInline from "@/components/FlightResultsInline";
+import FilterPanel from "@/components/FilterPanel";
+import AIPredictionPanel from "@/components/AIPredictionPanel";
+import PriceTrendChart from "@/components/PriceTrendChart";
 import { Loader2, Plane } from "lucide-react";
 
 export default function Flights() {
-  const navigate = useNavigate();
+  const [flights, setFlights] = useState<any[]>([]);
+  const [searchParams, setSearchParams] = useState<any>(null);
+  const [isMock, setIsMock] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  console.log("🎨 Flights page rendering:", { 
+    loading, 
+    flightsCount: flights.length 
+  });
+
   const handleSearchStart = () => {
-    console.log("🚀 Flight search started");
+    console.log("🚀 Search started");
     setLoading(true);
+    setFlights([]); // Clear previous results
   };
 
   const handleSearchComplete = (data: any) => {
-    console.log("✅ Search complete, redirecting to homepage with results:", {
-      flightsCount: data.flights?.length,
-      searchParams: data.searchParams
+    console.log("🔥 Search complete, received data:", {
+      hasFlights: !!data.flights,
+      flightsLength: data.flights?.length,
+      flights: data.flights
     });
     
-    // Store results in sessionStorage (survives page navigation)
-    sessionStorage.setItem('flightSearchResults', JSON.stringify({
-      flights: data.flights,
-      searchParams: data.searchParams,
-      isMock: data.isMock,
-      timestamp: new Date().toISOString()
-    }));
-
-    // Navigate to homepage
-    navigate('/', {
-      state: {
-        flights: data.flights,
-        searchParams: data.searchParams,
-        isMock: data.isMock
+    setFlights(data.flights || []);
+    setSearchParams(data.searchParams || null);
+    setIsMock(data.isMock || false);
+    setLoading(false);
+    
+    console.log("✅ State updated, flights:", data.flights?.length);
+    
+    // Scroll to results
+    setTimeout(() => {
+      const element = document.getElementById('results-section');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    });
+    }, 100);
   };
 
   const handleSearchError = (error: string) => {
     console.log("❌ Search error:", error);
     setLoading(false);
+    setFlights([]);
   };
 
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-blue-900 to-blue-700 text-white">
-        <div className="absolute inset-0 bg-black/20"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="text-4xl">✈️</div>
-              <h1 className="text-4xl md:text-5xl font-bold">
-                Find Your Perfect Flight
-              </h1>
-            </div>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              Compare prices across all airlines. Get AI predictions for the best flight booking time.
-            </p>
-          </div>
+  const priceData = [
+    { date: 'Jan 1', price: 5200 },
+    { date: 'Jan 5', price: 4800 },
+    { date: 'Jan 10', price: 5500 },
+    { date: 'Jan 15', price: 4900 },
+    { date: 'Jan 20', price: 4500 },
+    { date: 'Jan 25', price: 4700 },
+    { date: 'Jan 30', price: 4400 },
+  ];
 
-          {/* Search Form */}
-          <div className="max-w-4xl mx-auto">
-            <FlightSearchForm 
-              onSearchStart={handleSearchStart}
-              onSearchComplete={handleSearchComplete}
-              onSearchError={handleSearchError}
-            />
+  const predictedData = [
+    { date: 'Feb 1', price: 4200 },
+    { date: 'Feb 3', price: 4100 },
+    { date: 'Feb 5', price: 4300 },
+  ];
+
+  return (
+    <div className="bg-background">
+      {/* SEARCH FORM SECTION */}
+      <div className="bg-card/30 border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <FlightSearchForm 
+            onSearchStart={handleSearchStart}
+            onSearchComplete={handleSearchComplete}
+            onSearchError={handleSearchError}
+          />
+        </div>
+      </div>
+
+      {/* LOADING STATE */}
+      {loading && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          {console.log("⏳ SHOWING LOADING STATE")}
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="relative mb-8">
+              <Plane className="h-16 w-16 text-primary animate-bounce" />
+              <Loader2 className="h-20 w-20 text-primary/30 animate-spin absolute -top-2 -left-2" />
+            </div>
+            <h3 className="text-2xl font-semibold mb-3 text-foreground">
+              Searching for flights...
+            </h3>
+            <p className="text-muted-foreground mb-2">
+              Finding the best options for you
+            </p>
+            {searchParams && (
+              <p className="text-sm text-muted-foreground">
+                {searchParams.origin} → {searchParams.destination}
+              </p>
+            )}
+            <div className="flex gap-2 mt-6">
+              <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+              <div className="w-3 h-3 bg-primary rounded-full animate-pulse delay-75"></div>
+              <div className="w-3 h-3 bg-primary rounded-full animate-pulse delay-150"></div>
+            </div>
           </div>
         </div>
-      </section>
-
-      {/* Loading State */}
-      {loading && (
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col items-center justify-center py-20">
-              <div className="relative mb-8">
-                <Plane className="h-16 w-16 text-primary animate-bounce" />
-                <Loader2 className="h-20 w-20 text-primary/30 animate-spin absolute -top-2 -left-2" />
-              </div>
-              <h3 className="text-2xl font-semibold mb-3">Searching for flights...</h3>
-              <p className="text-muted-foreground">You'll be redirected to results shortly...</p>
-            </div>
-          </div>
-        </section>
       )}
 
-      {/* Features Section */}
-      {!loading && (
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-4">Why Choose SkaiLinker?</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Powered by advanced AI to help you find the best flight booking deals world-wide
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              <div className="text-center p-6 bg-card rounded-lg border shadow-sm">
-                <div className="text-5xl mb-4">🤖</div>
-                <h3 className="text-xl font-semibold mb-3">AI Price Predictions</h3>
-                <p className="text-muted-foreground">
-                  Advanced algorithms predict price trends to help you book at the perfect time.
-                </p>
+      {/* RESULTS SECTION */}
+      {!loading && flights.length > 0 && (
+        <div id="results-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {console.log("✅ RENDERING RESULTS SECTION with", flights.length, "flights")}
+          
+          <div className="grid lg:grid-cols-4 gap-8">
+            
+            {/* LEFT SIDEBAR - Filters */}
+            <aside className="lg:col-span-1">
+              <div className="space-y-6 sticky top-24">
+                <FilterPanel onFilterChange={(filters) => console.log('Filters:', filters)} />
               </div>
+            </aside>
 
-              <div className="text-center p-6 bg-card rounded-lg border shadow-sm">
-                <div className="text-5xl mb-4">🔍</div>
-                <h3 className="text-xl font-semibold mb-3">Multi-Source Comparison</h3>
-                <p className="text-muted-foreground">
-                  Compare flight prices from all major airlines and booking platforms.
-                </p>
+            {/* MAIN CONTENT - Predictions, Trends, and Results */}
+            <main className="lg:col-span-3 space-y-6">
+              
+              {/* AI PREDICTION & PRICE TRENDS */}
+              {searchParams && (
+                <div className="grid lg:grid-cols-2 gap-6">
+                  <AIPredictionPanel
+                    route={`${searchParams.origin} → ${searchParams.destination}`}
+                    prediction={{
+                      recommendation: "book_now",
+                      confidence: 87,
+                      bestTimeToBook: "Within next 48 hours",
+                      expectedSavings: 850,
+                      priceDirection: "down"
+                    }}
+                  />
+                  <PriceTrendChart 
+                    route={`${searchParams.origin} → ${searchParams.destination}`}
+                    data={priceData} 
+                    predictedData={predictedData}
+                  />
+                </div>
+              )}
+
+              {/* FLIGHT RESULTS WITH PAGINATION */}
+              <FlightResultsInline
+                flights={flights}
+                searchParams={searchParams}
+                isMock={isMock}
+                loading={false}
+              />
+            </main>
+          </div>
+        </div>
+      )}
+
+      {/* EMPTY STATE - Before any search */}
+      {!loading && flights.length === 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          {console.log("📭 SHOWING EMPTY STATE")}
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="text-7xl mb-6">✈️</div>
+            <h2 className="text-2xl font-semibold mb-3">Start Your Journey</h2>
+            <p className="text-muted-foreground mb-6">
+              Enter your travel details above to find the best flight options
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="p-4 border rounded-lg">
+                <div className="text-3xl mb-2">🔍</div>
+                <div className="font-medium mb-1">Smart Search</div>
+                <div className="text-xs text-muted-foreground">
+                  AI-powered flight recommendations
+                </div>
               </div>
-
-              <div className="text-center p-6 bg-card rounded-lg border shadow-sm">
-                <div className="text-5xl mb-4">🔔</div>
-                <h3 className="text-xl font-semibold mb-3">Price Alerts</h3>
-                <p className="text-muted-foreground">
-                  Get notified when prices drop for your favorite routes and destinations.
-                </p>
+              <div className="p-4 border rounded-lg">
+                <div className="text-3xl mb-2">💰</div>
+                <div className="font-medium mb-1">Best Prices</div>
+                <div className="text-xs text-muted-foreground">
+                  Compare across multiple airlines
+                </div>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <div className="text-3xl mb-2">📊</div>
+                <div className="font-medium mb-1">Price Insights</div>
+                <div className="text-xs text-muted-foreground">
+                  Predict future price changes
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
       )}
     </div>
   );
