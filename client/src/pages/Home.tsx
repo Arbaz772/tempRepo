@@ -1,12 +1,11 @@
 // client/src/pages/Home.tsx
-// UPDATED VERSION - With Airport Terminal Background Image
+// FIXED - Passes search parameters to flights page via URL
 
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { Sparkles, TrendingUp, Search, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FlightSearchForm from "@/components/FlightSearchForm";
-import airportHero from "@assets/generated_images/Airport_terminal_hero_background_9e80665b.png";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -18,8 +17,23 @@ export default function Home() {
 
   const handleSearchComplete = (data: any) => {
     setIsSearching(false);
-    // Redirect to flights page with search results
-    setLocation('/flights');
+    
+    // Build URL with search parameters
+    const params = new URLSearchParams();
+    if (data.searchParams) {
+      params.set('origin', data.searchParams.origin);
+      params.set('destination', data.searchParams.destination);
+      params.set('departDate', data.searchParams.departDate);
+      if (data.searchParams.returnDate) {
+        params.set('returnDate', data.searchParams.returnDate);
+      }
+      params.set('passengers', data.searchParams.passengers.toString());
+      params.set('tripType', data.searchParams.tripType || 'round-trip');
+      params.set('autoSearch', 'true'); // Flag to trigger auto-search
+    }
+    
+    // Redirect to flights page with parameters
+    setLocation(`/flights?${params.toString()}`);
   };
 
   const handleSearchError = (error: string) => {
@@ -36,7 +50,7 @@ export default function Home() {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage:`url(${airportHero})`,
+            backgroundImage: "url('/assets/Airport_terminal_hero.png')",
           }}
         >
           {/* Dark overlay for text readability */}

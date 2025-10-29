@@ -1,7 +1,8 @@
 // client/src/pages/Flights.tsx
-// SIMPLE VERSION - No routing required, shows results on same page
+// FIXED - Auto-searches when URL parameters are present (from homepage redirect)
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import FlightSearchForm from "@/components/FlightSearchForm";
 import FlightResultsInline from "@/components/FlightResultsInline";
 import FilterPanel from "@/components/FilterPanel";
@@ -10,15 +11,68 @@ import PriceTrendChart from "@/components/PriceTrendChart";
 import { Loader2, Plane } from "lucide-react";
 
 export default function Flights() {
+  const [location] = useLocation();
   const [flights, setFlights] = useState<any[]>([]);
   const [searchParams, setSearchParams] = useState<any>(null);
   const [isMock, setIsMock] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [initialSearchDone, setInitialSearchDone] = useState(false);
 
   console.log("🎨 Flights page rendering:", { 
     loading, 
     flightsCount: flights.length 
   });
+
+  // Auto-search when URL parameters are present
+  useEffect(() => {
+    if (initialSearchDone) return; // Only run once
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const autoSearch = urlParams.get('autoSearch');
+    
+    if (autoSearch === 'true') {
+      const origin = urlParams.get('origin');
+      const destination = urlParams.get('destination');
+      const departDate = urlParams.get('departDate');
+      const returnDate = urlParams.get('returnDate');
+      const passengers = urlParams.get('passengers');
+      const tripType = urlParams.get('tripType');
+
+      if (origin && destination && departDate) {
+        console.log('🚀 Auto-triggering search from URL params:', {
+          origin,
+          destination,
+          departDate,
+          returnDate,
+          passengers,
+          tripType
+        });
+
+        // Set the search params for the form
+        const params = {
+          origin,
+          destination,
+          departDate,
+          returnDate: returnDate || undefined,
+          passengers: parseInt(passengers || '1'),
+          tripType: tripType || 'round-trip'
+        };
+
+        setSearchParams(params);
+        setLoading(true);
+        setInitialSearchDone(true);
+
+        // Trigger the search automatically
+        // The form will handle the actual API call
+        setTimeout(() => {
+          const searchButton = document.querySelector('[data-search-trigger]') as HTMLButtonElement;
+          if (searchButton) {
+            searchButton.click();
+          }
+        }, 100);
+      }
+    }
+  }, [initialSearchDone]);
 
   const handleSearchStart = () => {
     console.log("🚀 Search started");
@@ -80,6 +134,7 @@ export default function Flights() {
             onSearchStart={handleSearchStart}
             onSearchComplete={handleSearchComplete}
             onSearchError={handleSearchError}
+            initialValues={searchParams} // Pass URL params to form
           />
         </div>
       </div>
