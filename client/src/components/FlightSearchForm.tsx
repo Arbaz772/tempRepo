@@ -644,11 +644,6 @@ export default function FlightSearchForm({
           </>
         )}
       </Button>
-
-      {/* Helper Text */}
-      <p className="text-xs text-muted-foreground text-center">
-        <span className="text-red-500">*</span> Required fields
-      </p>
     </form>
   );
 }
