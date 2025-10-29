@@ -1,7 +1,7 @@
 // client/src/pages/Flights.tsx
-// FIXED - Auto-searches when URL parameters are present (from homepage redirect)
+// FIXED - Auto-searches immediately when URL parameters are present (no button click needed)
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import FlightSearchForm from "@/components/FlightSearchForm";
 import FlightResultsInline from "@/components/FlightResultsInline";
@@ -16,7 +16,7 @@ export default function Flights() {
   const [searchParams, setSearchParams] = useState<any>(null);
   const [isMock, setIsMock] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [initialSearchDone, setInitialSearchDone] = useState(false);
+  const hasAutoSearched = useRef(false);
 
   console.log("🎨 Flights page rendering:", { 
     loading, 
@@ -25,12 +25,10 @@ export default function Flights() {
 
   // Auto-search when URL parameters are present
   useEffect(() => {
-    if (initialSearchDone) return; // Only run once
-
     const urlParams = new URLSearchParams(window.location.search);
     const autoSearch = urlParams.get('autoSearch');
     
-    if (autoSearch === 'true') {
+    if (autoSearch === 'true' && !hasAutoSearched.current) {
       const origin = urlParams.get('origin');
       const destination = urlParams.get('destination');
       const departDate = urlParams.get('departDate');
@@ -48,6 +46,8 @@ export default function Flights() {
           tripType
         });
 
+        hasAutoSearched.current = true;
+
         // Set the search params for the form
         const params = {
           origin,
@@ -60,22 +60,58 @@ export default function Flights() {
 
         setSearchParams(params);
         setLoading(true);
-        setInitialSearchDone(true);
 
-        // Trigger the search automatically
-        // The form will handle the actual API call
-        setTimeout(() => {
-          const searchButton = document.querySelector('[data-search-trigger]') as HTMLButtonElement;
-          if (searchButton) {
-            searchButton.click();
-          }
-        }, 100);
+        // Trigger the search automatically (call API directly)
+        performSearch(params);
       }
     }
-  }, [initialSearchDone]);
+  }, []);
+
+  const performSearch = async (params: any) => {
+    try {
+      const response = await fetch("/api/flights/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          origin: params.origin.toUpperCase(),
+          destination: params.destination.toUpperCase(),
+          departDate: params.departDate,
+          returnDate: params.returnDate,
+          passengers: params.passengers,
+          tripType: params.tripType
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Search failed");
+      }
+
+      console.log("✅ Auto-search completed:", data);
+
+      setFlights(data.data || []);
+      setIsMock(data.mock || false);
+      setLoading(false);
+
+      // Scroll to results
+      setTimeout(() => {
+        const element = document.getElementById('results-section');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } catch (error: any) {
+      console.error("❌ Auto-search error:", error);
+      setLoading(false);
+      setFlights([]);
+    }
+  };
 
   const handleSearchStart = () => {
-    console.log("🚀 Search started");
+    console.log("🚀 Manual search started");
     setLoading(true);
     setFlights([]); // Clear previous results
   };
@@ -134,7 +170,7 @@ export default function Flights() {
             onSearchStart={handleSearchStart}
             onSearchComplete={handleSearchComplete}
             onSearchError={handleSearchError}
-            initialValues={searchParams} // Pass URL params to form
+            initialValues={searchParams}
           />
         </div>
       </div>

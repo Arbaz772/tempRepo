@@ -1,10 +1,18 @@
 // client/src/components/FlightSearchForm.tsx
-// FIXED - Native date inputs that definitely work
+// FIXED - Better date picker + pre-filled values support
 
 import { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Plane } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface FlightSearchFormProps {
   onSearchStart?: () => void;
@@ -29,21 +37,22 @@ export default function FlightSearchForm({
   const [tripType, setTripType] = useState(initialValues?.tripType || "round-trip");
   const [origin, setOrigin] = useState(initialValues?.origin || "");
   const [destination, setDestination] = useState(initialValues?.destination || "");
-  const [departDate, setDepartDate] = useState(initialValues?.departDate || "");
-  const [returnDate, setReturnDate] = useState(initialValues?.returnDate || "");
+  const [departDate, setDepartDate] = useState<Date | undefined>(
+    initialValues?.departDate ? new Date(initialValues.departDate) : undefined
+  );
+  const [returnDate, setReturnDate] = useState<Date | undefined>(
+    initialValues?.returnDate ? new Date(initialValues.returnDate) : undefined
+  );
   const [passengers, setPassengers] = useState(initialValues?.passengers || 1);
   const [loading, setLoading] = useState(false);
-
-  // Get today's date in YYYY-MM-DD format
-  const today = new Date().toISOString().split('T')[0];
 
   // Update form when initialValues change
   useEffect(() => {
     if (initialValues) {
       if (initialValues.origin) setOrigin(initialValues.origin);
       if (initialValues.destination) setDestination(initialValues.destination);
-      if (initialValues.departDate) setDepartDate(initialValues.departDate);
-      if (initialValues.returnDate) setReturnDate(initialValues.returnDate);
+      if (initialValues.departDate) setDepartDate(new Date(initialValues.departDate));
+      if (initialValues.returnDate) setReturnDate(new Date(initialValues.returnDate));
       if (initialValues.passengers) setPassengers(initialValues.passengers);
       if (initialValues.tripType) setTripType(initialValues.tripType);
     }
@@ -69,8 +78,8 @@ export default function FlightSearchForm({
       const searchParams = {
         origin: origin.toUpperCase(),
         destination: destination.toUpperCase(),
-        departDate,
-        returnDate: tripType === "round-trip" ? returnDate : undefined,
+        departDate: format(departDate, "yyyy-MM-dd"),
+        returnDate: tripType === "round-trip" && returnDate ? format(returnDate, "yyyy-MM-dd") : undefined,
         passengers,
         tripType
       };
@@ -138,7 +147,7 @@ export default function FlightSearchForm({
               placeholder="Delhi, Mumbai, or DEL"
               value={origin}
               onChange={(e) => setOrigin(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               required
             />
           </div>
@@ -155,43 +164,72 @@ export default function FlightSearchForm({
               placeholder="Delhi, Mumbai, or BOM"
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               required
             />
           </div>
         </div>
       </div>
 
-      {/* Dates - Native HTML5 Date Inputs */}
+      {/* Dates with Better Picker */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="departDate" className="text-sm font-medium">
-            Departure
-          </Label>
-          <input
-            id="departDate"
-            type="date"
-            value={departDate}
-            onChange={(e) => setDepartDate(e.target.value)}
-            min={today}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [color-scheme:light] dark:[color-scheme:dark]"
-            required
-          />
+          <Label className="text-sm font-medium">Departure</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !departDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {departDate ? format(departDate, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={departDate}
+                onSelect={setDepartDate}
+                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         </div>
+
         {tripType === "round-trip" && (
           <div className="space-y-2">
-            <Label htmlFor="returnDate" className="text-sm font-medium">
-              Return
-            </Label>
-            <input
-              id="returnDate"
-              type="date"
-              value={returnDate}
-              onChange={(e) => setReturnDate(e.target.value)}
-              min={departDate || today}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [color-scheme:light] dark:[color-scheme:dark]"
-              required={tripType === "round-trip"}
-            />
+            <Label className="text-sm font-medium">Return</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !returnDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {returnDate ? format(returnDate, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={returnDate}
+                  onSelect={setReturnDate}
+                  disabled={(date) => {
+                    const today = new Date(new Date().setHours(0, 0, 0, 0));
+                    const minDate = departDate || today;
+                    return date < minDate;
+                  }}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         )}
       </div>
