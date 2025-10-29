@@ -1,5 +1,5 @@
 // client/src/pages/Home.tsx
-// UPDATED VERSION - With Flight Search Component on Homepage
+// UPDATED VERSION - With Airport Terminal Background Image
 
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -18,7 +18,6 @@ export default function Home() {
   const handleSearchComplete = (data: any) => {
     setIsSearching(false);
     // Redirect to flights page with search results
-    // The flights page will handle displaying the results
     setLocation('/flights');
   };
 
@@ -30,29 +29,39 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       
-      {/* HERO SECTION WITH SEARCH FORM */}
-      <section className="relative bg-gradient-to-b from-blue-900 to-blue-700 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
+      {/* HERO SECTION WITH AIRPORT BACKGROUND */}
+      <section className="relative text-white overflow-hidden min-h-[600px] md:min-h-[700px]">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/assets/Airport_terminal_hero.png')",
+          }}
+        >
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
+        </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <Sparkles className="h-10 w-10 md:h-12 md:w-12 text-yellow-300" />
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
+              <Sparkles className="h-10 w-10 md:h-12 md:w-12 text-yellow-300 drop-shadow-lg" />
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-2xl">
                 SkaiLinker
               </h1>
             </div>
-            <p className="text-xl md:text-2xl text-blue-100 mb-3">
+            <p className="text-xl md:text-2xl text-blue-100 mb-3 drop-shadow-lg">
               AI-Powered Flight Booking
             </p>
-            <p className="text-base md:text-lg text-blue-200 max-w-2xl mx-auto mb-8">
+            <p className="text-base md:text-lg text-blue-200 max-w-2xl mx-auto mb-8 drop-shadow-md">
               Compare prices across all airlines. Get AI predictions for the best flight booking time.
             </p>
           </div>
 
           {/* FLIGHT SEARCH FORM */}
           <div className="max-w-5xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/20 shadow-2xl">
+            <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/30 shadow-2xl">
               <FlightSearchForm 
                 onSearchStart={handleSearchStart}
                 onSearchComplete={handleSearchComplete}
@@ -63,17 +72,17 @@ export default function Home() {
 
           {/* Quick Stats */}
           <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto mt-12">
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold mb-1">500+</div>
-              <div className="text-xs md:text-sm text-blue-200">Airlines</div>
+            <div className="text-center backdrop-blur-sm bg-white/10 rounded-lg p-3 border border-white/20">
+              <div className="text-2xl md:text-3xl font-bold mb-1 drop-shadow-lg">500+</div>
+              <div className="text-xs md:text-sm text-blue-100">Airlines</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold mb-1">1000+</div>
-              <div className="text-xs md:text-sm text-blue-200">Destinations</div>
+            <div className="text-center backdrop-blur-sm bg-white/10 rounded-lg p-3 border border-white/20">
+              <div className="text-2xl md:text-3xl font-bold mb-1 drop-shadow-lg">1000+</div>
+              <div className="text-xs md:text-sm text-blue-100">Destinations</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold mb-1">₹850</div>
-              <div className="text-xs md:text-sm text-blue-200">Avg Savings</div>
+            <div className="text-center backdrop-blur-sm bg-white/10 rounded-lg p-3 border border-white/20">
+              <div className="text-2xl md:text-3xl font-bold mb-1 drop-shadow-lg">₹850</div>
+              <div className="text-xs md:text-sm text-blue-100">Avg Savings</div>
             </div>
           </div>
         </div>
@@ -178,10 +187,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Button 
               onClick={() => {
-                const element = document.querySelector('[data-search-form]');
-                if (element) {
-                  element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               size="lg"
               className="text-lg px-8 py-6"
