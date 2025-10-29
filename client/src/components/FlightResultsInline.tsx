@@ -1,4 +1,3 @@
-// client/src/components/FlightResultsInline.tsx
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -53,20 +52,6 @@ export default function FlightResultsInline({
   const endIndex = startIndex + itemsPerPage;
   const currentFlights = flights?.slice(startIndex, endIndex) || [];
 
-  // Reset to page 1 when flights change
-  useState(() => {
-    setCurrentPage(1);
-  });
-
-  // Debug logging
-  console.log("🎭 FlightResultsInline rendered:", {
-    flightsCount: flights?.length,
-    currentPage,
-    totalPages,
-    currentFlights: currentFlights.length,
-    loading
-  });
-
   // Format currency
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat('en-IN', {
@@ -81,7 +66,7 @@ export default function FlightResultsInline({
   const goToPage = (page: number) => {
     setCurrentPage(page);
     // Scroll to top of results
-    document.getElementById('flight-results')?.scrollIntoView({ 
+    document.getElementById('flight-results-section')?.scrollIntoView({ 
       behavior: 'smooth',
       block: 'start'
     });
