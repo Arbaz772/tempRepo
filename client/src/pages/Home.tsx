@@ -6,6 +6,7 @@ import { useLocation } from "wouter";
 import { Sparkles, TrendingUp, Search, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FlightSearchForm from "@/components/FlightSearchForm";
+import airportHero from "@assets/generated_images/Airport_terminal_hero_background_9e80665b.png";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -35,7 +36,7 @@ export default function Home() {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('/assets/Airport_terminal_hero.png')",
+            backgroundImage:`url(${airportHero})`,
           }}
         >
           {/* Dark overlay for text readability */}
