@@ -1,22 +1,10 @@
 // server/routes.ts
-// FIXED - TypeScript compilation errors resolved
+// STANDALONE - Works without auth.ts or database imports
 
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
-import { setupAuth } from "./auth.js";
-import { db } from "../db/index.js";
-import { 
-  users, 
-  flights, 
-  predictions, 
-  bookings,
-  priceAlerts,
-  searchHistory,
-  flightPrices
-} from "../db/schema.js";
-import { eq, and, desc, gte, lte } from "drizzle-orm";
 
-// Extend Express Request type to include user
+// Extend Express Request type to include user (optional)
 declare global {
   namespace Express {
     interface Request {
@@ -141,7 +129,8 @@ function generateMockFlights(origin: string, destination: string, departDate: st
 // ========================================
 
 export function registerRoutes(app: Express): Server {
-  setupAuth(app);
+  // Note: If you have auth setup elsewhere, you can add it here:
+  // setupAuth(app);
 
   // ========================================
   // FLIGHT SEARCH WITH RETRY LOGIC
@@ -174,17 +163,11 @@ export function registerRoutes(app: Express): Server {
           // ============================================
           // Example:
           // const response = await fetch('https://api.amadeus.com/v2/shopping/flight-offers', {
-          //   method: 'POST',
+          //   method: 'GET',
           //   headers: {
           //     'Authorization': `Bearer ${amadeusToken}`,
           //     'Content-Type': 'application/json'
-          //   },
-          //   body: JSON.stringify({
-          //     originLocationCode: origin,
-          //     destinationLocationCode: destination,
-          //     departureDate: departDate,
-          //     adults: passengers || 1
-          //   })
+          //   }
           // });
           // 
           // if (!response.ok) {
@@ -194,7 +177,7 @@ export function registerRoutes(app: Express): Server {
           // }
           // 
           // const data = await response.json();
-          // return data.data; // Process Amadeus response
+          // return processAmadeusResponse(data);
           // ============================================
 
           // For now, using mock data
@@ -222,25 +205,6 @@ export function registerRoutes(app: Express): Server {
         // Fallback to mock data if all retries fail
         flightData = generateMockFlights(origin, destination, departDate);
         isMock = true;
-      }
-
-      // Save search to history (if user is logged in)
-      if (req.user) {
-        try {
-          await db.insert(searchHistory).values({
-            userId: req.user.id,
-            origin: origin.toUpperCase(),
-            destination: destination.toUpperCase(),
-            departDate: new Date(departDate),
-            returnDate: returnDate ? new Date(returnDate) : null,
-            passengers: passengers || 1,
-            tripType: tripType || 'round-trip'
-          });
-          console.log(`📝 Search history saved for user ${req.user.id}`);
-        } catch (historyError) {
-          console.error('Failed to save search history:', historyError);
-          // Don't fail the request if history save fails
-        }
       }
 
       // Return successful response
@@ -279,27 +243,29 @@ export function registerRoutes(app: Express): Server {
       const { id } = req.params;
 
       const flightData = await retryWithDelay(async () => {
-        // TODO: Call Amadeus API to get flight details
-        const flight = await db.query.flights.findFirst({
-          where: eq(flights.id, parseInt(id))
-        });
-
-        if (!flight) {
-          const error: any = new Error('Flight not found');
-          error.status = 404;
-          throw error;
-        }
-
-        return flight;
+        // TODO: Call Amadeus API or database to get flight details
+        // For now, return mock data
+        return {
+          id,
+          airline: 'IndiGo',
+          flightNumber: '6E101',
+          origin: 'DEL',
+          destination: 'BOM',
+          departureTime: '08:00',
+          arrivalTime: '10:30',
+          duration: '2h 30m',
+          price: 4500,
+          currency: 'INR',
+          availableSeats: 25,
+          class: 'Economy',
+          stops: 0,
+          departDate: new Date().toISOString().split('T')[0]
+        };
       });
 
       res.json(flightData);
 
     } catch (error: any) {
-      if (error.status === 404) {
-        return res.status(404).json({ message: "Flight not found" });
-      }
-
       console.error('Flight details error:', error);
       res.status(500).json({ message: "Failed to fetch flight details" });
     }
@@ -310,9 +276,10 @@ export function registerRoutes(app: Express): Server {
   // ========================================
   app.post("/api/predictions/price", async (req: Request, res) => {
     try {
-      if (!req.user) {
-        return res.status(401).json({ message: "Authentication required" });
-      }
+      // Optional: Check if user is authenticated
+      // if (!req.user) {
+      //   return res.status(401).json({ message: "Authentication required" });
+      // }
 
       const { origin, destination, departDate } = req.body;
 
