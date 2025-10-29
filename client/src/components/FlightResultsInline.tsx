@@ -1,36 +1,33 @@
+// client/src/components/FlightResultsInline.tsx
+// Flight results display with Book Now button (redirects to Skyscanner)
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plane, Clock, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Plane, Clock, IndianRupee, Calendar, ExternalLink } from "lucide-react";
+import { format } from "date-fns";
 
-interface FlightOffer {
+interface Flight {
   id: string;
   airline: string;
   flightNumber: string;
   origin: string;
   destination: string;
-  departTime: string;
-  arriveTime: string;
+  departureTime: string;
+  arrivalTime: string;
   duration: string;
-  stops: number;
   price: number;
   currency: string;
-  aircraft?: string;
-  bookingUrl?: string;
-  cabinClass?: string;
-  segments?: any[];
+  availableSeats: number;
+  class: string;
+  stops: number;
+  departDate?: string;
 }
 
 interface FlightResultsInlineProps {
-  flights: FlightOffer[];
-  searchParams?: {
-    origin: string;
-    destination: string;
-    departDate: string;
-    returnDate?: string;
-    passengers: number;
-  };
+  flights: Flight[];
+  searchParams: any;
   isMock?: boolean;
   loading?: boolean;
 }
@@ -41,254 +38,254 @@ export default function FlightResultsInline({
   isMock = false,
   loading = false
 }: FlightResultsInlineProps) {
-  
-  console.log("🎭 FlightResultsInline rendering:", {
-    flightsReceived: flights?.length || 0,
-    loading,
-    flightsIsArray: Array.isArray(flights),
-    firstFlight: flights?.[0]
-  });
-
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  
-  // CRITICAL: Add safety checks
-  const safeFlights = Array.isArray(flights) ? flights : [];
-  const totalPages = Math.ceil(safeFlights.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentFlights = safeFlights.slice(startIndex, endIndex);
+  const flightsPerPage = 10;
 
-  const formatPrice = (price: number, currency: string) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: currency || 'INR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(price);
+  // Calculate pagination
+  const indexOfLastFlight = currentPage * flightsPerPage;
+  const indexOfFirstFlight = indexOfLastFlight - flightsPerPage;
+  const currentFlights = flights.slice(indexOfFirstFlight, indexOfLastFlight);
+  const totalPages = Math.ceil(flights.length / flightsPerPage);
+
+  // Generate Skyscanner URL
+  const generateSkyscannerUrl = (flight: Flight) => {
+    const origin = searchParams?.origin || flight.origin;
+    const destination = searchParams?.destination || flight.destination;
+    const departDate = searchParams?.departDate || flight.departDate || format(new Date(), 'yyyy-MM-dd');
+    const returnDate = searchParams?.returnDate;
+    const adults = searchParams?.passengers || 1;
+
+    // Format: https://www.skyscanner.co.in/transport/flights/del/bom/250115/250122/?adults=1
+    // Date format: YYMMDD
+    const formatDateForSkyscanner = (dateStr: string) => {
+      const date = new Date(dateStr);
+      const yy = date.getFullYear().toString().slice(-2);
+      const mm = (date.getMonth() + 1).toString().padStart(2, '0');
+      const dd = date.getDate().toString().padStart(2, '0');
+      return `${yy}${mm}${dd}`;
+    };
+
+    const departFormatted = formatDateForSkyscanner(departDate);
+    const returnFormatted = returnDate ? formatDateForSkyscanner(returnDate) : '';
+
+    // Build URL
+    const baseUrl = 'https://www.skyscanner.co.in/transport/flights';
+    const originCode = origin.toLowerCase();
+    const destCode = destination.toLowerCase();
+    
+    let url = `${baseUrl}/${originCode}/${destCode}/${departFormatted}`;
+    
+    if (returnFormatted) {
+      url += `/${returnFormatted}`;
+    }
+    
+    url += `/?adults=${adults}`;
+
+    return url;
   };
 
-  const goToPage = (page: number) => {
-    setCurrentPage(page);
-    document.getElementById('flight-results-section')?.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'start'
-    });
+  const handleBookNow = (flight: Flight) => {
+    const skyscannerUrl = generateSkyscannerUrl(flight);
+    window.open(skyscannerUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const nextPage = () => {
-    if (currentPage < totalPages) goToPage(currentPage + 1);
-  };
-
-  const previousPage = () => {
-    if (currentPage > 1) goToPage(currentPage - 1);
-  };
-
-  // Loading state
   if (loading) {
-    console.log("⏳ Showing loading state");
     return (
-      <div className="w-full mt-8">
-        <div className="text-center py-12">
-          <Plane className="h-12 w-12 mx-auto text-muted-foreground mb-4 animate-pulse" />
-          <h3 className="text-lg font-semibold mb-2">Searching for flights...</h3>
-          <p className="text-muted-foreground">Please wait while we find the best options for you</p>
-        </div>
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="p-6 animate-pulse">
+            <div className="h-24 bg-muted rounded"></div>
+          </Card>
+        ))}
       </div>
     );
   }
 
-  // CRITICAL: Don't return null, show message instead
-  if (!safeFlights || safeFlights.length === 0) {
-    console.log("📭 No flights to display");
-    return null; // Only return null if truly no results
+  if (!flights || flights.length === 0) {
+    return (
+      <Card className="p-12 text-center">
+        <div className="text-5xl mb-4">✈️</div>
+        <h3 className="text-xl font-semibold mb-2">No flights found</h3>
+        <p className="text-muted-foreground">
+          Try adjusting your search criteria
+        </p>
+      </Card>
+    );
   }
 
-  console.log("✅ Rendering", currentFlights.length, "flights on page", currentPage);
-
   return (
-    <div className="w-full mt-8 mb-8">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-2xl font-bold">Flight Results</h2>
-          {searchParams && (
-            <div className="text-sm text-muted-foreground">
-              {searchParams.origin} → {searchParams.destination} • {searchParams.passengers} passenger{searchParams.passengers > 1 ? 's' : ''}
-            </div>
-          )}
+    <div className="space-y-4">
+      {/* Results Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Available Flights</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {flights.length} flight{flights.length !== 1 ? 's' : ''} found
+            {isMock && " (Sample data)"}
+          </p>
         </div>
-        <div className="flex items-center justify-between">
+        {searchParams && (
           <div className="text-sm text-muted-foreground">
-            Showing {startIndex + 1}-{Math.min(endIndex, safeFlights.length)} of {safeFlights.length} flight{safeFlights.length !== 1 ? 's' : ''}
-          </div>
-          {totalPages > 1 && (
-            <div className="text-sm text-muted-foreground">
-              Page {currentPage} of {totalPages}
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              <span>
+                {format(new Date(searchParams.departDate), 'MMM dd, yyyy')}
+                {searchParams.returnDate && 
+                  ` - ${format(new Date(searchParams.returnDate), 'MMM dd, yyyy')}`
+                }
+              </span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Flight Cards */}
       <div className="space-y-4">
-        {currentFlights.map((flight, index) => {
-          console.log("🎫 Rendering flight card:", index, flight.id);
-          return (
-            <Card key={flight.id || index} className="p-6 hover:shadow-lg transition-shadow">
-              <div className="flex flex-col gap-4">
-                {/* Flight Header */}
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="font-semibold text-lg">{flight.airline}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {flight.flightNumber}
-                      {flight.aircraft && ` • ${flight.aircraft}`}
+        {currentFlights.map((flight) => (
+          <Card key={flight.id} className="p-6 hover:shadow-lg transition-shadow">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              
+              {/* Flight Info */}
+              <div className="flex-1 space-y-3">
+                
+                {/* Airline and Flight Number */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Plane className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <div className="font-semibold">{flight.airline}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {flight.flightNumber}
+                      </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-primary">
-                      {formatPrice(flight.price, flight.currency)}
-                    </div>
-                    {flight.cabinClass && (
-                      <Badge variant="secondary" className="mt-1">
-                        {flight.cabinClass}
-                      </Badge>
-                    )}
-                  </div>
+                  
+                  {flight.stops === 0 && (
+                    <Badge variant="secondary" className="ml-2">
+                      Non-stop
+                    </Badge>
+                  )}
+                  
+                  {flight.stops > 0 && (
+                    <Badge variant="outline">
+                      {flight.stops} stop{flight.stops > 1 ? 's' : ''}
+                    </Badge>
+                  )}
                 </div>
 
-                {/* Flight Route */}
+                {/* Route and Time */}
                 <div className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <div className="text-2xl font-bold">{flight.departTime}</div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold">{flight.departureTime}</div>
                     <div className="text-sm text-muted-foreground">{flight.origin}</div>
                   </div>
                   
-                  <div className="flex-1 flex flex-col items-center">
-                    <div className="text-xs text-muted-foreground mb-1">{flight.duration}</div>
-                    <div className="w-full flex items-center">
-                      <div className="flex-1 border-t-2 border-dashed"></div>
-                      <Plane className="h-4 w-4 text-muted-foreground rotate-90 mx-2" />
-                      <div className="flex-1 border-t-2 border-dashed"></div>
+                  <div className="flex-1 flex items-center gap-2 px-4">
+                    <div className="h-px bg-border flex-1"></div>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Clock className="h-3 w-3" />
+                      <span>{flight.duration}</span>
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      {flight.stops === 0 ? (
-                        <span className="text-green-600 font-medium">Non-stop</span>
-                      ) : (
-                        <span className="text-orange-600 font-medium">
-                          {flight.stops} stop{flight.stops > 1 ? 's' : ''}
-                        </span>
-                      )}
-                    </div>
+                    <div className="h-px bg-border flex-1"></div>
                   </div>
                   
-                  <div className="flex-1 text-right">
-                    <div className="text-2xl font-bold">{flight.arriveTime}</div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold">{flight.arrivalTime}</div>
                     <div className="text-sm text-muted-foreground">{flight.destination}</div>
                   </div>
                 </div>
 
-                {/* Segments */}
-                {flight.segments && flight.segments.length > 0 && (
-                  <div className="pt-4 border-t">
-                    <div className="text-xs font-semibold text-muted-foreground mb-2">
-                      FLIGHT DETAILS
-                    </div>
-                    <div className="space-y-2">
-                      {flight.segments.map((segment: any, idx: number) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Clock className="h-3 w-3" />
-                          <span>
-                            {segment.departure?.iataCode} → {segment.arrival?.iataCode}
-                          </span>
-                          <span className="text-xs">({segment.duration})</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Book Button */}
-                {flight.bookingUrl && (
-                  <Button 
-                    className="w-full" 
-                    onClick={() => window.open(flight.bookingUrl, '_blank')}
-                  >
-                    Book Now
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Button>
-                )}
+                {/* Additional Info */}
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <span>{flight.class}</span>
+                  <span>•</span>
+                  <span>{flight.availableSeats} seats available</span>
+                </div>
               </div>
-            </Card>
-          );
-        })}
+
+              {/* Price and Book Button */}
+              <div className="md:text-right space-y-3 md:ml-6">
+                <div>
+                  <div className="flex items-baseline justify-end gap-1">
+                    <IndianRupee className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-3xl font-bold">{flight.price.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    per person
+                  </div>
+                </div>
+                
+                {/* Book Now Button - Redirects to Skyscanner */}
+                <Button 
+                  className="w-full md:w-auto min-w-[140px]" 
+                  size="lg"
+                  onClick={() => handleBookNow(flight)}
+                >
+                  Book Now
+                  <ExternalLink className="ml-2 h-4 w-4" />
+                </Button>
+                
+                <div className="text-xs text-muted-foreground text-center">
+                  via Skyscanner
+                </div>
+              </div>
+            </div>
+          </Card>
+        ))}
       </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-6 flex items-center justify-between border-t pt-6">
-          <div className="text-sm text-muted-foreground">
-            Showing {startIndex + 1}-{Math.min(endIndex, safeFlights.length)} of {safeFlights.length} results
+        <div className="flex items-center justify-center gap-2 pt-6">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          
+          <div className="flex items-center gap-1">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <Button
+                key={page}
+                variant={currentPage === page ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCurrentPage(page)}
+                className="w-10"
+              >
+                {page}
+              </Button>
+            ))}
           </div>
           
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={previousPage}
-              disabled={currentPage === 1}
-            >
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Previous
-            </Button>
-            
-            <div className="flex items-center gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                const showPage = 
-                  page === 1 || 
-                  page === totalPages || 
-                  page === currentPage || 
-                  page === currentPage - 1 || 
-                  page === currentPage + 1;
-                
-                const showEllipsis = 
-                  (page === 2 && currentPage > 3) ||
-                  (page === totalPages - 1 && currentPage < totalPages - 2);
-
-                if (showEllipsis) {
-                  return <span key={page} className="px-2 text-muted-foreground">...</span>;
-                }
-
-                if (!showPage) {
-                  return null;
-                }
-
-                return (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => goToPage(page)}
-                    className="min-w-[40px]"
-                  >
-                    {page}
-                  </Button>
-                );
-              })}
-            </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={nextPage}
-              disabled={currentPage === totalPages}
-            >
-              Next
-              <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
         </div>
+      )}
+
+      {/* Mock Data Notice */}
+      {isMock && (
+        <Card className="p-4 bg-muted/50 border-dashed">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="text-lg">ℹ️</div>
+            <div>
+              <div className="font-medium">Sample Data</div>
+              <div className="text-xs">
+                These are sample flights for demonstration. Click "Book Now" to search on Skyscanner with real-time prices.
+              </div>
+            </div>
+          </div>
+        </Card>
       )}
     </div>
   );
