@@ -1,245 +1,143 @@
-import { useState, useEffect } from "react";
-import FlightSearchForm from "@/components/FlightSearchForm";
-import FlightResultsInline from "@/components/FlightResultsInline";
-import FilterPanel from "@/components/FilterPanel";
-import AIPredictionPanel from "@/components/AIPredictionPanel";
-import PriceTrendChart from "@/components/PriceTrendChart";
-import { Loader2, Plane } from "lucide-react";
+// TestFlightSearch.tsx - Diagnostic Component
+// Add this temporarily to your app to test the data flow
 
-export default function Flights() {
-  // Flight results state
-  const [flights, setFlights] = useState<any[]>([]);
-  const [searchParams, setSearchParams] = useState<any>(null);
-  const [isMock, setIsMock] = useState(false);
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+export default function TestFlightSearch() {
+  const [testResult, setTestResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  // 🔍 DEBUG: Watch state changes
-  useEffect(() => {
-    console.log("🎯 State changed:", {
-      flightsCount: flights.length,
-      loading,
-      hasSearchParams: !!searchParams,
-      isMock,
-      flights: flights.slice(0, 2) // Show first 2 flights as sample
-    });
-  }, [flights, loading, searchParams, isMock]);
-
-  // Handler when search starts
-  const handleSearchStart = () => {
-    console.log("🚀 handleSearchStart called");
+  const runTest = async () => {
     setLoading(true);
-  };
+    setTestResult(null);
 
-  // Handler when search completes
-  const handleSearchComplete = (data: any) => {
-    console.log("🔥 handleSearchComplete CALLED!", data);
-    console.log("🔥 Flights array:", data.flights);
-    console.log("🔥 Number of flights:", data.flights?.length);
-    console.log("🔥 Search params:", data.searchParams);
-    console.log("🔥 Is mock:", data.isMock);
-    
-    setFlights(data.flights);
-    setSearchParams(data.searchParams);
-    setIsMock(data.isMock);
-    setLoading(false);
-    
-    console.log("🔥 After setState - should trigger render");
-    console.log("🔥 State will update to:", {
-      flightsCount: data.flights?.length,
-      loading: false
-    });
-    
-    // Scroll to results section after a delay
-    setTimeout(() => {
-      const element = document.getElementById('flight-results-section');
-      console.log("📍 Scrolling to results, element found:", !!element);
-      element?.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
+    try {
+      console.log("🧪 Starting diagnostic test...");
+
+      // Test 1: Check API connectivity
+      const healthResponse = await fetch('/api/health');
+      const healthData = await healthResponse.json();
+      console.log("✅ Health check:", healthData);
+
+      // Test 2: Perform actual flight search
+      const searchParams = {
+        origin: 'DEL',
+        destination: 'BOM',
+        departDate: '2025-11-15',
+        passengers: 1,
+        tripType: 'one-way'
+      };
+
+      console.log("🔍 Testing flight search with:", searchParams);
+
+      const searchResponse = await fetch('/api/flights/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(searchParams)
       });
-    }, 300);
+
+      console.log("📡 Response status:", searchResponse.status);
+      console.log("📡 Response headers:", Object.fromEntries(searchResponse.headers.entries()));
+
+      const searchData = await searchResponse.json();
+      console.log("📦 Response data:", searchData);
+
+      // Analyze the response
+      const analysis = {
+        status: searchResponse.status,
+        ok: searchResponse.ok,
+        hasData: !!searchData.data,
+        dataIsArray: Array.isArray(searchData.data),
+        dataLength: searchData.data?.length || 0,
+        dataStructure: searchData.data?.[0] ? Object.keys(searchData.data[0]) : [],
+        fullResponse: searchData,
+        sampleFlight: searchData.data?.[0],
+        health: healthData
+      };
+
+      console.log("📊 Analysis:", analysis);
+      setTestResult(analysis);
+
+    } catch (error: any) {
+      console.error("❌ Test failed:", error);
+      setTestResult({
+        error: true,
+        message: error.message,
+        stack: error.stack
+      });
+    } finally {
+      setLoading(false);
+    }
   };
-
-  // Handler when search has error
-  const handleSearchError = (error: string) => {
-    console.log("❌ handleSearchError called:", error);
-    setLoading(false);
-    setFlights([]);
-  };
-
-  // Price trend data (you can make this dynamic based on search)
-  const priceData = [
-    { date: 'Jan 1', price: 5200 },
-    { date: 'Jan 5', price: 4800 },
-    { date: 'Jan 10', price: 5500 },
-    { date: 'Jan 15', price: 4900 },
-    { date: 'Jan 20', price: 4500 },
-    { date: 'Jan 25', price: 4700 },
-    { date: 'Jan 30', price: 4400 },
-  ];
-
-  const predictedData = [
-    { date: 'Feb 1', price: 4200 },
-    { date: 'Feb 3', price: 4100 },
-    { date: 'Feb 5', price: 4300 },
-  ];
-
-  console.log("🎨 Flights component rendering, current state:", {
-    flightsCount: flights.length,
-    loading,
-    hasSearchParams: !!searchParams
-  });
 
   return (
-    <div className="bg-background">
-      {/* SEARCH FORM SECTION */}
-      <div className="bg-card/30 border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <FlightSearchForm 
-            onSearchStart={handleSearchStart}
-            onSearchComplete={handleSearchComplete}
-            onSearchError={handleSearchError}
-          />
+    <Card className="p-6 max-w-4xl mx-auto my-8">
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold mb-2">🔬 Flight Search Diagnostic</h2>
+          <p className="text-sm text-muted-foreground">
+            This will test the complete data flow from backend to frontend
+          </p>
+        </div>
+
+        <Button 
+          onClick={runTest} 
+          disabled={loading}
+          className="w-full"
+        >
+          {loading ? "Running Tests..." : "🧪 Run Diagnostic Test"}
+        </Button>
+
+        {testResult && (
+          <div className="mt-4">
+            <h3 className="font-semibold mb-2">Test Results:</h3>
+            <div className="bg-gray-100 dark:bg-gray-900 p-4 rounded overflow-auto">
+              <pre className="text-xs">
+                {JSON.stringify(testResult, null, 2)}
+              </pre>
+            </div>
+
+            {!testResult.error && (
+              <div className="mt-4 space-y-2">
+                <div className={`p-3 rounded ${testResult.ok ? 'bg-green-100 dark:bg-green-900' : 'bg-red-100 dark:bg-red-900'}`}>
+                  <strong>API Status:</strong> {testResult.ok ? '✅ OK' : '❌ Failed'}
+                </div>
+                <div className={`p-3 rounded ${testResult.hasData ? 'bg-green-100 dark:bg-green-900' : 'bg-red-100 dark:bg-red-900'}`}>
+                  <strong>Has Data:</strong> {testResult.hasData ? '✅ Yes' : '❌ No'}
+                </div>
+                <div className={`p-3 rounded ${testResult.dataIsArray ? 'bg-green-100 dark:bg-green-900' : 'bg-yellow-100 dark:bg-yellow-900'}`}>
+                  <strong>Data is Array:</strong> {testResult.dataIsArray ? '✅ Yes' : '⚠️ No'}
+                </div>
+                <div className={`p-3 rounded ${testResult.dataLength > 0 ? 'bg-green-100 dark:bg-green-900' : 'bg-yellow-100 dark:bg-yellow-900'}`}>
+                  <strong>Flights Found:</strong> {testResult.dataLength}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950 rounded border border-blue-200 dark:border-blue-800">
+          <h4 className="font-semibold mb-2">What to check:</h4>
+          <ul className="text-sm space-y-1 list-disc list-inside">
+            <li>API Status should be 200 (OK)</li>
+            <li>Has Data should be ✅ Yes</li>
+            <li>Data is Array should be ✅ Yes</li>
+            <li>Flights Found should be &gt; 0</li>
+            <li>Check dataStructure to see flight object keys</li>
+            <li>Check sampleFlight to see actual data format</li>
+          </ul>
         </div>
       </div>
-
-      {/* LOADING STATE - Show prominent spinner while searching */}
-      {(() => {
-        console.log("🔍 Checking loading state:", loading);
-        return loading && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            {console.log("⏳ RENDERING LOADING SPINNER")}
-            <div className="flex flex-col items-center justify-center py-20">
-              {/* Animated Plane Icon */}
-              <div className="relative mb-8">
-                <Plane className="h-16 w-16 text-primary animate-bounce" />
-                <Loader2 className="h-20 w-20 text-primary/30 animate-spin absolute -top-2 -left-2" />
-              </div>
-              
-              {/* Loading Text */}
-              <h3 className="text-2xl font-semibold mb-3 text-foreground">
-                Searching for flights...
-              </h3>
-              <p className="text-muted-foreground mb-2">
-                Finding the best options for you
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {searchParams?.origin || "..."} → {searchParams?.destination || "..."} • {searchParams?.passengers || 1} passenger{searchParams?.passengers > 1 ? 's' : ''}
-              </p>
-              
-              {/* Loading Progress Dots */}
-              <div className="flex gap-2 mt-6">
-                <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
-                <div className="w-3 h-3 bg-primary rounded-full animate-pulse delay-75"></div>
-                <div className="w-3 h-3 bg-primary rounded-full animate-pulse delay-150"></div>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* RESULTS SECTION - Only show after search completes */}
-      {(() => {
-        console.log("🔍 Checking results render condition:", {
-          loading,
-          flightsLength: flights.length,
-          shouldRender: !loading && flights.length > 0
-        });
-        
-        return !loading && flights.length > 0 && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {console.log("✅ RENDERING RESULTS SECTION with", flights.length, "flights")}
-            <div className="grid lg:grid-cols-4 gap-8">
-              
-              {/* LEFT SIDEBAR - Filters */}
-              <aside className="lg:col-span-1">
-                <div className="space-y-6 sticky top-24">
-                  <FilterPanel onFilterChange={(filters) => console.log('Filters:', filters)} />
-                </div>
-              </aside>
-
-              {/* MAIN CONTENT - Predictions, Trends, and Results */}
-              <main className="lg:col-span-3 space-y-6">
-                
-                {/* AI PREDICTION & PRICE TRENDS */}
-                <div className="grid lg:grid-cols-2 gap-6">
-                  <AIPredictionPanel
-                    route={`${searchParams?.origin} → ${searchParams?.destination}`}
-                    prediction={{
-                      recommendation: "book_now",
-                      confidence: 87,
-                      bestTimeToBook: "Within next 48 hours",
-                      expectedSavings: 850,
-                      priceDirection: "down"
-                    }}
-                  />
-                  <PriceTrendChart 
-                    route={`${searchParams?.origin} → ${searchParams?.destination}`}
-                    data={priceData} 
-                    predictedData={predictedData}
-                  />
-                </div>
-
-                {/* FLIGHT RESULTS WITH PAGINATION */}
-                <div id="flight-results-section">
-                  {console.log("🎭 About to render FlightResultsInline with", flights.length, "flights")}
-                  <FlightResultsInline
-                    flights={flights}
-                    searchParams={searchParams}
-                    isMock={isMock}
-                    loading={false}
-                  />
-                </div>
-              </main>
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* EMPTY STATE - Before any search */}
-      {(() => {
-        console.log("🔍 Checking empty state condition:", {
-          loading,
-          flightsLength: flights.length,
-          shouldShowEmpty: !loading && flights.length === 0
-        });
-        
-        return !loading && flights.length === 0 && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            {console.log("📭 RENDERING EMPTY STATE")}
-            <div className="max-w-2xl mx-auto text-center">
-              <div className="text-7xl mb-6">✈️</div>
-              <h2 className="text-2xl font-semibold mb-3">Start Your Journey</h2>
-              <p className="text-muted-foreground mb-6">
-                Enter your travel details above to find the best flight options
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div className="p-4 border rounded-lg">
-                  <div className="text-3xl mb-2">🔍</div>
-                  <div className="font-medium mb-1">Smart Search</div>
-                  <div className="text-xs text-muted-foreground">
-                    AI-powered flight recommendations
-                  </div>
-                </div>
-                <div className="p-4 border rounded-lg">
-                  <div className="text-3xl mb-2">💰</div>
-                  <div className="font-medium mb-1">Best Prices</div>
-                  <div className="text-xs text-muted-foreground">
-                    Compare across multiple airlines
-                  </div>
-                </div>
-                <div className="p-4 border rounded-lg">
-                  <div className="text-3xl mb-2">📊</div>
-                  <div className="font-medium mb-1">Price Insights</div>
-                  <div className="text-xs text-muted-foreground">
-                    Predict future price changes
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
-    </div>
+    </Card>
   );
 }
+
+// To use this component, add it to your app temporarily:
+// import TestFlightSearch from './components/TestFlightSearch';
+// 
+// In your route/page:
+// <TestFlightSearch />
