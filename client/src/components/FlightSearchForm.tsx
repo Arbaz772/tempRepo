@@ -1,7 +1,7 @@
 // client/src/components/FlightSearchForm.tsx
-// COMPLETE - With comprehensive input validation and error messages
+// UPDATED - With autocomplete and inline-only errors
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Plane, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 
 interface FlightSearchFormProps {
@@ -36,6 +35,30 @@ interface ValidationErrors {
   returnDate?: string;
 }
 
+// Popular Indian airports
+const INDIAN_AIRPORTS = [
+  { code: "DEL", city: "Delhi", name: "Indira Gandhi International Airport" },
+  { code: "BOM", city: "Mumbai", name: "Chhatrapati Shivaji Maharaj International Airport" },
+  { code: "BLR", city: "Bangalore", name: "Kempegowda International Airport" },
+  { code: "HYD", city: "Hyderabad", name: "Rajiv Gandhi International Airport" },
+  { code: "MAA", city: "Chennai", name: "Chennai International Airport" },
+  { code: "CCU", city: "Kolkata", name: "Netaji Subhas Chandra Bose International Airport" },
+  { code: "PNQ", city: "Pune", name: "Pune Airport" },
+  { code: "AMD", city: "Ahmedabad", name: "Sardar Vallabhbhai Patel International Airport" },
+  { code: "GOI", city: "Goa", name: "Goa International Airport" },
+  { code: "COK", city: "Kochi", name: "Cochin International Airport" },
+  { code: "JAI", city: "Jaipur", name: "Jaipur International Airport" },
+  { code: "LKO", city: "Lucknow", name: "Chaudhary Charan Singh International Airport" },
+  { code: "TRV", city: "Thiruvananthapuram", name: "Trivandrum International Airport" },
+  { code: "IXC", city: "Chandigarh", name: "Chandigarh International Airport" },
+  { code: "GAU", city: "Guwahati", name: "Lokpriya Gopinath Bordoloi International Airport" },
+  { code: "VNS", city: "Varanasi", name: "Lal Bahadur Shastri Airport" },
+  { code: "PAT", city: "Patna", name: "Jay Prakash Narayan Airport" },
+  { code: "IXR", city: "Ranchi", name: "Birsa Munda Airport" },
+  { code: "NAG", city: "Nagpur", name: "Dr. Babasaheb Ambedkar International Airport" },
+  { code: "SXR", city: "Srinagar", name: "Sheikh ul-Alam International Airport" },
+];
+
 export default function FlightSearchForm({
   onSearchStart,
   onSearchComplete,
@@ -55,6 +78,19 @@ export default function FlightSearchForm({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [showErrors, setShowErrors] = useState(false);
+
+  // Autocomplete states
+  const [originSuggestions, setOriginSuggestions] = useState<typeof INDIAN_AIRPORTS>([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState<typeof INDIAN_AIRPORTS>([]);
+  const [showOriginDropdown, setShowOriginDropdown] = useState(false);
+  const [showDestinationDropdown, setShowDestinationDropdown] = useState(false);
+  const [originFocusedIndex, setOriginFocusedIndex] = useState(-1);
+  const [destFocusedIndex, setDestFocusedIndex] = useState(-1);
+
+  const originInputRef = useRef<HTMLInputElement>(null);
+  const destinationInputRef = useRef<HTMLInputElement>(null);
+  const originDropdownRef = useRef<HTMLDivElement>(null);
+  const destinationDropdownRef = useRef<HTMLDivElement>(null);
 
   // Update form when initialValues change
   useEffect(() => {
@@ -93,8 +129,135 @@ export default function FlightSearchForm({
     }
   }, [returnDate]);
 
+  // Filter airports based on input
+  const filterAirports = (input: string) => {
+    if (!input || input.length < 1) return [];
+    const searchTerm = input.toLowerCase();
+    return INDIAN_AIRPORTS.filter(
+      airport =>
+        airport.code.toLowerCase().includes(searchTerm) ||
+        airport.city.toLowerCase().includes(searchTerm) ||
+        airport.name.toLowerCase().includes(searchTerm)
+    ).slice(0, 8); // Limit to 8 suggestions
+  };
+
+  // Handle origin input change
+  const handleOriginChange = (value: string) => {
+    setOrigin(value);
+    const suggestions = filterAirports(value);
+    setOriginSuggestions(suggestions);
+    setShowOriginDropdown(suggestions.length > 0);
+    setOriginFocusedIndex(-1);
+  };
+
+  // Handle destination input change
+  const handleDestinationChange = (value: string) => {
+    setDestination(value);
+    const suggestions = filterAirports(value);
+    setDestinationSuggestions(suggestions);
+    setShowDestinationDropdown(suggestions.length > 0);
+    setDestFocusedIndex(-1);
+  };
+
+  // Handle origin selection
+  const handleOriginSelect = (airport: typeof INDIAN_AIRPORTS[0]) => {
+    setOrigin(`${airport.code} - ${airport.city}`);
+    setShowOriginDropdown(false);
+    setOriginFocusedIndex(-1);
+  };
+
+  // Handle destination selection
+  const handleDestinationSelect = (airport: typeof INDIAN_AIRPORTS[0]) => {
+    setDestination(`${airport.code} - ${airport.city}`);
+    setShowDestinationDropdown(false);
+    setDestFocusedIndex(-1);
+  };
+
+  // Handle keyboard navigation for origin
+  const handleOriginKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showOriginDropdown) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setOriginFocusedIndex(prev => 
+          prev < originSuggestions.length - 1 ? prev + 1 : prev
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setOriginFocusedIndex(prev => prev > 0 ? prev - 1 : -1);
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (originFocusedIndex >= 0 && originFocusedIndex < originSuggestions.length) {
+          handleOriginSelect(originSuggestions[originFocusedIndex]);
+        }
+        break;
+      case 'Escape':
+        setShowOriginDropdown(false);
+        setOriginFocusedIndex(-1);
+        break;
+    }
+  };
+
+  // Handle keyboard navigation for destination
+  const handleDestinationKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showDestinationDropdown) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setDestFocusedIndex(prev => 
+          prev < destinationSuggestions.length - 1 ? prev + 1 : prev
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setDestFocusedIndex(prev => prev > 0 ? prev - 1 : -1);
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (destFocusedIndex >= 0 && destFocusedIndex < destinationSuggestions.length) {
+          handleDestinationSelect(destinationSuggestions[destFocusedIndex]);
+        }
+        break;
+      case 'Escape':
+        setShowDestinationDropdown(false);
+        setDestFocusedIndex(-1);
+        break;
+    }
+  };
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        originDropdownRef.current &&
+        !originDropdownRef.current.contains(event.target as Node) &&
+        !originInputRef.current?.contains(event.target as Node)
+      ) {
+        setShowOriginDropdown(false);
+      }
+      if (
+        destinationDropdownRef.current &&
+        !destinationDropdownRef.current.contains(event.target as Node) &&
+        !destinationInputRef.current?.contains(event.target as Node)
+      ) {
+        setShowDestinationDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
+
+    // Extract airport code from input (e.g., "DEL - Delhi" -> "DEL")
+    const originCode = origin.split('-')[0].trim().toUpperCase();
+    const destinationCode = destination.split('-')[0].trim().toUpperCase();
 
     // Validate origin
     if (!origin || origin.trim() === "") {
@@ -111,7 +274,7 @@ export default function FlightSearchForm({
     }
 
     // Validate same origin and destination
-    if (origin && destination && origin.toUpperCase() === destination.toUpperCase()) {
+    if (originCode && destinationCode && originCode === destinationCode) {
       newErrors.origin = "Origin and destination cannot be the same";
       newErrors.destination = "Origin and destination cannot be the same";
     }
@@ -140,11 +303,6 @@ export default function FlightSearchForm({
 
     // Validate form
     if (!validateForm()) {
-      // Show first error message
-      const firstError = Object.values(errors).find(err => err);
-      if (firstError) {
-        onSearchError?.(firstError);
-      }
       return;
     }
 
@@ -152,9 +310,13 @@ export default function FlightSearchForm({
     onSearchStart?.();
 
     try {
+      // Extract airport codes
+      const originCode = origin.split('-')[0].trim().toUpperCase();
+      const destinationCode = destination.split('-')[0].trim().toUpperCase();
+
       const searchParams = {
-        origin: origin.toUpperCase().trim(),
-        destination: destination.toUpperCase().trim(),
+        origin: originCode,
+        destination: destinationCode,
         departDate: format(departDate!, "yyyy-MM-dd"),
         returnDate: tripType === "round-trip" && returnDate ? format(returnDate, "yyyy-MM-dd") : undefined,
         passengers,
@@ -192,8 +354,6 @@ export default function FlightSearchForm({
     }
   };
 
-  const hasAnyError = Object.keys(errors).length > 0;
-
   return (
     <form onSubmit={handleSearch} className="space-y-6">
       {/* Trip Type Toggle */}
@@ -216,43 +376,65 @@ export default function FlightSearchForm({
         </Button>
       </div>
 
-      {/* Error Alert */}
-      {showErrors && hasAnyError && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Please fix the following errors:
-            <ul className="list-disc list-inside mt-2 space-y-1">
-              {errors.origin && <li>{errors.origin}</li>}
-              {errors.destination && <li>{errors.destination}</li>}
-              {errors.departDate && <li>{errors.departDate}</li>}
-              {errors.returnDate && <li>{errors.returnDate}</li>}
-            </ul>
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {/* From and To */}
+      {/* From and To with Autocomplete */}
       <div className="grid md:grid-cols-2 gap-4">
-        <div className="space-y-2">
+        {/* Origin Field */}
+        <div className="space-y-2 relative">
           <Label htmlFor="origin" className="text-sm font-medium">
             From <span className="text-red-500">*</span>
           </Label>
           <div className="relative">
             <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
             <input
+              ref={originInputRef}
               id="origin"
               type="text"
               placeholder="Delhi, Mumbai, or DEL"
               value={origin}
-              onChange={(e) => setOrigin(e.target.value)}
+              onChange={(e) => handleOriginChange(e.target.value)}
+              onKeyDown={handleOriginKeyDown}
+              onFocus={() => {
+                if (origin) {
+                  const suggestions = filterAirports(origin);
+                  setOriginSuggestions(suggestions);
+                  setShowOriginDropdown(suggestions.length > 0);
+                }
+              }}
               className={cn(
                 "flex h-10 w-full rounded-md border bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 showErrors && errors.origin
                   ? "border-red-500 focus-visible:ring-red-500"
                   : "border-input"
               )}
+              autoComplete="off"
             />
+            
+            {/* Origin Dropdown */}
+            {showOriginDropdown && originSuggestions.length > 0 && (
+              <div
+                ref={originDropdownRef}
+                className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto"
+              >
+                {originSuggestions.map((airport, index) => (
+                  <div
+                    key={airport.code}
+                    className={cn(
+                      "px-3 py-2 cursor-pointer hover:bg-accent transition-colors",
+                      index === originFocusedIndex && "bg-accent"
+                    )}
+                    onClick={() => handleOriginSelect(airport)}
+                    onMouseEnter={() => setOriginFocusedIndex(index)}
+                  >
+                    <div className="font-medium text-sm">
+                      {airport.code} - {airport.city}
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {airport.name}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           {showErrors && errors.origin && (
             <p className="text-sm text-red-500 flex items-center gap-1">
@@ -262,25 +444,63 @@ export default function FlightSearchForm({
           )}
         </div>
 
-        <div className="space-y-2">
+        {/* Destination Field */}
+        <div className="space-y-2 relative">
           <Label htmlFor="destination" className="text-sm font-medium">
             To <span className="text-red-500">*</span>
           </Label>
           <div className="relative">
             <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rotate-90 pointer-events-none z-10" />
             <input
+              ref={destinationInputRef}
               id="destination"
               type="text"
               placeholder="Delhi, Mumbai, or BOM"
               value={destination}
-              onChange={(e) => setDestination(e.target.value)}
+              onChange={(e) => handleDestinationChange(e.target.value)}
+              onKeyDown={handleDestinationKeyDown}
+              onFocus={() => {
+                if (destination) {
+                  const suggestions = filterAirports(destination);
+                  setDestinationSuggestions(suggestions);
+                  setShowDestinationDropdown(suggestions.length > 0);
+                }
+              }}
               className={cn(
                 "flex h-10 w-full rounded-md border bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 showErrors && errors.destination
                   ? "border-red-500 focus-visible:ring-red-500"
                   : "border-input"
               )}
+              autoComplete="off"
             />
+            
+            {/* Destination Dropdown */}
+            {showDestinationDropdown && destinationSuggestions.length > 0 && (
+              <div
+                ref={destinationDropdownRef}
+                className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto"
+              >
+                {destinationSuggestions.map((airport, index) => (
+                  <div
+                    key={airport.code}
+                    className={cn(
+                      "px-3 py-2 cursor-pointer hover:bg-accent transition-colors",
+                      index === destFocusedIndex && "bg-accent"
+                    )}
+                    onClick={() => handleDestinationSelect(airport)}
+                    onMouseEnter={() => setDestFocusedIndex(index)}
+                  >
+                    <div className="font-medium text-sm">
+                      {airport.code} - {airport.city}
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {airport.name}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           {showErrors && errors.destination && (
             <p className="text-sm text-red-500 flex items-center gap-1">
@@ -291,7 +511,7 @@ export default function FlightSearchForm({
         </div>
       </div>
 
-      {/* Dates with Better Picker */}
+      {/* Dates */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label className="text-sm font-medium">
