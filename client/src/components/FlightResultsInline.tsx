@@ -217,19 +217,15 @@ export default function FlightResultsInline({
                   </div>
                 </div>
                 
-                {/* Book Now Button - Redirects to Skyscanner */}
+                {/* Book Button - Redirects to Skyscanner */}
                 <Button 
                   className="w-full md:w-auto min-w-[140px]" 
                   size="lg"
                   onClick={() => handleBookNow(flight)}
                 >
-                  Book Now
+                  Book
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </Button>
-                
-                <div className="text-xs text-muted-foreground text-center">
-                  via Skyscanner
-                </div>
               </div>
             </div>
           </Card>
