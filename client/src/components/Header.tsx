@@ -1,127 +1,99 @@
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/hooks/useAuth";
-import { LogOut, User, Settings } from "lucide-react";
+// client/src/components/Header.tsx
+// UPDATED - No Login/Signup buttons, clean navigation only
+
+import { Link, useLocation } from "wouter";
+import { Plane, TrendingUp, Search, DollarSign, Info } from "lucide-react";
 
 export default function Header() {
-  const { user, isAuthenticated } = useAuth();
+  const [location] = useLocation();
 
-  const handleLogout = () => {
-    localStorage.removeItem('skailinker_user');
-    window.location.reload(); // Reload to trigger auth check
-  };
+  const navigation = [
+    { name: 'Home', href: '/', icon: Plane },
+    { name: 'Flights', href: '/flights', icon: Search },
+    { name: 'Predictions', href: '/predictions', icon: TrendingUp },
+    { name: 'Deals', href: '/deals', icon: DollarSign },
+    { name: 'About', href: '/about', icon: Info },
+  ];
 
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          
           {/* Logo */}
           <Link href="/">
-            <a className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <a className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <img 
                 src="/assets/SkaiLinker_Icon.png" 
                 alt="SkaiLinker" 
-                className="h-10 w-10 object-contain"
+                className="h-10 w-10"
                 onError={(e) => {
                   e.currentTarget.src = 'https://via.placeholder.com/40x40/3B82F6/FFFFFF?text=SK';
                 }}
               />
-              <span className="text-xl font-bold">
-                Skai<span className="text-primary">Linker</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                SkaiLinker
               </span>
             </a>
           </Link>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/flights">
-              <a className="text-sm font-medium hover:text-primary transition-colors">
-                Flights
-              </a>
-            </Link>
-            <Link href="/predictions">
-              <a className="text-sm font-medium hover:text-primary transition-colors">
-                Predictions
-              </a>
-            </Link>
-            <Link href="/deals">
-              <a className="text-sm font-medium hover:text-primary transition-colors">
-                Deals
-              </a>
-            </Link>
-            <Link href="/about">
-              <a className="text-sm font-medium hover:text-primary transition-colors">
-                About
-              </a>
-            </Link>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              const isActive = location === item.href;
+              
+              return (
+                <Link key={item.name} href={item.href}>
+                  <a
+                    className={`
+                      flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
+                      ${isActive 
+                        ? 'bg-primary/10 text-primary' 
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                      }
+                    `}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.name}
+                  </a>
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* User Profile or Auth Buttons */}
-          <div className="flex items-center gap-3">
-            {isAuthenticated && user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    className="relative h-10 w-10 rounded-full"
-                  >
-                    <Avatar className="h-10 w-10 border-2 border-primary/20">
-                      <AvatarImage src={user.picture} alt={user.name} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                        {user.name?.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.name}</p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    onClick={handleLogout}
-                    className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link href="/login">Login</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/signup">Sign Up</Link>
-                </Button>
-              </>
-            )}
+          {/* Mobile Menu Button (if needed) */}
+          <div className="md:hidden">
+            {/* You can add a mobile menu toggle here if needed */}
           </div>
         </div>
+      </div>
+
+      {/* Mobile Navigation */}
+      <div className="md:hidden border-t">
+        <nav className="flex overflow-x-auto px-4 py-2 gap-2">
+          {navigation.map((item) => {
+            const Icon = item.icon;
+            const isActive = location === item.href;
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <a
+                  className={`
+                    flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium whitespace-nowrap transition-colors
+                    ${isActive 
+                      ? 'bg-primary/10 text-primary' 
+                      : 'text-muted-foreground hover:text-foreground'
+                    }
+                  `}
+                >
+                  <Icon className="h-3 w-3" />
+                  {item.name}
+                </a>
+              </Link>
+            );
+          })}
+        </nav>
       </div>
     </header>
   );
