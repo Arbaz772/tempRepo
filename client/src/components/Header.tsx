@@ -1,9 +1,9 @@
 // client/src/components/Header.tsx
-// ✅ UPDATED - Shows profile only when user is logged in
+// ✅ UPDATED - Uses shared AuthContext for instant updates
 
 import { Link, useLocation } from "wouter";
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../contexts/AuthContext";
 import { 
   Plane, 
   TrendingUp, 

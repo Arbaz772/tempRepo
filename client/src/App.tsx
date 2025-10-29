@@ -1,5 +1,5 @@
 // client/src/App.tsx
-// ✅ UPDATED VERSION - Replace your existing App.tsx with this file
+// ✅ UPDATED - Wraps app with AuthProvider for instant state sharing
 
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
@@ -7,6 +7,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AuthGuard from "@/components/AuthGuard";
@@ -26,40 +27,42 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <div className="min-h-screen bg-background flex flex-col">
-            <Header />
-            <div className="flex-1">
-              <Switch>
-                {/* ========================================
-                    PUBLIC PAGES - No Login Required
-                    ======================================== */}
-                <Route path="/" component={Home} />
-                <Route path="/flights" component={Flights} />
-                <Route path="/deals" component={Deals} />
-                <Route path="/about" component={About} />
-                <Route path="/privacy" component={Privacy} />
-                <Route path="/terms" component={Terms} />
-                
-                {/* ========================================
-                    PROTECTED PAGES - Login Required
-                    ======================================== */}
-                <Route path="/predictions">
-                  <AuthGuard>
-                    <Predictions />
-                  </AuthGuard>
-                </Route>
-                
-                {/* ========================================
-                    404 NOT FOUND
-                    ======================================== */}
-                <Route component={NotFound} />
-              </Switch>
+        <AuthProvider>
+          <TooltipProvider>
+            <div className="min-h-screen bg-background flex flex-col">
+              <Header />
+              <div className="flex-1">
+                <Switch>
+                  {/* ========================================
+                      PUBLIC PAGES - No Login Required
+                      ======================================== */}
+                  <Route path="/" component={Home} />
+                  <Route path="/flights" component={Flights} />
+                  <Route path="/deals" component={Deals} />
+                  <Route path="/about" component={About} />
+                  <Route path="/privacy" component={Privacy} />
+                  <Route path="/terms" component={Terms} />
+                  
+                  {/* ========================================
+                      PROTECTED PAGES - Login Required
+                      ======================================== */}
+                  <Route path="/predictions">
+                    <AuthGuard>
+                      <Predictions />
+                    </AuthGuard>
+                  </Route>
+                  
+                  {/* ========================================
+                      404 NOT FOUND
+                      ======================================== */}
+                  <Route component={NotFound} />
+                </Switch>
+              </div>
+              <Footer />
             </div>
-            <Footer />
-          </div>
-          <Toaster />
-        </TooltipProvider>
+            <Toaster />
+          </TooltipProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </GoogleOAuthProvider>
   );

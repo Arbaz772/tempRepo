@@ -1,69 +1,20 @@
 // client/src/components/AuthGuard.tsx
-// ✅ REDESIGNED - Facebook-style login page
+// ✅ UPDATED - Uses shared AuthContext for instant header updates
 
-import { useState, useEffect, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
 import { Plane, TrendingUp, DollarSign, Globe, Sparkles, Shield, Award, Clock } from 'lucide-react';
-
-interface UserData {
-  name: string;
-  email: string;
-  picture: string;
-  sub: string;
-  credential: string;
-}
-
-interface DecodedToken {
-  name: string;
-  email: string;
-  picture: string;
-  sub: string;
-}
+import { useAuth } from '../contexts/AuthContext';
 
 interface AuthGuardProps {
   children: ReactNode;
 }
 
 export default function AuthGuard({ children }: AuthGuardProps) {
-  const [user, setUser] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem('skailinker_user');
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        console.error('Error parsing saved user:', error);
-        localStorage.removeItem('skailinker_user');
-        setError('Session expired. Please log in again.');
-      }
-    }
-    setLoading(false);
-  }, []);
+  const { user, loading, login, error, setError } = useAuth();
 
   const handleLoginSuccess = (credentialResponse: any) => {
-    try {
-      setError(null);
-      const decoded = jwtDecode<DecodedToken>(credentialResponse.credential);
-      const userData: UserData = {
-        name: decoded.name,
-        email: decoded.email,
-        picture: decoded.picture,
-        sub: decoded.sub,
-        credential: credentialResponse.credential
-      };
-      
-      setUser(userData);
-      localStorage.setItem('skailinker_user', JSON.stringify(userData));
-      
-      console.log('User logged in:', userData);
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      setError('Failed to process login. Please try again.');
-    }
+    login(credentialResponse);
   };
 
   const handleLoginError = () => {
