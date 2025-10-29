@@ -42,17 +42,23 @@ export default function FlightResultsInline({
   loading = false
 }: FlightResultsInlineProps) {
   
-  // Pagination state
+  console.log("🎭 FlightResultsInline rendering:", {
+    flightsReceived: flights?.length || 0,
+    loading,
+    flightsIsArray: Array.isArray(flights),
+    firstFlight: flights?.[0]
+  });
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   
-  // Calculate pagination
-  const totalPages = Math.ceil((flights?.length || 0) / itemsPerPage);
+  // CRITICAL: Add safety checks
+  const safeFlights = Array.isArray(flights) ? flights : [];
+  const totalPages = Math.ceil(safeFlights.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentFlights = flights?.slice(startIndex, endIndex) || [];
+  const currentFlights = safeFlights.slice(startIndex, endIndex);
 
-  // Format currency
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -62,10 +68,8 @@ export default function FlightResultsInline({
     }).format(price);
   };
 
-  // Pagination handlers
   const goToPage = (page: number) => {
     setCurrentPage(page);
-    // Scroll to top of results
     document.getElementById('flight-results-section')?.scrollIntoView({ 
       behavior: 'smooth',
       block: 'start'
@@ -73,45 +77,41 @@ export default function FlightResultsInline({
   };
 
   const nextPage = () => {
-    if (currentPage < totalPages) {
-      goToPage(currentPage + 1);
-    }
+    if (currentPage < totalPages) goToPage(currentPage + 1);
   };
 
   const previousPage = () => {
-    if (currentPage > 1) {
-      goToPage(currentPage - 1);
-    }
+    if (currentPage > 1) goToPage(currentPage - 1);
   };
 
   // Loading state
   if (loading) {
+    console.log("⏳ Showing loading state");
     return (
       <div className="w-full mt-8">
         <div className="text-center py-12">
           <Plane className="h-12 w-12 mx-auto text-muted-foreground mb-4 animate-pulse" />
           <h3 className="text-lg font-semibold mb-2">Searching for flights...</h3>
-          <p className="text-muted-foreground">
-            Please wait while we find the best options for you
-          </p>
+          <p className="text-muted-foreground">Please wait while we find the best options for you</p>
         </div>
       </div>
     );
   }
 
-  // No results to show
-  if (!flights || flights.length === 0) {
-    return null;
+  // CRITICAL: Don't return null, show message instead
+  if (!safeFlights || safeFlights.length === 0) {
+    console.log("📭 No flights to display");
+    return null; // Only return null if truly no results
   }
+
+  console.log("✅ Rendering", currentFlights.length, "flights on page", currentPage);
 
   return (
     <div className="w-full mt-8 mb-8">
-      {/* Header Section */}
+      {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold">Flight Results</h2>
-          </div>
+          <h2 className="text-2xl font-bold">Flight Results</h2>
           {searchParams && (
             <div className="text-sm text-muted-foreground">
               {searchParams.origin} → {searchParams.destination} • {searchParams.passengers} passenger{searchParams.passengers > 1 ? 's' : ''}
@@ -120,7 +120,7 @@ export default function FlightResultsInline({
         </div>
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            Showing {startIndex + 1}-{Math.min(endIndex, flights.length)} of {flights.length} flight{flights.length !== 1 ? 's' : ''}
+            Showing {startIndex + 1}-{Math.min(endIndex, safeFlights.length)} of {safeFlights.length} flight{safeFlights.length !== 1 ? 's' : ''}
           </div>
           {totalPages > 1 && (
             <div className="text-sm text-muted-foreground">
@@ -132,103 +132,104 @@ export default function FlightResultsInline({
 
       {/* Flight Cards */}
       <div className="space-y-4">
-        {currentFlights.map((flight) => (
-          <Card key={flight.id} className="p-6 hover:shadow-lg transition-shadow">
-            <div className="flex flex-col gap-4">
-              {/* Flight Header */}
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="font-semibold text-lg">{flight.airline}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {flight.flightNumber}
-                    {flight.aircraft && ` • ${flight.aircraft}`}
+        {currentFlights.map((flight, index) => {
+          console.log("🎫 Rendering flight card:", index, flight.id);
+          return (
+            <Card key={flight.id || index} className="p-6 hover:shadow-lg transition-shadow">
+              <div className="flex flex-col gap-4">
+                {/* Flight Header */}
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="font-semibold text-lg">{flight.airline}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {flight.flightNumber}
+                      {flight.aircraft && ` • ${flight.aircraft}`}
+                    </div>
                   </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-primary">
-                    {formatPrice(flight.price, flight.currency)}
-                  </div>
-                  {flight.cabinClass && (
-                    <Badge variant="secondary" className="mt-1">
-                      {flight.cabinClass}
-                    </Badge>
-                  )}
-                </div>
-              </div>
-
-              {/* Flight Route */}
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <div className="text-2xl font-bold">{flight.departTime}</div>
-                  <div className="text-sm text-muted-foreground">{flight.origin}</div>
-                </div>
-                
-                <div className="flex-1 flex flex-col items-center">
-                  <div className="text-xs text-muted-foreground mb-1">{flight.duration}</div>
-                  <div className="w-full flex items-center">
-                    <div className="flex-1 border-t-2 border-dashed"></div>
-                    <Plane className="h-4 w-4 text-muted-foreground rotate-90 mx-2" />
-                    <div className="flex-1 border-t-2 border-dashed"></div>
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {flight.stops === 0 ? (
-                      <span className="text-green-600 font-medium">Non-stop</span>
-                    ) : (
-                      <span className="text-orange-600 font-medium">
-                        {flight.stops} stop{flight.stops > 1 ? 's' : ''}
-                      </span>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-primary">
+                      {formatPrice(flight.price, flight.currency)}
+                    </div>
+                    {flight.cabinClass && (
+                      <Badge variant="secondary" className="mt-1">
+                        {flight.cabinClass}
+                      </Badge>
                     )}
                   </div>
                 </div>
-                
-                <div className="flex-1 text-right">
-                  <div className="text-2xl font-bold">{flight.arriveTime}</div>
-                  <div className="text-sm text-muted-foreground">{flight.destination}</div>
+
+                {/* Flight Route */}
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <div className="text-2xl font-bold">{flight.departTime}</div>
+                    <div className="text-sm text-muted-foreground">{flight.origin}</div>
+                  </div>
+                  
+                  <div className="flex-1 flex flex-col items-center">
+                    <div className="text-xs text-muted-foreground mb-1">{flight.duration}</div>
+                    <div className="w-full flex items-center">
+                      <div className="flex-1 border-t-2 border-dashed"></div>
+                      <Plane className="h-4 w-4 text-muted-foreground rotate-90 mx-2" />
+                      <div className="flex-1 border-t-2 border-dashed"></div>
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {flight.stops === 0 ? (
+                        <span className="text-green-600 font-medium">Non-stop</span>
+                      ) : (
+                        <span className="text-orange-600 font-medium">
+                          {flight.stops} stop{flight.stops > 1 ? 's' : ''}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1 text-right">
+                    <div className="text-2xl font-bold">{flight.arriveTime}</div>
+                    <div className="text-sm text-muted-foreground">{flight.destination}</div>
+                  </div>
                 </div>
+
+                {/* Segments */}
+                {flight.segments && flight.segments.length > 0 && (
+                  <div className="pt-4 border-t">
+                    <div className="text-xs font-semibold text-muted-foreground mb-2">
+                      FLIGHT DETAILS
+                    </div>
+                    <div className="space-y-2">
+                      {flight.segments.map((segment: any, idx: number) => (
+                        <div key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          <span>
+                            {segment.departure?.iataCode} → {segment.arrival?.iataCode}
+                          </span>
+                          <span className="text-xs">({segment.duration})</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Book Button */}
+                {flight.bookingUrl && (
+                  <Button 
+                    className="w-full" 
+                    onClick={() => window.open(flight.bookingUrl, '_blank')}
+                  >
+                    Book Now
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
               </div>
-
-              {/* Segments Info (if available) */}
-              {flight.segments && flight.segments.length > 0 && (
-                <div className="pt-4 border-t">
-                  <div className="text-xs font-semibold text-muted-foreground mb-2">
-                    FLIGHT DETAILS
-                  </div>
-                  <div className="space-y-2">
-                    {flight.segments.map((segment: any, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        <span>
-                          {segment.departure?.iataCode} → {segment.arrival?.iataCode}
-                        </span>
-                        <span className="text-xs">
-                          ({segment.duration})
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Book Button */}
-              {flight.bookingUrl && (
-                <Button 
-                  className="w-full" 
-                  onClick={() => window.open(flight.bookingUrl, '_blank')}
-                >
-                  Book Now
-                  <ExternalLink className="ml-2 h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          </Card>
-        ))}
+            </Card>
+          );
+        })}
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="mt-6 flex items-center justify-between border-t pt-6">
           <div className="text-sm text-muted-foreground">
-            Showing {startIndex + 1}-{Math.min(endIndex, flights.length)} of {flights.length} results
+            Showing {startIndex + 1}-{Math.min(endIndex, safeFlights.length)} of {safeFlights.length} results
           </div>
           
           <div className="flex items-center gap-2">
@@ -242,10 +243,8 @@ export default function FlightResultsInline({
               Previous
             </Button>
             
-            {/* Page Numbers */}
             <div className="flex items-center gap-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                // Show first, last, current, and adjacent pages
                 const showPage = 
                   page === 1 || 
                   page === totalPages || 
