@@ -1,5 +1,5 @@
 // client/src/components/FlightResultsInline.tsx
-// Flight results display with Book Now button (redirects to Skyscanner)
+// WITH AFFILIATE LINK SUPPORT
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
@@ -32,6 +32,28 @@ interface FlightResultsInlineProps {
   loading?: boolean;
 }
 
+// =================================================================
+// AFFILIATE CONFIGURATION
+// =================================================================
+// TODO: After Skyscanner approves your affiliate application,
+// replace these values with your actual credentials:
+
+const AFFILIATE_CONFIG = {
+  // Set to true once you have affiliate credentials
+  enabled: false,
+  
+  // Your Skyscanner affiliate ID (you'll get this after approval)
+  affiliateId: 'YOUR_AFFILIATE_ID',
+  
+  // Optional: Your custom tracking parameters
+  campaignId: 'skailinker',
+  
+  // Market (IN for India)
+  market: 'IN',
+};
+
+// =================================================================
+
 export default function FlightResultsInline({
   flights,
   searchParams,
@@ -47,7 +69,7 @@ export default function FlightResultsInline({
   const currentFlights = flights.slice(indexOfFirstFlight, indexOfLastFlight);
   const totalPages = Math.ceil(flights.length / flightsPerPage);
 
-  // Generate Skyscanner URL
+  // Generate Skyscanner URL with optional affiliate tracking
   const generateSkyscannerUrl = (flight: Flight) => {
     const origin = searchParams?.origin || flight.origin;
     const destination = searchParams?.destination || flight.destination;
@@ -55,8 +77,7 @@ export default function FlightResultsInline({
     const returnDate = searchParams?.returnDate;
     const adults = searchParams?.passengers || 1;
 
-    // Format: https://www.skyscanner.co.in/transport/flights/del/bom/250115/250122/?adults=1
-    // Date format: YYMMDD
+    // Format date: YYMMDD
     const formatDateForSkyscanner = (dateStr: string) => {
       const date = new Date(dateStr);
       const yy = date.getFullYear().toString().slice(-2);
@@ -68,7 +89,7 @@ export default function FlightResultsInline({
     const departFormatted = formatDateForSkyscanner(departDate);
     const returnFormatted = returnDate ? formatDateForSkyscanner(returnDate) : '';
 
-    // Build URL
+    // Build base URL
     const baseUrl = 'https://www.skyscanner.co.in/transport/flights';
     const originCode = origin.toLowerCase();
     const destCode = destination.toLowerCase();
@@ -79,13 +100,35 @@ export default function FlightResultsInline({
       url += `/${returnFormatted}`;
     }
     
-    url += `/?adults=${adults}`;
+    // Add query parameters
+    const params = new URLSearchParams();
+    params.append('adults', adults.toString());
+    
+    // Add affiliate parameters if enabled
+    if (AFFILIATE_CONFIG.enabled && AFFILIATE_CONFIG.affiliateId !== 'YOUR_AFFILIATE_ID') {
+      params.append('associateid', AFFILIATE_CONFIG.affiliateId);
+      
+      // Optional: Add campaign tracking
+      if (AFFILIATE_CONFIG.campaignId) {
+        params.append('utm_source', AFFILIATE_CONFIG.campaignId);
+        params.append('utm_medium', 'referral');
+        params.append('utm_campaign', 'flight_booking');
+      }
+    }
+    
+    url += `/?${params.toString()}`;
 
     return url;
   };
 
   const handleBookNow = (flight: Flight) => {
     const skyscannerUrl = generateSkyscannerUrl(flight);
+    
+    // Log for tracking (optional - remove in production)
+    if (AFFILIATE_CONFIG.enabled) {
+      console.log('🔗 Affiliate link clicked:', skyscannerUrl);
+    }
+    
     window.open(skyscannerUrl, '_blank', 'noopener,noreferrer');
   };
 
@@ -217,7 +260,7 @@ export default function FlightResultsInline({
                   </div>
                 </div>
                 
-                {/* Book Button - Redirects to Skyscanner */}
+                {/* Book Button */}
                 <Button 
                   className="w-full md:w-auto min-w-[140px]" 
                   size="lg"
@@ -277,7 +320,7 @@ export default function FlightResultsInline({
             <div>
               <div className="font-medium">Sample Data</div>
               <div className="text-xs">
-                These are sample flights for demonstration. Click "Book Now" to search on Skyscanner with real-time prices.
+                These are sample flights for demonstration. Click "Book" to search on Skyscanner with real-time prices.
               </div>
             </div>
           </div>
