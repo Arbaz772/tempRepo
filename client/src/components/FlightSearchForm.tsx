@@ -1,11 +1,10 @@
 // client/src/components/FlightSearchForm.tsx
-// FIXED - Date inputs now work properly
+// FIXED - Native date inputs that definitely work
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar, Plane } from "lucide-react";
+import { Plane } from "lucide-react";
 
 interface FlightSearchFormProps {
   onSearchStart?: () => void;
@@ -132,13 +131,14 @@ export default function FlightSearchForm({
             From
           </Label>
           <div className="relative">
-            <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
+            <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
+            <input
               id="origin"
+              type="text"
               placeholder="Delhi, Mumbai, or DEL"
               value={origin}
               onChange={(e) => setOrigin(e.target.value)}
-              className="pl-10"
+              className="flex h-10 w-full rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               required
             />
           </div>
@@ -148,53 +148,50 @@ export default function FlightSearchForm({
             To
           </Label>
           <div className="relative">
-            <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rotate-90" />
-            <Input
+            <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rotate-90 pointer-events-none z-10" />
+            <input
               id="destination"
+              type="text"
               placeholder="Delhi, Mumbai, or BOM"
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              className="pl-10"
+              className="flex h-10 w-full rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               required
             />
           </div>
         </div>
       </div>
 
-      {/* Dates */}
+      {/* Dates - Native HTML5 Date Inputs */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="departDate" className="text-sm font-medium">
             Departure
           </Label>
-          <div className="relative">
-            <Input
-              id="departDate"
-              type="date"
-              value={departDate}
-              onChange={(e) => setDepartDate(e.target.value)}
-              min={today}
-              className="w-full cursor-pointer"
-              required
-            />
-          </div>
+          <input
+            id="departDate"
+            type="date"
+            value={departDate}
+            onChange={(e) => setDepartDate(e.target.value)}
+            min={today}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [color-scheme:light] dark:[color-scheme:dark]"
+            required
+          />
         </div>
         {tripType === "round-trip" && (
           <div className="space-y-2">
             <Label htmlFor="returnDate" className="text-sm font-medium">
               Return
             </Label>
-            <div className="relative">
-              <Input
-                id="returnDate"
-                type="date"
-                value={returnDate}
-                onChange={(e) => setReturnDate(e.target.value)}
-                min={departDate || today}
-                className="w-full cursor-pointer"
-                required={tripType === "round-trip"}
-              />
-            </div>
+            <input
+              id="returnDate"
+              type="date"
+              value={returnDate}
+              onChange={(e) => setReturnDate(e.target.value)}
+              min={departDate || today}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [color-scheme:light] dark:[color-scheme:dark]"
+              required={tripType === "round-trip"}
+            />
           </div>
         )}
       </div>
