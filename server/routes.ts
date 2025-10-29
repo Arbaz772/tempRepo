@@ -1,10 +1,10 @@
 // server/routes.ts
-// COMPLETE - With automatic retry logic for handling Amadeus API errors (503, 502, 504, 429)
+// FIXED - TypeScript compilation errors resolved
 
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
-import { setupAuth } from "./auth";
-import { db } from "@db";
+import { setupAuth } from "./auth.js";
+import { db } from "../db/index.js";
 import { 
   users, 
   flights, 
@@ -13,8 +13,21 @@ import {
   priceAlerts,
   searchHistory,
   flightPrices
-} from "@db/schema";
+} from "../db/schema.js";
 import { eq, and, desc, gte, lte } from "drizzle-orm";
+
+// Extend Express Request type to include user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: number;
+        username: string;
+        email: string;
+      };
+    }
+  }
+}
 
 // ========================================
 // RETRY CONFIGURATION
@@ -133,7 +146,7 @@ export function registerRoutes(app: Express): Server {
   // ========================================
   // FLIGHT SEARCH WITH RETRY LOGIC
   // ========================================
-  app.post("/api/flights/search", async (req, res) => {
+  app.post("/api/flights/search", async (req: Request, res) => {
     const startTime = Date.now();
     
     try {
@@ -261,7 +274,7 @@ export function registerRoutes(app: Express): Server {
   // ========================================
   // GET FLIGHT DETAILS
   // ========================================
-  app.get("/api/flights/:id", async (req, res) => {
+  app.get("/api/flights/:id", async (req: Request, res) => {
     try {
       const { id } = req.params;
 
@@ -295,7 +308,7 @@ export function registerRoutes(app: Express): Server {
   // ========================================
   // PRICE PREDICTION
   // ========================================
-  app.post("/api/predictions/price", async (req, res) => {
+  app.post("/api/predictions/price", async (req: Request, res) => {
     try {
       if (!req.user) {
         return res.status(401).json({ message: "Authentication required" });
@@ -333,7 +346,7 @@ export function registerRoutes(app: Express): Server {
   // ========================================
   // HEALTH CHECK
   // ========================================
-  app.get("/api/health", (req, res) => {
+  app.get("/api/health", (req: Request, res) => {
     res.json({ 
       status: "healthy",
       timestamp: new Date().toISOString(),
