@@ -1,11 +1,11 @@
 // client/src/components/FlightSearchForm.tsx
-// UPDATED - Accepts initialValues prop for pre-filling from URL params
+// FIXED - Date inputs now work properly
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar } from "lucide-react";
+import { Calendar, Plane } from "lucide-react";
 
 interface FlightSearchFormProps {
   onSearchStart?: () => void;
@@ -34,6 +34,9 @@ export default function FlightSearchForm({
   const [returnDate, setReturnDate] = useState(initialValues?.returnDate || "");
   const [passengers, setPassengers] = useState(initialValues?.passengers || 1);
   const [loading, setLoading] = useState(false);
+
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
 
   // Update form when initialValues change
   useEffect(() => {
@@ -124,80 +127,98 @@ export default function FlightSearchForm({
 
       {/* From and To */}
       <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="origin">From</Label>
-          <Input
-            id="origin"
-            placeholder="Delhi, Mumbai, or DEL"
-            value={origin}
-            onChange={(e) => setOrigin(e.target.value)}
-            required
-          />
+        <div className="space-y-2">
+          <Label htmlFor="origin" className="text-sm font-medium">
+            From
+          </Label>
+          <div className="relative">
+            <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              id="origin"
+              placeholder="Delhi, Mumbai, or DEL"
+              value={origin}
+              onChange={(e) => setOrigin(e.target.value)}
+              className="pl-10"
+              required
+            />
+          </div>
         </div>
-        <div>
-          <Label htmlFor="destination">To</Label>
-          <Input
-            id="destination"
-            placeholder="Delhi, Mumbai, or BOM"
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-            required
-          />
+        <div className="space-y-2">
+          <Label htmlFor="destination" className="text-sm font-medium">
+            To
+          </Label>
+          <div className="relative">
+            <Plane className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rotate-90" />
+            <Input
+              id="destination"
+              placeholder="Delhi, Mumbai, or BOM"
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+              className="pl-10"
+              required
+            />
+          </div>
         </div>
       </div>
 
       {/* Dates */}
       <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="departDate">Departure</Label>
+        <div className="space-y-2">
+          <Label htmlFor="departDate" className="text-sm font-medium">
+            Departure
+          </Label>
           <div className="relative">
             <Input
               id="departDate"
               type="date"
               value={departDate}
               onChange={(e) => setDepartDate(e.target.value)}
-              min={new Date().toISOString().split('T')[0]}
+              min={today}
+              className="w-full cursor-pointer"
               required
             />
-            <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           </div>
         </div>
         {tripType === "round-trip" && (
-          <div>
-            <Label htmlFor="returnDate">Return</Label>
+          <div className="space-y-2">
+            <Label htmlFor="returnDate" className="text-sm font-medium">
+              Return
+            </Label>
             <div className="relative">
               <Input
                 id="returnDate"
                 type="date"
                 value={returnDate}
                 onChange={(e) => setReturnDate(e.target.value)}
-                min={departDate || new Date().toISOString().split('T')[0]}
+                min={departDate || today}
+                className="w-full cursor-pointer"
                 required={tripType === "round-trip"}
               />
-              <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             </div>
           </div>
         )}
       </div>
 
       {/* Passengers */}
-      <div>
-        <Label htmlFor="passengers">Passengers</Label>
+      <div className="space-y-2">
+        <Label htmlFor="passengers" className="text-sm font-medium">
+          Passengers
+        </Label>
         <div className="flex items-center gap-4">
           <Button
             type="button"
             variant="outline"
-            size="sm"
+            size="icon"
             onClick={() => setPassengers(Math.max(1, passengers - 1))}
             disabled={passengers <= 1}
           >
             -
           </Button>
-          <span className="w-12 text-center font-medium">{passengers}</span>
+          <span className="w-12 text-center font-medium text-lg">{passengers}</span>
           <Button
             type="button"
             variant="outline"
-            size="sm"
+            size="icon"
             onClick={() => setPassengers(Math.min(9, passengers + 1))}
             disabled={passengers >= 9}
           >
@@ -212,9 +233,18 @@ export default function FlightSearchForm({
         className="w-full"
         size="lg"
         disabled={loading}
-        data-search-trigger // For auto-trigger from URL params
+        data-search-trigger
       >
-        {loading ? "Searching..." : "Search Flights →"}
+        {loading ? (
+          <>
+            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+            Searching...
+          </>
+        ) : (
+          <>
+            Search Flights →
+          </>
+        )}
       </Button>
     </form>
   );
