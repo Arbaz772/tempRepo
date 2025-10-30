@@ -2,96 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT MODE */
+/* AIRPORT THEME - LIGHT MODE */
 :root {
-  --button-outline: rgba(0,0,0, .10);
-  --badge-outline: rgba(0,0,0, .05);
+  /* Airport-themed button/badge outlines */
+  --button-outline: rgba(54, 162, 235, 0.15); /* Blue tint */
+  --badge-outline: rgba(255, 107, 53, 0.1);   /* Orange tint */
 
   /* Automatic computation of border around primary / danger buttons */
-  --opaque-button-border-intensity: -8; /* In terms of percentages */
+  --opaque-button-border-intensity: -10; /* Enhanced intensity */
 
-  /* Backgrounds applied on top of other backgrounds when hovered/active */
-  --elevate-1: rgba(0,0,0, .03);
-  --elevate-2: rgba(0,0,0, .08);
+  /* Sky-inspired elevation backgrounds */
+  --elevate-1: rgba(54, 162, 235, 0.04);      /* Blue tint */
+  --elevate-2: rgba(54, 162, 235, 0.08);
 
-  --background: 210 20% 98%;
+  /* Enhanced backgrounds with subtle sky tinting */
+  --background: 210 25% 97%;                  /* Subtle sky tint */
+  --foreground: 220 30% 15%;                  /* Darker for contrast */
 
-  --foreground: 222 47% 11%;
+  --border: 210 30% 85%;                      /* More blue in borders */
 
-  --border: 210 16% 88%;
+  --card: 210 35% 96%;                        /* Sky-tinted cards */
+  --card-foreground: 220 30% 15%;
+  --card-border: 210 25% 88%;
 
-  --card: 210 17% 95%;
-
-  --card-foreground: 222 47% 11%;
-
-  --card-border: 210 16% 90%;
-
-  --sidebar: 210 16% 92%;
-
-  --sidebar-foreground: 222 47% 11%;
-
-  --sidebar-border: 210 16% 87%;
-
-  --sidebar-primary: 195 91% 51%;
-
-  --sidebar-primary-foreground: 210 20% 98%;
-
+  --sidebar: 210 25% 94%;
+  --sidebar-foreground: 220 30% 15%;
+  --sidebar-border: 210 20% 85%;
+  --sidebar-primary: 210 100% 50%;            /* Bright sky blue */
+  --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 210 14% 89%;
+  --sidebar-accent-foreground: 220 30% 15%;
+  --sidebar-ring: 210 100% 50%;
 
-  --sidebar-accent-foreground: 222 47% 11%;
+  --popover: 210 30% 95%;
+  --popover-foreground: 220 30% 15%;
+  --popover-border: 210 25% 86%;
 
-  --sidebar-ring: 195 91% 51%;
+  /* Airport-themed primary colors */
+  --primary: 210 100% 50%;                    /* Sky blue */
+  --primary-foreground: 0 0% 100%;
 
-  --popover: 210 18% 93%;
+  --secondary: 25 95% 55%;                    /* Sunset orange */
+  --secondary-foreground: 0 0% 100%;
 
-  --popover-foreground: 222 47% 11%;
+  --muted: 210 20% 90%;                       /* Light cloud */
+  --muted-foreground: 220 15% 40%;
 
-  --popover-border: 210 16% 88%;
+  --accent: 45 100% 60%;                      /* Golden hour */
+  --accent-foreground: 220 30% 20%;
 
-  --primary: 195 91% 41%;
+  --destructive: 0 85% 55%;                   /* Emergency red */
+  --destructive-foreground: 0 0% 100%;
 
-  --primary-foreground: 210 20% 98%;
+  --input: 210 20% 88%;
+  --ring: 210 100% 50%;
+  --chart-1: 210 100% 50%;
+  --chart-2: 25 95% 55%;
+  --chart-3: 142 75% 45%;
+  --chart-4: 0 85% 55%;
+  --chart-5: 220 30% 15%;
 
-  --secondary: 210 14% 89%;
-
-  --secondary-foreground: 222 47% 11%;
-
-  --muted: 210 12% 91%;
-
-  --muted-foreground: 220 9% 36%;
-
-  --accent: 203 18% 88%;
-
-  --accent-foreground: 222 47% 11%;
-
-  --destructive: 25 95% 43%;
-
-  --destructive-foreground: 210 20% 98%;
-
-  --input: 210 16% 82%;
-  --ring: 195 91% 51%;
-  --chart-1: 195 91% 41%;
-  --chart-2: 203 92% 55%;
-  --chart-3: 142 71% 35%;
-  --chart-4: 25 95% 43%;
-  --chart-5: 220 13% 28%;
+  /* New airport-specific variables */
+  --departure: 25 95% 55%;                    /* Orange for departures */
+  --arrival: 142 75% 45%;                     /* Green for arrivals */
+  --runway: 210 8% 88%;                       /* Concrete gray */
+  --terminal: 210 20% 96%;                    /* Terminal white */
 
   --font-sans: Inter, system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
   --radius: .5rem; /* 8px */
-  --shadow-2xs: 0px 1px 2px 0px hsl(222 47% 11% / 0.05);
-  --shadow-xs: 0px 1px 3px 0px hsl(222 47% 11% / 0.10);
-  --shadow-sm: 0px 2px 4px -1px hsl(222 47% 11% / 0.06), 0px 1px 2px -1px hsl(222 47% 11% / 0.10);
-  --shadow: 0px 4px 6px -1px hsl(222 47% 11% / 0.07), 0px 2px 4px -2px hsl(222 47% 11% / 0.10);
-  --shadow-md: 0px 6px 12px -2px hsl(222 47% 11% / 0.08), 0px 3px 6px -3px hsl(222 47% 11% / 0.12);
-  --shadow-lg: 0px 10px 20px -4px hsl(222 47% 11% / 0.10), 0px 4px 8px -4px hsl(222 47% 11% / 0.14);
-  --shadow-xl: 0px 20px 30px -6px hsl(222 47% 11% / 0.12), 0px 8px 12px -6px hsl(222 47% 11% / 0.16);
-  --shadow-2xl: 0px 25px 50px -12px hsl(222 47% 11% / 0.25);
+
+  /* Enhanced shadows with color tints */
+  --shadow-2xs: 0px 1px 2px 0px hsl(210 50% 50% / 0.08);
+  --shadow-xs: 0px 1px 3px 0px hsl(210 50% 50% / 0.12);
+  --shadow-sm: 0px 2px 4px -1px hsl(210 50% 50% / 0.08), 0px 1px 2px -1px hsl(210 50% 50% / 0.12);
+  --shadow: 0px 4px 6px -1px hsl(210 50% 50% / 0.10), 0px 2px 4px -2px hsl(210 50% 50% / 0.12);
+  --shadow-md: 0px 6px 12px -2px hsl(210 50% 50% / 0.12), 0px 3px 6px -3px hsl(210 50% 50% / 0.15);
+  --shadow-lg: 0px 10px 20px -4px hsl(210 50% 50% / 0.15), 0px 4px 8px -4px hsl(210 50% 50% / 0.18);
+  --shadow-xl: 0px 20px 30px -6px hsl(210 50% 50% / 0.20), 0px 8px 12px -6px hsl(210 50% 50% / 0.22);
+  --shadow-2xl: 0px 25px 50px -12px hsl(210 50% 50% / 0.30);
+
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
-  /* Automatically computed borders - intensity can be controlled by the user by the --opaque-button-border-intensity setting */
+  /* Automatically computed borders - enhanced with airport theme */
 
   /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
@@ -122,87 +117,77 @@
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
+/* NIGHT AIRPORT THEME - DARK MODE */
 .dark {
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .05);
+  --button-outline: rgba(54, 162, 235, 0.20);
+  --badge-outline: rgba(255, 107, 53, 0.15);
 
-  --opaque-button-border-intensity: 9;  /* In terms of percentages */
+  --opaque-button-border-intensity: 12;  /* Enhanced for dark mode */
 
-  /* Backgrounds applied on top of other backgrounds when hovered/active */
-  --elevate-1: rgba(255,255,255, .04);
-  --elevate-2: rgba(255,255,255, .09);
+  /* Night sky elevation backgrounds */
+  --elevate-1: rgba(54, 162, 235, 0.06);
+  --elevate-2: rgba(54, 162, 235, 0.12);
 
-  --background: 222 47% 11%;
+  --background: 220 30% 8%;                   /* Dark terminal */
+  --foreground: 210 25% 95%;
 
-  --foreground: 210 20% 98%;
+  --border: 220 25% 18%;
 
-  --border: 220 15% 18%;
+  --card: 220 25% 12%;                        /* Dark card */
+  --card-foreground: 210 25% 95%;
+  --card-border: 220 25% 20%;
 
-  --card: 220 13% 14%;
+  --sidebar: 220 25% 14%;
+  --sidebar-foreground: 210 25% 95%;
+  --sidebar-border: 220 25% 22%;
+  --sidebar-primary: 210 100% 60%;            /* Brighter for dark */
+  --sidebar-primary-foreground: 220 30% 8%;
+  --sidebar-accent: 220 20% 22%;
+  --sidebar-accent-foreground: 210 25% 95%;
+  --sidebar-ring: 210 100% 60%;
 
-  --card-foreground: 210 20% 98%;
+  --popover: 220 25% 16%;
+  --popover-foreground: 210 25% 95%;
+  --popover-border: 220 25% 24%;
 
-  --card-border: 220 15% 19%;
+  --primary: 210 100% 60%;                    /* Brighter sky for dark */
+  --primary-foreground: 220 30% 8%;
 
-  --sidebar: 220 13% 16%;
+  --secondary: 25 95% 65%;                    /* Brighter orange */
+  --secondary-foreground: 220 30% 8%;
 
-  --sidebar-foreground: 210 20% 98%;
+  --muted: 220 20% 18%;                       /* Dark muted */
+  --muted-foreground: 220 15% 70%;
 
-  --sidebar-border: 220 15% 21%;
+  --accent: 45 100% 70%;                      /* Brighter gold */
+  --accent-foreground: 220 30% 8%;
 
-  --sidebar-primary: 195 91% 51%;
+  --destructive: 0 85% 65%;                   /* Brighter red */
+  --destructive-foreground: 220 30% 8%;
 
-  --sidebar-primary-foreground: 222 47% 11%;
+  --input: 220 25% 22%;
+  --ring: 210 100% 60%;
+  --chart-1: 210 100% 70%;
+  --chart-2: 25 95% 75%;
+  --chart-3: 142 75% 65%;
+  --chart-4: 0 85% 75%;
+  --chart-5: 220 25% 75%;
 
-  --sidebar-accent: 220 13% 20%;
+  /* Dark airport-specific variables */
+  --departure: 25 95% 65%;
+  --arrival: 142 75% 55%;
+  --runway: 220 15% 20%;
+  --terminal: 220 20% 12%;
 
-  --sidebar-accent-foreground: 210 20% 98%;
-
-  --sidebar-ring: 195 91% 51%;
-
-  --popover: 220 13% 18%;
-
-  --popover-foreground: 210 20% 98%;
-
-  --popover-border: 220 15% 23%;
-
-  --primary: 195 91% 31%;
-
-  --primary-foreground: 210 20% 98%;
-
-  --secondary: 220 13% 22%;
-
-  --secondary-foreground: 210 20% 98%;
-
-  --muted: 220 10% 20%;
-
-  --muted-foreground: 220 9% 66%;
-
-  --accent: 203 15% 22%;
-
-  --accent-foreground: 210 20% 98%;
-
-  --destructive: 25 95% 33%;
-
-  --destructive-foreground: 210 20% 98%;
-
-  --input: 220 15% 28%;
-  --ring: 195 91% 51%;
-  --chart-1: 195 91% 61%;
-  --chart-2: 203 92% 75%;
-  --chart-3: 142 71% 55%;
-  --chart-4: 25 95% 63%;
-  --chart-5: 220 13% 68%;
-
-  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.25);
-  --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.35);
-  --shadow-sm: 0px 2px 4px -1px hsl(0 0% 0% / 0.30), 0px 1px 2px -1px hsl(0 0% 0% / 0.35);
-  --shadow: 0px 4px 6px -1px hsl(0 0% 0% / 0.35), 0px 2px 4px -2px hsl(0 0% 0% / 0.40);
-  --shadow-md: 0px 6px 12px -2px hsl(0 0% 0% / 0.40), 0px 3px 6px -3px hsl(0 0% 0% / 0.45);
-  --shadow-lg: 0px 10px 20px -4px hsl(0 0% 0% / 0.45), 0px 4px 8px -4px hsl(0 0% 0% / 0.50);
-  --shadow-xl: 0px 20px 30px -6px hsl(0 0% 0% / 0.50), 0px 8px 12px -6px hsl(0 0% 0% / 0.55);
-  --shadow-2xl: 0px 25px 50px -12px hsl(0 0% 0% / 0.60);
-
+  /* Dark mode shadows */
+  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.30);
+  --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.40);
+  --shadow-sm: 0px 2px 4px -1px hsl(0 0% 0% / 0.35), 0px 1px 2px -1px hsl(0 0% 0% / 0.40);
+  --shadow: 0px 4px 6px -1px hsl(0 0% 0% / 0.40), 0px 2px 4px -2px hsl(0 0% 0% / 0.45);
+  --shadow-md: 0px 6px 12px -2px hsl(0 0% 0% / 0.45), 0px 3px 6px -3px hsl(0 0% 0% / 0.50);
+  --shadow-lg: 0px 10px 20px -4px hsl(0 0% 0% / 0.50), 0px 4px 8px -4px hsl(0 0% 0% / 0.55);
+  --shadow-xl: 0px 20px 30px -6px hsl(0 0% 0% / 0.55), 0px 8px 12px -6px hsl(0 0% 0% / 0.60);
+  --shadow-2xl: 0px 25px 50px -12px hsl(0 0% 0% / 0.70);
 }
 
 @layer base {
@@ -212,6 +197,79 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    /* Airport terminal background pattern */
+    background-image: 
+      radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.02) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, hsl(var(--secondary) / 0.02) 0%, transparent 50%);
+    background-size: 800px 800px, 600px 600px;
+    background-position: 0 0, 400px 300px;
+    min-height: 100vh;
+  }
+
+  /* Add airport-style grid pattern overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.3;
+  }
+
+  /* Terminal-style text glow for headings */
+  h1, h2, h3 {
+    text-shadow: 0 0 20px hsl(var(--foreground) / 0.1);
+  }
+
+  /* Sky-themed scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary)) 0%, 
+      hsl(var(--secondary)) 100%);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, 
+      hsl(var(--secondary)) 0%, 
+      hsl(var(--primary)) 100%);
+  }
+
+  /* Selection styling */
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--primary-foreground));
+    text-shadow: none;
+  }
+
+  /* Focus indicators */
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.2);
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
@@ -236,7 +294,6 @@
  * need to be distinguished from eachother visually.
  */
 @layer utilities {
-
   /* Hide ugly search cancel button in Chrome until we can style it properly */
   input[type="search"]::-webkit-search-cancel-button {
     @apply hidden;
@@ -256,7 +313,6 @@
 
   .no-default-active-elevate {}
 
-
   /**
    * Toggleable backgrounds go behind the content. Hoverable/active goes on top.
    * This way they can stack/compound. Both will overlap the parent's borders!
@@ -269,10 +325,8 @@
     pointer-events: none;
     position: absolute;
     inset: 0px;
-    /*border-radius: inherit;   match rounded corners */
     border-radius: inherit;
     z-index: -1;
-    /* sits behind content but above backdrop */
   }
 
   .toggle-elevate.toggle-elevated::before {
@@ -284,13 +338,14 @@
     inset: -1px;
   }
 
-  /* Does not work on elements with overflow:hidden! */
+  /* Enhanced hover elevate system with airport animations */
   .hover-elevate:not(.no-default-hover-elevate),
   .active-elevate:not(.no-default-active-elevate),
   .hover-elevate-2:not(.no-default-hover-elevate),
   .active-elevate-2:not(.no-default-active-elevate) {
     position: relative;
     z-index: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .hover-elevate:not(.no-default-hover-elevate)::after,
@@ -301,10 +356,8 @@
     pointer-events: none;
     position: absolute;
     inset: 0px;
-    /*border-radius: inherit;   match rounded corners */
     border-radius: inherit;
     z-index: 999;
-    /* sits in front of content */
   }
 
   .hover-elevate:hover:not(.no-default-hover-elevate)::after,
@@ -317,6 +370,21 @@
     background-color: var(--elevate-2);
   }
 
+  /* Enhanced hover effects with airport styling */
+  .hover-elevate:hover:not(.no-default-hover-elevate) {
+    transform: translateY(-4px);
+    box-shadow: 
+      var(--shadow-xl),
+      0 0 30px hsl(var(--primary) / 0.2);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate) {
+    transform: translateY(-6px);
+    box-shadow: 
+      var(--shadow-2xl),
+      0 0 40px hsl(var(--secondary) / 0.3);
+  }
+
   /* If there's a 1px border, adjust the inset so that it covers that parent's border */
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
   .border.active-elevate:not(.no-active-interaction-elevate)::after,
@@ -324,5 +392,285 @@
   .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
+  }
+
+  /* HEADER ENHANCEMENTS */
+  header, nav {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary)) 0%, 
+      hsl(var(--primary) / 0.9) 50%, 
+      hsl(var(--secondary) / 0.8) 100%);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Add airport runway lines to header */
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255,255,255,0.5) 50%, 
+      transparent 100%);
+    animation: runway-lights 4s ease-in-out infinite;
+  }
+
+  @keyframes runway-lights {
+    0%, 100% { transform: translateX(-50%); }
+    50% { transform: translateX(0%); }
+  }
+
+  /* SEARCH FORM CARD ENHANCEMENTS */
+  [class*="form"], [class*="card"], [class*="search"], .bg-card {
+    background: linear-gradient(145deg, 
+      hsl(var(--card)) 0%, 
+      hsl(var(--card) / 0.95) 100%);
+    border: 1px solid hsl(var(--card-border));
+    box-shadow: 
+      var(--shadow-xl),
+      inset 0 1px 0 hsl(var(--card) / 0.8);
+    position: relative;
+  }
+
+  /* Add terminal-style indicator lights */
+  [class*="form"]::before, .bg-card::before {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 12px;
+    height: 12px;
+    background: hsl(var(--arrival));
+    border-radius: 50%;
+    box-shadow: 
+      0 0 10px hsl(var(--arrival) / 0.6),
+      inset 0 1px 0 rgba(255,255,255,0.3);
+    animation: status-blink 2s ease-in-out infinite;
+  }
+
+  @keyframes status-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* INPUT FIELD ENHANCEMENTS */
+  input, select, textarea {
+    background: hsl(var(--background) / 0.8);
+    border: 1px solid hsl(var(--border));
+    border-radius: calc(var(--radius) + 2px);
+    box-shadow: 
+      inset 0 2px 4px hsl(var(--muted) / 0.5),
+      0 1px 0 hsl(var(--background));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 
+      0 0 0 3px hsl(var(--primary) / 0.1),
+      inset 0 2px 4px hsl(var(--muted) / 0.3),
+      var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  /* FROM input - Departure styling */
+  input[placeholder*="Delhi"], 
+  input[placeholder*="From"], 
+  input[name*="from"],
+  input[placeholder*="departure"] {
+    background: linear-gradient(135deg, 
+      hsl(var(--departure) / 0.05) 0%, 
+      hsl(var(--background)) 100%);
+    border-left: 3px solid hsl(var(--departure));
+  }
+
+  /* TO input - Arrival styling */
+  input[placeholder*="Bangalore"], 
+  input[placeholder*="To"], 
+  input[name*="to"],
+  input[placeholder*="destination"] {
+    background: linear-gradient(135deg, 
+      hsl(var(--arrival) / 0.05) 0%, 
+      hsl(var(--background)) 100%);
+    border-left: 3px solid hsl(var(--arrival));
+  }
+
+  /* Date inputs - Calendar styling */
+  input[type="date"] {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary) / 0.05) 0%, 
+      hsl(var(--background)) 100%);
+    border-left: 3px solid hsl(var(--primary));
+  }
+
+  /* BUTTON ENHANCEMENTS */
+  button, [role="button"] {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+  }
+
+  /* Primary buttons (search, submit, etc.) */
+  button[type="submit"], 
+  button[class*="primary"], 
+  [class*="search"] button,
+  .bg-primary {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary)) 0%, 
+      hsl(var(--primary) / 0.8) 50%, 
+      hsl(var(--secondary) / 0.9) 100%);
+    color: hsl(var(--primary-foreground));
+    box-shadow: 
+      var(--shadow-md),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    border: 1px solid hsl(var(--primary) / 0.8);
+  }
+
+  button[type="submit"]:hover,
+  .bg-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      var(--shadow-lg),
+      0 0 20px hsl(var(--primary) / 0.4);
+  }
+
+  /* Add flight path animation to buttons */
+  button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255,255,255,0.6) 50%, 
+      transparent 100%);
+    transition: all 0.6s ease;
+    z-index: 1;
+  }
+
+  button:hover::before {
+    left: 100%;
+  }
+
+  /* NAVIGATION ENHANCEMENTS */
+  nav a, nav button {
+    position: relative;
+    color: rgba(255,255,255,0.9);
+    transition: all 0.3s ease;
+  }
+
+  nav a:hover, nav button:hover {
+    color: white;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+  }
+
+  /* Active nav item */
+  nav a[class*="active"], 
+  nav button[class*="active"],
+  nav a[aria-current="page"] {
+    color: hsl(var(--accent));
+    text-shadow: 0 0 10px hsl(var(--accent) / 0.6);
+  }
+
+  /* Add terminal gate indicators */
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: hsl(var(--accent));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  nav a:hover::after, 
+  nav a[class*="active"]::after,
+  nav a[aria-current="page"]::after {
+    transform: scaleX(1);
+  }
+
+  /* Add departure board styling to any monospace text */
+  code, pre, .font-mono {
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+    color: #00ff41;
+    text-shadow: 0 0 10px currentColor;
+    border: 1px solid #333;
+    box-shadow: 
+      inset 0 1px 0 #333,
+      0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  /* LOADING STATES */
+  @keyframes terminal-loading {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  [class*="loading"], [aria-busy="true"] {
+    position: relative;
+  }
+
+  [class*="loading"]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      hsl(var(--primary) / 0.2) 50%, 
+      transparent 100%);
+    animation: terminal-loading 1.5s ease-in-out infinite;
+  }
+
+  /* RESPONSIVE MOBILE ENHANCEMENTS */
+  @media (max-width: 768px) {
+    body::before {
+      background-size: 30px 30px;
+      opacity: 0.2;
+    }
+    
+    [class*="form"], [class*="card"], .bg-card {
+      margin: 1rem;
+      border-radius: calc(var(--radius) * 2);
+    }
+    
+    input, select, textarea {
+      padding: 0.875rem 1rem;
+      font-size: 16px; /* Prevent zoom on iOS */
+    }
+
+    header::before {
+      animation-duration: 2s;
+    }
+  }
+
+  /* ACCESSIBILITY ENHANCEMENTS */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-image: 
+        radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, hsl(var(--secondary) / 0.03) 0%, transparent 50%);
+    }
   }
 }
