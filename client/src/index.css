@@ -329,36 +329,6 @@
     inset: -1px;
   }
 
-  header, nav {
-    background: linear-gradient(135deg, 
-      hsl(var(--primary)) 0%, 
-      hsl(var(--primary) / 0.9) 50%, 
-      hsl(var(--secondary) / 0.8) 100%);
-    backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-lg);
-    position: relative;
-    overflow: hidden;
-  }
-
-  header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 200%;
-    height: 2px;
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      rgba(255,255,255,0.5) 50%, 
-      transparent 100%);
-    animation: runway-lights 4s ease-in-out infinite;
-  }
-
-  @keyframes runway-lights {
-    0%, 100% { transform: translateX(-50%); }
-    50% { transform: translateX(0%); }
-  }
-
   [class*="form"], [class*="card"], [class*="search"], .bg-card {
     background: linear-gradient(145deg, 
       hsl(var(--card)) 0%, 
@@ -547,33 +517,6 @@
       0 0 0 4px hsl(var(--primary) / 0.2);
   }
 
-  nav a, nav button {
-    position: relative;
-    color: rgba(255,255,255,0.9);
-    transition: all 0.2s ease;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius);
-  }
-
-  nav a:hover, nav button:hover {
-    color: white;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(8px);
-  }
-
-  nav a[class*="active"], 
-  nav button[class*="active"],
-  nav a[aria-current="page"] {
-    color: white;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(8px);
-  }
-
-  nav a::after {
-    display: none;
-  }
-
   @media (max-width: 768px) {
     body::before {
       background-size: 30px 30px;
@@ -588,10 +531,6 @@
     input, select, textarea {
       padding: 0.875rem 1rem;
       font-size: 16px;
-    }
-
-    header::before {
-      animation-duration: 2s;
     }
   }
 
