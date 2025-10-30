@@ -658,5 +658,42 @@
 
   /* GHOST/OUTLINE BUTTONS - Subtle */
   button[class*="ghost"],
-  button[class*](streamdown:incomplete-link)
+  button[class*="outline"],
+  .bg-ghost,
+  button.bg-ghost {
+    background: transparent;
+    color: hsl(var(--foreground));
+    border: 1px solid hsl(var(--border));
+    box-shadow: none;
+  }
+
+  button[class*="ghost"]:hover,
+  button[class*="outline"]:hover,
+  .bg-ghost:hover,
+  button.bg-ghost:hover {
+    background: hsl(var(--muted) / 0.5);
+    border-color: hsl(var(--primary));
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* DISABLED BUTTONS */
+  button:disabled,
+  button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  button:disabled:hover,
+  button[disabled]:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* BUTTON ACTIVE STATE */
+  button:active:not(:disabled) {
+    transform: translateY(0px) scale(0.98);
+  }
 }
