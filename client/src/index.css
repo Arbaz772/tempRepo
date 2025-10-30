@@ -5,30 +5,30 @@
 /* AIRPORT THEME - LIGHT MODE */
 :root {
   /* Airport-themed button/badge outlines */
-  --button-outline: rgba(54, 162, 235, 0.15); /* Blue tint */
-  --badge-outline: rgba(255, 107, 53, 0.1);   /* Orange tint */
+  --button-outline: rgba(54, 162, 235, 0.15);
+  --badge-outline: rgba(255, 107, 53, 0.1);
 
   /* Automatic computation of border around primary / danger buttons */
-  --opaque-button-border-intensity: -10; /* Enhanced intensity */
+  --opaque-button-border-intensity: -10;
 
   /* Sky-inspired elevation backgrounds */
-  --elevate-1: rgba(54, 162, 235, 0.04);      /* Blue tint */
+  --elevate-1: rgba(54, 162, 235, 0.04);
   --elevate-2: rgba(54, 162, 235, 0.08);
 
   /* Enhanced backgrounds with subtle sky tinting */
-  --background: 210 25% 97%;                  /* Subtle sky tint */
-  --foreground: 220 30% 15%;                  /* Darker for contrast */
+  --background: 210 25% 97%;
+  --foreground: 220 30% 15%;
 
-  --border: 210 30% 85%;                      /* More blue in borders */
+  --border: 210 30% 85%;
 
-  --card: 210 35% 96%;                        /* Sky-tinted cards */
+  --card: 210 35% 96%;
   --card-foreground: 220 30% 15%;
   --card-border: 210 25% 88%;
 
   --sidebar: 210 25% 94%;
   --sidebar-foreground: 220 30% 15%;
   --sidebar-border: 210 20% 85%;
-  --sidebar-primary: 210 100% 50%;            /* Bright sky blue */
+  --sidebar-primary: 210 100% 50%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 210 14% 89%;
   --sidebar-accent-foreground: 220 30% 15%;
@@ -39,19 +39,19 @@
   --popover-border: 210 25% 86%;
 
   /* Airport-themed primary colors */
-  --primary: 210 100% 50%;                    /* Sky blue */
+  --primary: 210 100% 50%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 25 95% 55%;                    /* Sunset orange */
+  --secondary: 25 95% 55%;
   --secondary-foreground: 0 0% 100%;
 
-  --muted: 210 20% 90%;                       /* Light cloud */
+  --muted: 210 20% 90%;
   --muted-foreground: 220 15% 40%;
 
-  --accent: 45 100% 60%;                      /* Golden hour */
+  --accent: 45 100% 60%;
   --accent-foreground: 220 30% 20%;
 
-  --destructive: 0 85% 55%;                   /* Emergency red */
+  --destructive: 0 85% 55%;
   --destructive-foreground: 0 0% 100%;
 
   --input: 210 20% 88%;
@@ -63,15 +63,15 @@
   --chart-5: 220 30% 15%;
 
   /* New airport-specific variables */
-  --departure: 25 95% 55%;                    /* Orange for departures */
-  --arrival: 142 75% 45%;                     /* Green for arrivals */
-  --runway: 210 8% 88%;                       /* Concrete gray */
-  --terminal: 210 20% 96%;                    /* Terminal white */
+  --departure: 25 95% 55%;
+  --arrival: 142 75% 45%;
+  --runway: 210 8% 88%;
+  --terminal: 210 20% 96%;
 
   --font-sans: Inter, system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
-  --radius: .5rem; /* 8px */
+  --radius: .5rem;
 
   /* Enhanced shadows with color tints */
   --shadow-2xs: 0px 1px 2px 0px hsl(210 50% 50% / 0.08);
@@ -86,35 +86,14 @@
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
-  /* Automatically computed borders - enhanced with airport theme */
-
-  /* Fallback for older browsers */
+  /* Automatically computed borders */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
-  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
   --sidebar-accent-border: hsl(var(--sidebar-accent));
-  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
   --primary-border: hsl(var(--primary));
-  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
   --secondary-border: hsl(var(--secondary));
-  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
   --muted-border: hsl(var(--muted));
-  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
   --accent-border: hsl(var(--accent));
-  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-
-  /* Fallback for older browsers */
   --destructive-border: hsl(var(--destructive));
-  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
 /* NIGHT AIRPORT THEME - DARK MODE */
@@ -122,25 +101,25 @@
   --button-outline: rgba(54, 162, 235, 0.20);
   --badge-outline: rgba(255, 107, 53, 0.15);
 
-  --opaque-button-border-intensity: 12;  /* Enhanced for dark mode */
+  --opaque-button-border-intensity: 12;
 
   /* Night sky elevation backgrounds */
   --elevate-1: rgba(54, 162, 235, 0.06);
   --elevate-2: rgba(54, 162, 235, 0.12);
 
-  --background: 220 30% 8%;                   /* Dark terminal */
+  --background: 220 30% 8%;
   --foreground: 210 25% 95%;
 
   --border: 220 25% 18%;
 
-  --card: 220 25% 12%;                        /* Dark card */
+  --card: 220 25% 12%;
   --card-foreground: 210 25% 95%;
   --card-border: 220 25% 20%;
 
   --sidebar: 220 25% 14%;
   --sidebar-foreground: 210 25% 95%;
   --sidebar-border: 220 25% 22%;
-  --sidebar-primary: 210 100% 60%;            /* Brighter for dark */
+  --sidebar-primary: 210 100% 60%;
   --sidebar-primary-foreground: 220 30% 8%;
   --sidebar-accent: 220 20% 22%;
   --sidebar-accent-foreground: 210 25% 95%;
@@ -150,19 +129,19 @@
   --popover-foreground: 210 25% 95%;
   --popover-border: 220 25% 24%;
 
-  --primary: 210 100% 60%;                    /* Brighter sky for dark */
+  --primary: 210 100% 60%;
   --primary-foreground: 220 30% 8%;
 
-  --secondary: 25 95% 65%;                    /* Brighter orange */
+  --secondary: 25 95% 65%;
   --secondary-foreground: 220 30% 8%;
 
-  --muted: 220 20% 18%;                       /* Dark muted */
+  --muted: 220 20% 18%;
   --muted-foreground: 220 15% 70%;
 
-  --accent: 45 100% 70%;                      /* Brighter gold */
+  --accent: 45 100% 70%;
   --accent-foreground: 220 30% 8%;
 
-  --destructive: 0 85% 65%;                   /* Brighter red */
+  --destructive: 0 85% 65%;
   --destructive-foreground: 220 30% 8%;
 
   --input: 220 25% 22%;
@@ -197,7 +176,6 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    /* Airport terminal background pattern */
     background-image: 
       radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.02) 0%, transparent 50%),
       radial-gradient(circle at 75% 75%, hsl(var(--secondary) / 0.02) 0%, transparent 50%);
@@ -206,7 +184,6 @@
     min-height: 100vh;
   }
 
-  /* Add airport-style grid pattern overlay */
   body::before {
     content: '';
     position: fixed;
@@ -223,12 +200,10 @@
     opacity: 0.3;
   }
 
-  /* Terminal-style text glow for headings */
   h1, h2, h3 {
     text-shadow: 0 0 20px hsl(var(--foreground) / 0.1);
   }
 
-  /* Sky-themed scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -253,72 +228,37 @@
       hsl(var(--primary)) 100%);
   }
 
-  /* Selection styling */
   ::selection {
     background: hsl(var(--primary) / 0.3);
     color: hsl(var(--primary-foreground));
     text-shadow: none;
   }
 
-  /* Focus indicators */
   :focus-visible {
     outline: 2px solid hsl(var(--primary));
     outline-offset: 2px;
     box-shadow: 0 0 0 4px hsl(var(--primary) / 0.2);
   }
 
-  /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
   }
 }
 
-/**
- * Using the elevate system.
- * Automatic contrast adjustment.
- *
- * <element className="hover-elevate" />
- * <element className="active-elevate-2" />
- *
- * // Using the tailwind utility when a data attribute is "on"
- * <element className="toggle-elevate data-[state=on]:toggle-elevated" />
- * // Or manually controlling the toggle state
- * <element className="toggle-elevate toggle-elevated" />
- *
- * Elevation systems have to handle many states.
- * - not-hovered, vs. hovered vs. active  (three mutually exclusive states)
- * - toggled or not
- * - focused or not (this is not handled with these utilities)
- *
- * Even without handling focused or not, this is six possible combinations that
- * need to be distinguished from eachother visually.
- */
 @layer utilities {
-  /* Hide ugly search cancel button in Chrome until we can style it properly */
   input[type="search"]::-webkit-search-cancel-button {
     @apply hidden;
   }
 
-  /* Placeholder styling for contentEditable div */
   [contenteditable][data-placeholder]:empty::before {
     content: attr(data-placeholder);
     color: hsl(var(--muted-foreground));
     pointer-events: none;
   }
 
-  /* .no-default-hover-elevate/no-default-active-elevate is an escape hatch so consumers of
-   * buttons/badges can remove the automatic brightness adjustment on interactions
-   * and program their own. */
   .no-default-hover-elevate {}
-
   .no-default-active-elevate {}
 
-  /**
-   * Toggleable backgrounds go behind the content. Hoverable/active goes on top.
-   * This way they can stack/compound. Both will overlap the parent's borders!
-   * So borders will be automatically adjusted both on toggle, and hover/active,
-   * and they will be compounded.
-   */
   .toggle-elevate::before,
   .toggle-elevate-2::before {
     content: "";
@@ -333,12 +273,10 @@
     background-color: var(--elevate-2);
   }
 
-  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
   .border.toggle-elevate::before {
     inset: -1px;
   }
 
-  /* Enhanced hover elevate system with airport animations */
   .hover-elevate:not(.no-default-hover-elevate),
   .active-elevate:not(.no-default-active-elevate),
   .hover-elevate-2:not(.no-default-hover-elevate),
@@ -370,31 +308,27 @@
     background-color: var(--elevate-2);
   }
 
-  /* ENHANCED CARD HOVER EFFECTS - KEEP THESE */
   .hover-elevate:hover:not(.no-default-hover-elevate) {
-    transform: translateY(-2px); /* Reduced from -4px */
+    transform: translateY(-2px);
     box-shadow: 
       var(--shadow-lg),
-      0 0 20px hsl(var(--primary) / 0.1); /* Reduced opacity */
+      0 0 20px hsl(var(--primary) / 0.1);
   }
 
   .hover-elevate-2:hover:not(.no-default-hover-elevate) {
-    transform: translateY(-3px); /* Reduced from -6px */
+    transform: translateY(-3px);
     box-shadow: 
       var(--shadow-xl),
-      0 0 25px hsl(var(--secondary) / 0.15); /* Reduced opacity */
+      0 0 25px hsl(var(--secondary) / 0.15);
   }
 
-  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
   .border.active-elevate:not(.no-active-interaction-elevate)::after,
   .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
-  .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
-  .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
+  .border.active-elevate-2:not(.no-active-interaction-elevate)::after {
     inset: -1px;
   }
 
-  /* HEADER ENHANCEMENTS */
   header, nav {
     background: linear-gradient(135deg, 
       hsl(var(--primary)) 0%, 
@@ -406,7 +340,6 @@
     overflow: hidden;
   }
 
-  /* Add airport runway lines to header */
   header::before {
     content: '';
     position: absolute;
@@ -426,7 +359,6 @@
     50% { transform: translateX(0%); }
   }
 
-  /* SEARCH FORM CARD ENHANCEMENTS */
   [class*="form"], [class*="card"], [class*="search"], .bg-card {
     background: linear-gradient(145deg, 
       hsl(var(--card)) 0%, 
@@ -438,7 +370,6 @@
     position: relative;
   }
 
-  /* Add terminal-style indicator lights */
   [class*="form"]::before, .bg-card::before {
     content: '';
     position: absolute;
@@ -459,7 +390,6 @@
     50% { opacity: 0.3; }
   }
 
-  /* INPUT FIELD ENHANCEMENTS */
   input, select, textarea {
     background: hsl(var(--background) / 0.8);
     border: 1px solid hsl(var(--border));
@@ -479,7 +409,6 @@
     transform: translateY(-1px);
   }
 
-  /* FROM input - Departure styling */
   input[placeholder*="Delhi"], 
   input[placeholder*="From"], 
   input[name*="from"],
@@ -490,7 +419,6 @@
     border-left: 3px solid hsl(var(--departure));
   }
 
-  /* TO input - Arrival styling */
   input[placeholder*="Bangalore"], 
   input[placeholder*="To"], 
   input[name*="to"],
@@ -501,7 +429,6 @@
     border-left: 3px solid hsl(var(--arrival));
   }
 
-  /* Date inputs - Calendar styling */
   input[type="date"] {
     background: linear-gradient(135deg, 
       hsl(var(--primary) / 0.05) 0%, 
@@ -509,7 +436,6 @@
     border-left: 3px solid hsl(var(--primary));
   }
 
-  /* BUTTON ENHANCEMENTS - FIXED VERSION */
   button, [role="button"] {
     position: relative;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -517,12 +443,10 @@
     border-radius: var(--radius);
   }
 
-  /* Remove the problematic flight path animation */
   button::before {
     display: none;
   }
 
-  /* Primary buttons - Clean and professional */
   button[type="submit"], 
   button[class*="primary"], 
   [class*="search"] button,
@@ -536,7 +460,6 @@
     border: 1px solid hsl(var(--primary) / 0.2);
   }
 
-  /* Subtle hover effect for primary buttons */
   button[type="submit"]:hover,
   .bg-primary:hover,
   button.bg-primary:hover {
@@ -547,7 +470,6 @@
       hsl(var(--primary)) 100%);
   }
 
-  /* Secondary buttons */
   button[class*="secondary"],
   .bg-secondary,
   button.bg-secondary {
@@ -565,7 +487,6 @@
     background: hsl(var(--secondary) / 0.9);
   }
 
-  /* Muted/Ghost buttons */
   button[class*="ghost"],
   button[class*="outline"],
   .bg-muted,
@@ -585,7 +506,6 @@
     box-shadow: var(--shadow-sm);
   }
 
-  /* Destructive buttons */
   button[class*="destructive"],
   .bg-destructive,
   button.bg-destructive {
@@ -602,7 +522,6 @@
     box-shadow: var(--shadow-md);
   }
 
-  /* Button states */
   button:active {
     transform: translateY(0px);
     box-shadow: var(--shadow-sm);
@@ -620,7 +539,6 @@
     box-shadow: none;
   }
 
-  /* Focus states */
   button:focus-visible {
     outline: 2px solid hsl(var(--primary));
     outline-offset: 2px;
@@ -629,43 +547,6 @@
       0 0 0 4px hsl(var(--primary) / 0.2);
   }
 
-  /* Small buttons */
-  button[class*="sm"], .btn-sm {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
-  }
-
-  /* Large buttons */
-  button[class*="lg"], .btn-lg {
-    padding: 0.625rem 1.5rem;
-    font-size: 1rem;
-  }
-
-  /* Icon buttons */
-  button[class*="icon"] {
-    width: 2.5rem;
-    height: 2.5rem;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Button groups */
-  .btn-group button:not(:last-child) {
-    border-right: none;
-    border-radius: var(--radius) 0 0 var(--radius);
-  }
-
-  .btn-group button:not(:first-child) {
-    border-radius: 0 var(--radius) var(--radius) 0;
-  }
-
-  .btn-group button:not(:first-child):not(:last-child) {
-    border-radius: 0;
-  }
-
-  /* NAVIGATION ENHANCEMENTS - SIMPLIFIED */
   nav a, nav button {
     position: relative;
     color: rgba(255,255,255,0.9);
@@ -681,7 +562,6 @@
     backdrop-filter: blur(8px);
   }
 
-  /* Active nav item */
   nav a[class*="active"], 
   nav button[class*="active"],
   nav a[aria-current="page"] {
@@ -690,13 +570,44 @@
     backdrop-filter: blur(8px);
   }
 
-  /* Remove the problematic underline animation */
   nav a::after {
     display: none;
   }
 
-  /* Add departure board styling to any monospace text */
-  code, pre, .font-mono {
-    background: linear-gradient(135deg, #000 0%, #1a1a1*
+  @media (max-width: 768px) {
+    body::before {
+      background-size: 30px 30px;
+      opacity: 0.2;
+    }
+    
+    [class*="form"], [class*="card"], .bg-card {
+      margin: 1rem;
+      border-radius: calc(var(--radius) * 2);
+    }
+    
+    input, select, textarea {
+      padding: 0.875rem 1rem;
+      font-size: 16px;
+    }
+
+    header::before {
+      animation-duration: 2s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-image: 
+        radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, hsl(var(--secondary) / 0.03) 0%, transparent 50%);
+    }
   }
 }
