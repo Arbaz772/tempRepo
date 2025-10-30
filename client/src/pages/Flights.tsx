@@ -9,7 +9,7 @@ import FilterPanel from "@/components/FilterPanel";
 import AIPredictionPanel from "@/components/AIPredictionPanel";
 import PriceTrendChart from "@/components/PriceTrendChart";
 import { Loader2, Plane } from "lucide-react";
-import airportHero from "@assets/generated_images/Airplane_flying_above_clouds_29094809.png";
+import airportHero from "@assets/generated_images/clouds.png";
 
 export default function Flights() {
   const [location] = useLocation();
