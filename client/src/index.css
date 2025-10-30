@@ -68,6 +68,16 @@
   --runway: 210 8% 88%;
   --terminal: 210 20% 96%;
 
+  /* Enhanced button color variants */
+  --button-success: 142 76% 36%;
+  --button-success-foreground: 0 0% 100%;
+  --button-warning: 38 92% 50%;
+  --button-warning-foreground: 0 0% 100%;
+  --button-info: 199 89% 48%;
+  --button-info-foreground: 0 0% 100%;
+  --button-purple: 262 83% 58%;
+  --button-purple-foreground: 0 0% 100%;
+
   --font-sans: Inter, system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
@@ -157,6 +167,16 @@
   --arrival: 142 75% 55%;
   --runway: 220 15% 20%;
   --terminal: 220 20% 12%;
+
+  /* Enhanced button colors for dark mode */
+  --button-success: 142 69% 58%;
+  --button-success-foreground: 220 30% 8%;
+  --button-warning: 38 92% 60%;
+  --button-warning-foreground: 220 30% 8%;
+  --button-info: 199 89% 68%;
+  --button-info-foreground: 220 30% 8%;
+  --button-purple: 262 83% 68%;
+  --button-purple-foreground: 220 30% 8%;
 
   /* Dark mode shadows */
   --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.30);
@@ -406,17 +426,25 @@
     border-left: 3px solid hsl(var(--primary));
   }
 
+  /* ENHANCED BUTTON STYLING WITH VIBRANT COLORS */
   button, [role="button"] {
     position: relative;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 500;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
     border-radius: var(--radius);
+    cursor: pointer;
+    border: none;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+    text-transform: none;
+    letter-spacing: 0.025em;
   }
 
   button::before {
     display: none;
   }
 
+  /* PRIMARY BUTTONS - Sky Blue */
   button[type="submit"], 
   button[class*="primary"], 
   [class*="search"] button,
@@ -424,129 +452,211 @@
   button.bg-primary {
     background: linear-gradient(135deg, 
       hsl(var(--primary)) 0%, 
-      hsl(var(--primary) / 0.9) 100%);
+      hsl(var(--primary) / 0.85) 50%,
+      hsl(210 100% 45%) 100%);
     color: hsl(var(--primary-foreground));
-    box-shadow: var(--shadow-sm);
-    border: 1px solid hsl(var(--primary) / 0.2);
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 12px hsl(var(--primary) / 0.25),
+      inset 0 1px 0 hsl(var(--primary) / 0.2);
+    border: 1px solid hsl(var(--primary) / 0.3);
   }
 
   button[type="submit"]:hover,
   .bg-primary:hover,
   button.bg-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--primary) / 0.35),
+      inset 0 1px 0 rgba(255,255,255,0.2);
     background: linear-gradient(135deg, 
-      hsl(var(--primary) / 0.95) 0%, 
-      hsl(var(--primary)) 100%);
+      hsl(210 100% 55%) 0%, 
+      hsl(var(--primary)) 50%,
+      hsl(210 100% 40%) 100%);
   }
 
+  /* SECONDARY BUTTONS - Sunset Orange */
   button[class*="secondary"],
   .bg-secondary,
   button.bg-secondary {
-    background: hsl(var(--secondary));
+    background: linear-gradient(135deg, 
+      hsl(var(--secondary)) 0%, 
+      hsl(25 95% 50%) 50%,
+      hsl(25 95% 45%) 100%);
     color: hsl(var(--secondary-foreground));
-    box-shadow: var(--shadow-sm);
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 12px hsl(var(--secondary) / 0.25),
+      inset 0 1px 0 hsl(var(--secondary) / 0.2);
     border: 1px solid hsl(var(--secondary) / 0.3);
   }
 
   button[class*="secondary"]:hover,
   .bg-secondary:hover,
   button.bg-secondary:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-    background: hsl(var(--secondary) / 0.9);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--secondary) / 0.35),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, 
+      hsl(25 95% 60%) 0%, 
+      hsl(var(--secondary)) 50%,
+      hsl(25 95% 40%) 100%);
   }
 
-  button[class*="ghost"],
-  button[class*="outline"],
-  .bg-muted,
-  button.bg-muted {
-    background: hsl(var(--muted));
-    color: hsl(var(--muted-foreground));
-    border: 1px solid hsl(var(--border));
-    box-shadow: none;
+  /* SUCCESS BUTTONS - Green */
+  button[class*="success"],
+  .bg-success,
+  button.bg-success {
+    background: linear-gradient(135deg, 
+      hsl(var(--button-success)) 0%, 
+      hsl(142 76% 30%) 50%,
+      hsl(142 76% 25%) 100%);
+    color: hsl(var(--button-success-foreground));
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 12px hsl(var(--button-success) / 0.25),
+      inset 0 1px 0 hsl(var(--button-success) / 0.2);
+    border: 1px solid hsl(var(--button-success) / 0.3);
   }
 
-  button[class*="ghost"]:hover,
-  button[class*="outline"]:hover,
-  .bg-muted:hover,
-  button.bg-muted:hover {
-    background: hsl(var(--muted) / 0.8);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
+  button[class*="success"]:hover,
+  .bg-success:hover,
+  button.bg-success:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--button-success) / 0.35),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, 
+      hsl(142 76% 42%) 0%, 
+      hsl(var(--button-success)) 50%,
+      hsl(142 76% 20%) 100%);
   }
 
+  /* WARNING BUTTONS - Yellow/Gold */
+  button[class*="warning"],
+  .bg-warning,
+  button.bg-warning {
+    background: linear-gradient(135deg, 
+      hsl(var(--button-warning)) 0%, 
+      hsl(38 92% 45%) 50%,
+      hsl(38 92% 40%) 100%);
+    color: hsl(var(--button-warning-foreground));
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 12px hsl(var(--button-warning) / 0.25),
+      inset 0 1px 0 hsl(var(--button-warning) / 0.2);
+    border: 1px solid hsl(var(--button-warning) / 0.3);
+  }
+
+  button[class*="warning"]:hover,
+  .bg-warning:hover,
+  button.bg-warning:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--button-warning) / 0.35),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, 
+      hsl(38 92% 55%) 0%, 
+      hsl(var(--button-warning)) 50%,
+      hsl(38 92% 35%) 100%);
+  }
+
+  /* INFO BUTTONS - Light Blue */
+  button[class*="info"],
+  .bg-info,
+  button.bg-info {
+    background: linear-gradient(135deg, 
+      hsl(var(--button-info)) 0%, 
+      hsl(199 89% 42%) 50%,
+      hsl(199 89% 38%) 100%);
+    color: hsl(var(--button-info-foreground));
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 12px hsl(var(--button-info) / 0.25),
+      inset 0 1px 0 hsl(var(--button-info) / 0.2);
+    border: 1px solid hsl(var(--button-info) / 0.3);
+  }
+
+  button[class*="info"]:hover,
+  .bg-info:hover,
+  button.bg-info:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--button-info) / 0.35),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, 
+      hsl(199 89% 55%) 0%, 
+      hsl(var(--button-info)) 50%,
+      hsl(199 89% 35%) 100%);
+  }
+
+  /* PURPLE BUTTONS */
+  button[class*="purple"],
+  .bg-purple,
+  button.bg-purple {
+    background: linear-gradient(135deg, 
+      hsl(var(--button-purple)) 0%, 
+      hsl(262 83% 52%) 50%,
+      hsl(262 83% 48%) 100%);
+    color: hsl(var(--button-purple-foreground));
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 12px hsl(var(--button-purple) / 0.25),
+      inset 0 1px 0 hsl(var(--button-purple) / 0.2);
+    border: 1px solid hsl(var(--button-purple) / 0.3);
+  }
+
+  button[class*="purple"]:hover,
+  .bg-purple:hover,
+  button.bg-purple:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--button-purple) / 0.35),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, 
+      hsl(262 83% 65%) 0%, 
+      hsl(var(--button-purple)) 50%,
+      hsl(262 83% 45%) 100%);
+  }
+
+  /* DESTRUCTIVE BUTTONS - Red */
   button[class*="destructive"],
   .bg-destructive,
   button.bg-destructive {
-    background: hsl(var(--destructive));
+    background: linear-gradient(135deg, 
+      hsl(var(--destructive)) 0%, 
+      hsl(0 85% 50%) 50%,
+      hsl(0 85% 45%) 100%);
     color: hsl(var(--destructive-foreground));
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 12px hsl(var(--destructive) / 0.25),
+      inset 0 1px 0 hsl(var(--destructive) / 0.2);
     border: 1px solid hsl(var(--destructive) / 0.3);
   }
 
   button[class*="destructive"]:hover,
   .bg-destructive:hover,
   button.bg-destructive:hover {
-    background: hsl(var(--destructive) / 0.9);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-  }
-
-  button:active {
-    transform: translateY(0px);
-    box-shadow: var(--shadow-sm);
-  }
-
-  button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-
-  button:disabled:hover {
-    transform: none;
-    box-shadow: none;
-  }
-
-  button:focus-visible {
-    outline: 2px solid hsl(var(--primary));
-    outline-offset: 2px;
+    transform: translateY(-2px) scale(1.02);
     box-shadow: 
-      var(--shadow-md),
-      0 0 0 4px hsl(var(--primary) / 0.2);
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--destructive) / 0.35),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, 
+      hsl(0 85% 60%) 0%, 
+      hsl(var(--destructive)) 50%,
+      hsl(0 85% 40%) 100%);
   }
 
-  @media (max-width: 768px) {
-    body::before {
-      background-size: 30px 30px;
-      opacity: 0.2;
-    }
-    
-    [class*="form"], [class*="card"], .bg-card {
-      margin: 1rem;
-      border-radius: calc(var(--radius) * 2);
-    }
-    
-    input, select, textarea {
-      padding: 0.875rem 1rem;
-      font-size: 16px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    body {
-      background-image: 
-        radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, hsl(var(--secondary) / 0.03) 0%, transparent 50%);
-    }
-  }
+  /* GHOST/OUTLINE BUTTONS - Subtle */
+  button[class*="ghost"],
+  button[class*](streamdown:incomplete-link)
 }
