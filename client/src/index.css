@@ -370,19 +370,19 @@
     background-color: var(--elevate-2);
   }
 
-  /* Enhanced hover effects with airport styling */
+  /* ENHANCED CARD HOVER EFFECTS - KEEP THESE */
   .hover-elevate:hover:not(.no-default-hover-elevate) {
-    transform: translateY(-4px);
+    transform: translateY(-2px); /* Reduced from -4px */
     box-shadow: 
-      var(--shadow-xl),
-      0 0 30px hsl(var(--primary) / 0.2);
+      var(--shadow-lg),
+      0 0 20px hsl(var(--primary) / 0.1); /* Reduced opacity */
   }
 
   .hover-elevate-2:hover:not(.no-default-hover-elevate) {
-    transform: translateY(-6px);
+    transform: translateY(-3px); /* Reduced from -6px */
     box-shadow: 
-      var(--shadow-2xl),
-      0 0 40px hsl(var(--secondary) / 0.3);
+      var(--shadow-xl),
+      0 0 25px hsl(var(--secondary) / 0.15); /* Reduced opacity */
   }
 
   /* If there's a 1px border, adjust the inset so that it covers that parent's border */
@@ -509,168 +509,194 @@
     border-left: 3px solid hsl(var(--primary));
   }
 
-  /* BUTTON ENHANCEMENTS */
+  /* BUTTON ENHANCEMENTS - FIXED VERSION */
   button, [role="button"] {
     position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    border-radius: var(--radius);
   }
 
-  /* Primary buttons (search, submit, etc.) */
+  /* Remove the problematic flight path animation */
+  button::before {
+    display: none;
+  }
+
+  /* Primary buttons - Clean and professional */
   button[type="submit"], 
   button[class*="primary"], 
   [class*="search"] button,
-  .bg-primary {
+  .bg-primary,
+  button.bg-primary {
     background: linear-gradient(135deg, 
       hsl(var(--primary)) 0%, 
-      hsl(var(--primary) / 0.8) 50%, 
-      hsl(var(--secondary) / 0.9) 100%);
+      hsl(var(--primary) / 0.9) 100%);
     color: hsl(var(--primary-foreground));
+    box-shadow: var(--shadow-sm);
+    border: 1px solid hsl(var(--primary) / 0.2);
+  }
+
+  /* Subtle hover effect for primary buttons */
+  button[type="submit"]:hover,
+  .bg-primary:hover,
+  button.bg-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, 
+      hsl(var(--primary) / 0.95) 0%, 
+      hsl(var(--primary)) 100%);
+  }
+
+  /* Secondary buttons */
+  button[class*="secondary"],
+  .bg-secondary,
+  button.bg-secondary {
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    box-shadow: var(--shadow-sm);
+    border: 1px solid hsl(var(--secondary) / 0.3);
+  }
+
+  button[class*="secondary"]:hover,
+  .bg-secondary:hover,
+  button.bg-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    background: hsl(var(--secondary) / 0.9);
+  }
+
+  /* Muted/Ghost buttons */
+  button[class*="ghost"],
+  button[class*="outline"],
+  .bg-muted,
+  button.bg-muted {
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    border: 1px solid hsl(var(--border));
+    box-shadow: none;
+  }
+
+  button[class*="ghost"]:hover,
+  button[class*="outline"]:hover,
+  .bg-muted:hover,
+  button.bg-muted:hover {
+    background: hsl(var(--muted) / 0.8);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Destructive buttons */
+  button[class*="destructive"],
+  .bg-destructive,
+  button.bg-destructive {
+    background: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
+    border: 1px solid hsl(var(--destructive) / 0.3);
+  }
+
+  button[class*="destructive"]:hover,
+  .bg-destructive:hover,
+  button.bg-destructive:hover {
+    background: hsl(var(--destructive) / 0.9);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Button states */
+  button:active {
+    transform: translateY(0px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  button:disabled:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Focus states */
+  button:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
     box-shadow: 
       var(--shadow-md),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    border: 1px solid hsl(var(--primary) / 0.8);
+      0 0 0 4px hsl(var(--primary) / 0.2);
   }
 
-  button[type="submit"]:hover,
-  .bg-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-      var(--shadow-lg),
-      0 0 20px hsl(var(--primary) / 0.4);
+  /* Small buttons */
+  button[class*="sm"], .btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
   }
 
-  /* Add flight path animation to buttons */
-  button::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: -100%;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      rgba(255,255,255,0.6) 50%, 
-      transparent 100%);
-    transition: all 0.6s ease;
-    z-index: 1;
+  /* Large buttons */
+  button[class*="lg"], .btn-lg {
+    padding: 0.625rem 1.5rem;
+    font-size: 1rem;
   }
 
-  button:hover::before {
-    left: 100%;
+  /* Icon buttons */
+  button[class*="icon"] {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* NAVIGATION ENHANCEMENTS */
+  /* Button groups */
+  .btn-group button:not(:last-child) {
+    border-right: none;
+    border-radius: var(--radius) 0 0 var(--radius);
+  }
+
+  .btn-group button:not(:first-child) {
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .btn-group button:not(:first-child):not(:last-child) {
+    border-radius: 0;
+  }
+
+  /* NAVIGATION ENHANCEMENTS - SIMPLIFIED */
   nav a, nav button {
     position: relative;
     color: rgba(255,255,255,0.9);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
   }
 
   nav a:hover, nav button:hover {
     color: white;
-    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
   }
 
   /* Active nav item */
   nav a[class*="active"], 
   nav button[class*="active"],
   nav a[aria-current="page"] {
-    color: hsl(var(--accent));
-    text-shadow: 0 0 10px hsl(var(--accent) / 0.6);
+    color: white;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
   }
 
-  /* Add terminal gate indicators */
+  /* Remove the problematic underline animation */
   nav a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: hsl(var(--accent));
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-  }
-
-  nav a:hover::after, 
-  nav a[class*="active"]::after,
-  nav a[aria-current="page"]::after {
-    transform: scaleX(1);
+    display: none;
   }
 
   /* Add departure board styling to any monospace text */
   code, pre, .font-mono {
-    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
-    color: #00ff41;
-    text-shadow: 0 0 10px currentColor;
-    border: 1px solid #333;
-    box-shadow: 
-      inset 0 1px 0 #333,
-      0 2px 10px rgba(0,0,0,0.5);
-  }
-
-  /* LOADING STATES */
-  @keyframes terminal-loading {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  [class*="loading"], [aria-busy="true"] {
-    position: relative;
-  }
-
-  [class*="loading"]::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      hsl(var(--primary) / 0.2) 50%, 
-      transparent 100%);
-    animation: terminal-loading 1.5s ease-in-out infinite;
-  }
-
-  /* RESPONSIVE MOBILE ENHANCEMENTS */
-  @media (max-width: 768px) {
-    body::before {
-      background-size: 30px 30px;
-      opacity: 0.2;
-    }
-    
-    [class*="form"], [class*="card"], .bg-card {
-      margin: 1rem;
-      border-radius: calc(var(--radius) * 2);
-    }
-    
-    input, select, textarea {
-      padding: 0.875rem 1rem;
-      font-size: 16px; /* Prevent zoom on iOS */
-    }
-
-    header::before {
-      animation-duration: 2s;
-    }
-  }
-
-  /* ACCESSIBILITY ENHANCEMENTS */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    body {
-      background-image: 
-        radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, hsl(var(--secondary) / 0.03) 0%, transparent 50%);
-    }
+    background: linear-gradient(135deg, #000 0%, #1a1a1*
   }
 }
