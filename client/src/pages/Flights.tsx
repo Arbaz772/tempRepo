@@ -1,5 +1,5 @@
 // client/src/pages/Flights.tsx
-// FIXED - Auto-searches immediately when URL parameters are present (no button click needed)
+// Updated with airport hero background matching Home page
 
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
@@ -9,6 +9,7 @@ import FilterPanel from "@/components/FilterPanel";
 import AIPredictionPanel from "@/components/AIPredictionPanel";
 import PriceTrendChart from "@/components/PriceTrendChart";
 import { Loader2, Plane } from "lucide-react";
+import airportHero from "@assets/generated_images/Airport_terminal_hero_background_9e80665b.png";
 
 export default function Flights() {
   const [location] = useLocation();
@@ -163,17 +164,33 @@ export default function Flights() {
 
   return (
     <div className="bg-background">
-      {/* SEARCH FORM SECTION */}
-      <div className="bg-card/30 border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <FlightSearchForm 
-            onSearchStart={handleSearchStart}
-            onSearchComplete={handleSearchComplete}
-            onSearchError={handleSearchError}
-            initialValues={searchParams}
-          />
+      {/* HERO SECTION WITH AIRPORT BACKGROUND */}
+      <section className="relative overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(${airportHero})`,
+          }}
+        >
+          {/* Dark overlay for form readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80"></div>
         </div>
-      </div>
+        
+        {/* SEARCH FORM SECTION */}
+        <div className="relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl p-6 border border-white/30 shadow-2xl">
+              <FlightSearchForm 
+                onSearchStart={handleSearchStart}
+                onSearchComplete={handleSearchComplete}
+                onSearchError={handleSearchError}
+                initialValues={searchParams}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* LOADING STATE */}
       {loading && (
