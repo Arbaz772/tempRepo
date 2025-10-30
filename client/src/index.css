@@ -2,181 +2,169 @@
 @tailwind components;
 @tailwind utilities;
 
-/* AIRPORT THEME - LIGHT MODE */
+/* FUTURISTIC AIRPORT THEME - LIGHT MODE */
 :root {
-  /* Airport-themed button/badge outlines */
-  --button-outline: rgba(54, 162, 235, 0.15);
-  --badge-outline: rgba(255, 107, 53, 0.1);
+  --button-outline: rgba(59, 130, 246, 0.15);
+  --badge-outline: rgba(59, 130, 246, 0.1);
 
-  /* Automatic computation of border around primary / danger buttons */
-  --opaque-button-border-intensity: -10;
+  --opaque-button-border-intensity: -8;
 
-  /* Sky-inspired elevation backgrounds */
-  --elevate-1: rgba(54, 162, 235, 0.04);
-  --elevate-2: rgba(54, 162, 235, 0.08);
+  --elevate-1: rgba(59, 130, 246, 0.04);
+  --elevate-2: rgba(59, 130, 246, 0.1);
 
-  /* Enhanced backgrounds with subtle sky tinting */
-  --background: 210 25% 97%;
-  --foreground: 220 30% 15%;
+  /* Sky-inspired backgrounds */
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
 
   --border: 210 30% 85%;
 
-  --card: 210 35% 96%;
-  --card-foreground: 220 30% 15%;
+  --card: 210 40% 96%;
+  --card-foreground: 222 47% 11%;
   --card-border: 210 25% 88%;
 
-  --sidebar: 210 25% 94%;
-  --sidebar-foreground: 220 30% 15%;
-  --sidebar-border: 210 20% 85%;
-  --sidebar-primary: 210 100% 50%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 210 14% 89%;
-  --sidebar-accent-foreground: 220 30% 15%;
-  --sidebar-ring: 210 100% 50%;
+  --sidebar: 210 35% 94%;
+  --sidebar-foreground: 222 47% 11%;
+  --sidebar-border: 210 25% 87%;
+  --sidebar-primary: 217 91% 60%;
+  --sidebar-primary-foreground: 210 20% 98%;
+  --sidebar-accent: 210 25% 90%;
+  --sidebar-accent-foreground: 222 47% 11%;
+  --sidebar-ring: 217 91% 60%;
 
-  --popover: 210 30% 95%;
-  --popover-foreground: 220 30% 15%;
-  --popover-border: 210 25% 86%;
+  --popover: 210 35% 95%;
+  --popover-foreground: 222 47% 11%;
+  --popover-border: 210 25% 88%;
 
-  /* Airport-themed primary colors */
-  --primary: 210 100% 50%;
+  /* Vibrant primary - Electric Blue */
+  --primary: 217 91% 60%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 25 95% 55%;
+  /* Sunset Orange for accents */
+  --secondary: 25 95% 53%;
   --secondary-foreground: 0 0% 100%;
 
-  --muted: 210 20% 90%;
-  --muted-foreground: 220 15% 40%;
+  --muted: 210 25% 92%;
+  --muted-foreground: 220 9% 36%;
 
-  --accent: 45 100% 60%;
-  --accent-foreground: 220 30% 20%;
+  --accent: 217 91% 60%;
+  --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 85% 55%;
+  /* Vibrant red for warnings */
+  --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --input: 210 20% 88%;
-  --ring: 210 100% 50%;
-  --chart-1: 210 100% 50%;
-  --chart-2: 25 95% 55%;
-  --chart-3: 142 75% 45%;
-  --chart-4: 0 85% 55%;
-  --chart-5: 220 30% 15%;
+  --input: 210 25% 90%;
+  --ring: 217 91% 60%;
+  
+  --chart-1: 217 91% 60%;
+  --chart-2: 25 95% 53%;
+  --chart-3: 142 76% 36%;
+  --chart-4: 280 87% 65%;
+  --chart-5: 220 13% 28%;
 
-  /* New airport-specific variables */
-  --departure: 25 95% 55%;
-  --arrival: 142 75% 45%;
-  --runway: 210 8% 88%;
-  --terminal: 210 20% 96%;
+  /* Success green */
+  --success: 142 76% 36%;
+  --success-foreground: 0 0% 100%;
 
-  /* Enhanced button color variants */
-  --button-success: 142 76% 36%;
-  --button-success-foreground: 0 0% 100%;
-  --button-warning: 38 92% 50%;
-  --button-warning-foreground: 0 0% 100%;
-  --button-info: 199 89% 48%;
-  --button-info-foreground: 0 0% 100%;
-  --button-purple: 262 83% 58%;
-  --button-purple-foreground: 0 0% 100%;
+  /* Departure/Arrival themed colors */
+  --departure: 25 95% 53%;
+  --arrival: 142 76% 36%;
 
   --font-sans: Inter, system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: Menlo, monospace;
-  --radius: .5rem;
-
-  /* Enhanced shadows with color tints */
-  --shadow-2xs: 0px 1px 2px 0px hsl(210 50% 50% / 0.08);
-  --shadow-xs: 0px 1px 3px 0px hsl(210 50% 50% / 0.12);
-  --shadow-sm: 0px 2px 4px -1px hsl(210 50% 50% / 0.08), 0px 1px 2px -1px hsl(210 50% 50% / 0.12);
-  --shadow: 0px 4px 6px -1px hsl(210 50% 50% / 0.10), 0px 2px 4px -2px hsl(210 50% 50% / 0.12);
-  --shadow-md: 0px 6px 12px -2px hsl(210 50% 50% / 0.12), 0px 3px 6px -3px hsl(210 50% 50% / 0.15);
-  --shadow-lg: 0px 10px 20px -4px hsl(210 50% 50% / 0.15), 0px 4px 8px -4px hsl(210 50% 50% / 0.18);
-  --shadow-xl: 0px 20px 30px -6px hsl(210 50% 50% / 0.20), 0px 8px 12px -6px hsl(210 50% 50% / 0.22);
-  --shadow-2xl: 0px 25px 50px -12px hsl(210 50% 50% / 0.30);
-
+  --font-mono: 'Fira Code', Menlo, monospace;
+  --radius: .75rem;
+  
+  /* Enhanced shadows with blue tint */
+  --shadow-2xs: 0px 1px 2px 0px hsl(217 91% 60% / 0.08);
+  --shadow-xs: 0px 1px 3px 0px hsl(217 91% 60% / 0.12);
+  --shadow-sm: 0px 2px 4px -1px hsl(217 91% 60% / 0.10), 0px 1px 2px -1px hsl(217 91% 60% / 0.12);
+  --shadow: 0px 4px 6px -1px hsl(217 91% 60% / 0.12), 0px 2px 4px -2px hsl(217 91% 60% / 0.14);
+  --shadow-md: 0px 6px 12px -2px hsl(217 91% 60% / 0.15), 0px 3px 6px -3px hsl(217 91% 60% / 0.18);
+  --shadow-lg: 0px 10px 20px -4px hsl(217 91% 60% / 0.18), 0px 4px 8px -4px hsl(217 91% 60% / 0.22);
+  --shadow-xl: 0px 20px 30px -6px hsl(217 91% 60% / 0.22), 0px 8px 12px -6px hsl(217 91% 60% / 0.25);
+  --shadow-2xl: 0px 25px 50px -12px hsl(217 91% 60% / 0.30);
+  
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
-  /* Automatically computed borders */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --sidebar-accent-border: hsl(var(--sidebar-accent));
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --primary-border: hsl(var(--primary));
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --secondary-border: hsl(var(--secondary));
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --muted-border: hsl(var(--muted));
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --accent-border: hsl(var(--accent));
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --destructive-border: hsl(var(--destructive));
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
-/* NIGHT AIRPORT THEME - DARK MODE */
+/* NIGHT SKY THEME - DARK MODE */
 .dark {
-  --button-outline: rgba(54, 162, 235, 0.20);
-  --badge-outline: rgba(255, 107, 53, 0.15);
+  --button-outline: rgba(96, 165, 250, 0.2);
+  --badge-outline: rgba(96, 165, 250, 0.15);
 
-  --opaque-button-border-intensity: 12;
+  --opaque-button-border-intensity: 9;
 
-  /* Night sky elevation backgrounds */
-  --elevate-1: rgba(54, 162, 235, 0.06);
-  --elevate-2: rgba(54, 162, 235, 0.12);
+  --elevate-1: rgba(96, 165, 250, 0.06);
+  --elevate-2: rgba(96, 165, 250, 0.12);
 
-  --background: 220 30% 8%;
-  --foreground: 210 25% 95%;
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
 
-  --border: 220 25% 18%;
+  --border: 217 33% 20%;
 
-  --card: 220 25% 12%;
-  --card-foreground: 210 25% 95%;
-  --card-border: 220 25% 20%;
+  --card: 222 47% 14%;
+  --card-foreground: 210 40% 98%;
+  --card-border: 217 33% 22%;
 
-  --sidebar: 220 25% 14%;
-  --sidebar-foreground: 210 25% 95%;
-  --sidebar-border: 220 25% 22%;
-  --sidebar-primary: 210 100% 60%;
-  --sidebar-primary-foreground: 220 30% 8%;
-  --sidebar-accent: 220 20% 22%;
-  --sidebar-accent-foreground: 210 25% 95%;
-  --sidebar-ring: 210 100% 60%;
+  --sidebar: 222 47% 13%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-border: 217 33% 21%;
+  --sidebar-primary: 217 91% 60%;
+  --sidebar-primary-foreground: 222 47% 11%;
+  --sidebar-accent: 217 33% 20%;
+  --sidebar-accent-foreground: 210 40% 98%;
+  --sidebar-ring: 217 91% 60%;
 
-  --popover: 220 25% 16%;
-  --popover-foreground: 210 25% 95%;
-  --popover-border: 220 25% 24%;
+  --popover: 222 47% 15%;
+  --popover-foreground: 210 40% 98%;
+  --popover-border: 217 33% 23%;
 
-  --primary: 210 100% 60%;
-  --primary-foreground: 220 30% 8%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 222 47% 11%;
 
-  --secondary: 25 95% 65%;
-  --secondary-foreground: 220 30% 8%;
+  --secondary: 25 95% 60%;
+  --secondary-foreground: 222 47% 11%;
 
-  --muted: 220 20% 18%;
-  --muted-foreground: 220 15% 70%;
+  --muted: 217 33% 18%;
+  --muted-foreground: 220 9% 66%;
 
-  --accent: 45 100% 70%;
-  --accent-foreground: 220 30% 8%;
+  --accent: 217 91% 60%;
+  --accent-foreground: 222 47% 11%;
 
-  --destructive: 0 85% 65%;
-  --destructive-foreground: 220 30% 8%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 222 47% 11%;
 
-  --input: 220 25% 22%;
-  --ring: 210 100% 60%;
-  --chart-1: 210 100% 70%;
-  --chart-2: 25 95% 75%;
-  --chart-3: 142 75% 65%;
-  --chart-4: 0 85% 75%;
-  --chart-5: 220 25% 75%;
+  --input: 217 33% 24%;
+  --ring: 217 91% 60%;
+  
+  --chart-1: 217 91% 70%;
+  --chart-2: 25 95% 65%;
+  --chart-3: 142 76% 56%;
+  --chart-4: 280 87% 75%;
+  --chart-5: 220 13% 68%;
 
-  /* Dark airport-specific variables */
-  --departure: 25 95% 65%;
-  --arrival: 142 75% 55%;
-  --runway: 220 15% 20%;
-  --terminal: 220 20% 12%;
+  --success: 142 76% 56%;
+  --success-foreground: 222 47% 11%;
 
-  /* Enhanced button colors for dark mode */
-  --button-success: 142 69% 58%;
-  --button-success-foreground: 220 30% 8%;
-  --button-warning: 38 92% 60%;
-  --button-warning-foreground: 220 30% 8%;
-  --button-info: 199 89% 68%;
-  --button-info-foreground: 220 30% 8%;
-  --button-purple: 262 83% 68%;
-  --button-purple-foreground: 220 30% 8%;
+  --departure: 25 95% 60%;
+  --arrival: 142 76% 56%;
 
   /* Dark mode shadows */
   --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.30);
@@ -197,13 +185,13 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
     background-image: 
-      radial-gradient(circle at 25% 25%, hsl(var(--primary) / 0.02) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, hsl(var(--secondary) / 0.02) 0%, transparent 50%);
-    background-size: 800px 800px, 600px 600px;
-    background-position: 0 0, 400px 300px;
+      radial-gradient(circle at 20% 20%, hsl(var(--primary) / 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, hsl(var(--secondary) / 0.03) 0%, transparent 50%);
+    background-attachment: fixed;
     min-height: 100vh;
   }
 
+  /* Subtle grid pattern overlay */
   body::before {
     content: '';
     position: fixed;
@@ -212,56 +200,308 @@
     right: 0;
     bottom: 0;
     background-image: 
-      linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
-    background-size: 50px 50px;
+      linear-gradient(hsl(var(--border) / 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.4) 1px, transparent 1px);
+    background-size: 60px 60px;
     pointer-events: none;
     z-index: -1;
     opacity: 0.3;
   }
 
-  h1, h2, h3 {
-    text-shadow: 0 0 20px hsl(var(--foreground) / 0.1);
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 
+  /* Enhanced heading shadows */
+  h1, h2, h3, h4, h5, h6 {
+    text-shadow: 0 2px 10px hsl(var(--primary) / 0.1);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(var(--muted));
-    border-radius: 4px;
+    background: hsl(var(--muted) / 0.5);
+    border-radius: 5px;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, 
+    background: linear-gradient(180deg, 
       hsl(var(--primary)) 0%, 
-      hsl(var(--secondary)) 100%);
-    border-radius: 4px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+      hsl(var(--primary) / 0.7) 100%);
+    border-radius: 5px;
+    border: 2px solid hsl(var(--background));
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, 
+    background: linear-gradient(180deg, 
       hsl(var(--secondary)) 0%, 
-      hsl(var(--primary)) 100%);
+      hsl(var(--secondary) / 0.7) 100%);
   }
 
+  /* Selection styling */
   ::selection {
     background: hsl(var(--primary) / 0.3);
-    color: hsl(var(--primary-foreground));
-    text-shadow: none;
+    color: hsl(var(--foreground));
   }
 
+  /* Focus visible styling */
   :focus-visible {
     outline: 2px solid hsl(var(--primary));
-    outline-offset: 2px;
-    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.2);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.15);
   }
 
-  html {
-    scroll-behavior: smooth;
+  /* Enhanced input styling */
+  input, select, textarea {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: calc(var(--radius) - 0.25rem);
+    background: hsl(var(--background));
+    border: 1.5px solid hsl(var(--border));
+    box-shadow: inset 0 1px 3px hsl(var(--muted) / 0.3);
+  }
+
+  input:hover, select:hover, textarea:hover {
+    border-color: hsl(var(--primary) / 0.5);
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 
+      0 0 0 3px hsl(var(--primary) / 0.1),
+      inset 0 1px 3px hsl(var(--muted) / 0.2),
+      var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  /* Departure-themed inputs */
+  input[placeholder*="from" i],
+  input[placeholder*="departure" i],
+  input[name*="from" i] {
+    background: linear-gradient(135deg, 
+      hsl(var(--departure) / 0.05) 0%, 
+      hsl(var(--background)) 100%);
+    border-left: 3px solid hsl(var(--departure));
+  }
+
+  /* Arrival-themed inputs */
+  input[placeholder*="to" i],
+  input[placeholder*="arrival" i],
+  input[placeholder*="destination" i],
+  input[name*="to" i] {
+    background: linear-gradient(135deg, 
+      hsl(var(--arrival) / 0.05) 0%, 
+      hsl(var(--background)) 100%);
+    border-left: 3px solid hsl(var(--arrival));
+  }
+
+  /* Date inputs */
+  input[type="date"],
+  input[type="datetime-local"] {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary) / 0.05) 0%, 
+      hsl(var(--background)) 100%);
+    border-left: 3px solid hsl(var(--primary));
+  }
+
+  /* Enhanced button base */
+  button, [role="button"] {
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    letter-spacing: 0.025em;
+    overflow: hidden;
+  }
+
+  /* Button shine effect */
+  button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 100%);
+    transition: left 0.5s ease;
+  }
+
+  button:hover::before {
+    left: 100%;
+  }
+
+  /* Primary buttons - Electric Blue */
+  button[type="submit"],
+  .bg-primary,
+  button.bg-primary {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary)) 0%, 
+      hsl(217 91% 50%) 100%);
+    color: hsl(var(--primary-foreground));
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 15px hsl(var(--primary) / 0.3);
+  }
+
+  button[type="submit"]:hover,
+  .bg-primary:hover,
+  button.bg-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--primary) / 0.4);
+  }
+
+  button[type="submit"]:active,
+  .bg-primary:active,
+  button.bg-primary:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* Secondary buttons - Sunset Orange */
+  .bg-secondary,
+  button.bg-secondary {
+    background: linear-gradient(135deg, 
+      hsl(var(--secondary)) 0%, 
+      hsl(25 95% 43%) 100%);
+    color: hsl(var(--secondary-foreground));
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 15px hsl(var(--secondary) / 0.3);
+  }
+
+  .bg-secondary:hover,
+  button.bg-secondary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--secondary) / 0.4);
+  }
+
+  /* Success buttons - Green */
+  .bg-success,
+  button.bg-success {
+    background: linear-gradient(135deg, 
+      hsl(var(--success)) 0%, 
+      hsl(142 76% 26%) 100%);
+    color: hsl(var(--success-foreground));
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 15px hsl(var(--success) / 0.3);
+  }
+
+  .bg-success:hover,
+  button.bg-success:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--success) / 0.4);
+  }
+
+  /* Destructive buttons - Red */
+  .bg-destructive,
+  button.bg-destructive {
+    background: linear-gradient(135deg, 
+      hsl(var(--destructive)) 0%, 
+      hsl(0 84% 50%) 100%);
+    color: hsl(var(--destructive-foreground));
+    box-shadow: 
+      var(--shadow-md),
+      0 4px 15px hsl(var(--destructive) / 0.3);
+  }
+
+  .bg-destructive:hover,
+  button.bg-destructive:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      var(--shadow-lg),
+      0 8px 25px hsl(var(--destructive) / 0.4);
+  }
+
+  /* Muted/Ghost buttons */
+  .bg-muted,
+  button.bg-muted {
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    box-shadow: var(--shadow-sm);
+  }
+
+  .bg-muted:hover,
+  button.bg-muted:hover {
+    background: hsl(var(--muted) / 0.8);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Disabled state */
+  button:disabled,
+  button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  /* Card enhancements */
+  .bg-card {
+    background: linear-gradient(145deg, 
+      hsl(var(--card)) 0%, 
+      hsl(var(--card) / 0.95) 100%);
+    border: 1px solid hsl(var(--card-border));
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .bg-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      var(--shadow-xl),
+      0 0 30px hsl(var(--primary) / 0.1);
+  }
+
+  /* Status indicator animation */
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 10px currentColor;
+    }
+    50% {
+      opacity: 0.5;
+      box-shadow: 0 0 20px currentColor;
+    }
+  }
+
+  .status-indicator {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  /* Shimmer loading effect */
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--muted) / 0.5) 50%,
+      hsl(var(--muted)) 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
   }
 }
 
@@ -287,6 +527,7 @@
     inset: 0px;
     border-radius: inherit;
     z-index: -1;
+    transition: all 0.3s ease;
   }
 
   .toggle-elevate.toggle-elevated::before {
@@ -316,6 +557,7 @@
     inset: 0px;
     border-radius: inherit;
     z-index: 999;
+    transition: all 0.2s ease;
   }
 
   .hover-elevate:hover:not(.no-default-hover-elevate)::after,
@@ -330,16 +572,12 @@
 
   .hover-elevate:hover:not(.no-default-hover-elevate) {
     transform: translateY(-2px);
-    box-shadow: 
-      var(--shadow-lg),
-      0 0 20px hsl(var(--primary) / 0.1);
+    box-shadow: var(--shadow-lg);
   }
 
   .hover-elevate-2:hover:not(.no-default-hover-elevate) {
     transform: translateY(-3px);
-    box-shadow: 
-      var(--shadow-xl),
-      0 0 25px hsl(var(--secondary) / 0.15);
+    box-shadow: var(--shadow-xl);
   }
 
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
@@ -349,351 +587,44 @@
     inset: -1px;
   }
 
-  [class*="form"], [class*="card"], [class*="search"], .bg-card {
-    background: linear-gradient(145deg, 
-      hsl(var(--card)) 0%, 
-      hsl(var(--card) / 0.95) 100%);
-    border: 1px solid hsl(var(--card-border));
-    box-shadow: 
-      var(--shadow-xl),
-      inset 0 1px 0 hsl(var(--card) / 0.8);
-    position: relative;
-  }
-
-  [class*="form"]::before, .bg-card::before {
-    content: '';
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 12px;
-    height: 12px;
-    background: hsl(var(--arrival));
-    border-radius: 50%;
-    box-shadow: 
-      0 0 10px hsl(var(--arrival) / 0.6),
-      inset 0 1px 0 rgba(255,255,255,0.3);
-    animation: status-blink 2s ease-in-out infinite;
-  }
-
-  @keyframes status-blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  input, select, textarea {
-    background: hsl(var(--background) / 0.8);
-    border: 1px solid hsl(var(--border));
-    border-radius: calc(var(--radius) + 2px);
-    box-shadow: 
-      inset 0 2px 4px hsl(var(--muted) / 0.5),
-      0 1px 0 hsl(var(--background));
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  input:focus, select:focus, textarea:focus {
-    border-color: hsl(var(--primary));
-    box-shadow: 
-      0 0 0 3px hsl(var(--primary) / 0.1),
-      inset 0 2px 4px hsl(var(--muted) / 0.3),
-      var(--shadow-md);
-    transform: translateY(-1px);
-  }
-
-  input[placeholder*="Delhi"], 
-  input[placeholder*="From"], 
-  input[name*="from"],
-  input[placeholder*="departure"] {
-    background: linear-gradient(135deg, 
-      hsl(var(--departure) / 0.05) 0%, 
-      hsl(var(--background)) 100%);
-    border-left: 3px solid hsl(var(--departure));
-  }
-
-  input[placeholder*="Bangalore"], 
-  input[placeholder*="To"], 
-  input[name*="to"],
-  input[placeholder*="destination"] {
-    background: linear-gradient(135deg, 
-      hsl(var(--arrival) / 0.05) 0%, 
-      hsl(var(--background)) 100%);
-    border-left: 3px solid hsl(var(--arrival));
-  }
-
-  input[type="date"] {
-    background: linear-gradient(135deg, 
-      hsl(var(--primary) / 0.05) 0%, 
-      hsl(var(--background)) 100%);
-    border-left: 3px solid hsl(var(--primary));
-  }
-
-  /* ENHANCED BUTTON STYLING WITH VIBRANT COLORS */
-  button, [role="button"] {
-    position: relative;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 600;
-    border-radius: var(--radius);
-    cursor: pointer;
-    border: none;
-    font-size: 0.875rem;
-    padding: 0.625rem 1.25rem;
-    text-transform: none;
-    letter-spacing: 0.025em;
-  }
-
-  button::before {
-    display: none;
-  }
-
-  /* PRIMARY BUTTONS - Sky Blue */
-  button[type="submit"], 
-  button[class*="primary"], 
-  [class*="search"] button,
-  .bg-primary,
-  button.bg-primary {
+  /* Gradient text utility */
+  .gradient-text {
     background: linear-gradient(135deg, 
       hsl(var(--primary)) 0%, 
-      hsl(var(--primary) / 0.85) 50%,
-      hsl(210 100% 45%) 100%);
-    color: hsl(var(--primary-foreground));
+      hsl(var(--secondary)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    background: hsl(var(--card) / 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  /* Neon glow effect */
+  .neon-glow {
     box-shadow: 
-      var(--shadow-md),
-      0 4px 12px hsl(var(--primary) / 0.25),
-      inset 0 1px 0 hsl(var(--primary) / 0.2);
-    border: 1px solid hsl(var(--primary) / 0.3);
+      0 0 10px hsl(var(--primary) / 0.5),
+      0 0 20px hsl(var(--primary) / 0.3),
+      0 0 30px hsl(var(--primary) / 0.1);
   }
 
-  button[type="submit"]:hover,
-  .bg-primary:hover,
-  button.bg-primary:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 
-      var(--shadow-lg),
-      0 8px 25px hsl(var(--primary) / 0.35),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    background: linear-gradient(135deg, 
-      hsl(210 100% 55%) 0%, 
-      hsl(var(--primary)) 50%,
-      hsl(210 100% 40%) 100%);
+  /* Pulse animation */
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
   }
 
-  /* SECONDARY BUTTONS - Sunset Orange */
-  button[class*="secondary"],
-  .bg-secondary,
-  button.bg-secondary {
-    background: linear-gradient(135deg, 
-      hsl(var(--secondary)) 0%, 
-      hsl(25 95% 50%) 50%,
-      hsl(25 95% 45%) 100%);
-    color: hsl(var(--secondary-foreground));
-    box-shadow: 
-      var(--shadow-md),
-      0 4px 12px hsl(var(--secondary) / 0.25),
-      inset 0 1px 0 hsl(var(--secondary) / 0.2);
-    border: 1px solid hsl(var(--secondary) / 0.3);
-  }
-
-  button[class*="secondary"]:hover,
-  .bg-secondary:hover,
-  button.bg-secondary:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 
-      var(--shadow-lg),
-      0 8px 25px hsl(var(--secondary) / 0.35),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    background: linear-gradient(135deg, 
-      hsl(25 95% 60%) 0%, 
-      hsl(var(--secondary)) 50%,
-      hsl(25 95% 40%) 100%);
-  }
-
-  /* SUCCESS BUTTONS - Green */
-  button[class*="success"],
-  .bg-success,
-  button.bg-success {
-    background: linear-gradient(135deg, 
-      hsl(var(--button-success)) 0%, 
-      hsl(142 76% 30%) 50%,
-      hsl(142 76% 25%) 100%);
-    color: hsl(var(--button-success-foreground));
-    box-shadow: 
-      var(--shadow-md),
-      0 4px 12px hsl(var(--button-success) / 0.25),
-      inset 0 1px 0 hsl(var(--button-success) / 0.2);
-    border: 1px solid hsl(var(--button-success) / 0.3);
-  }
-
-  button[class*="success"]:hover,
-  .bg-success:hover,
-  button.bg-success:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 
-      var(--shadow-lg),
-      0 8px 25px hsl(var(--button-success) / 0.35),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    background: linear-gradient(135deg, 
-      hsl(142 76% 42%) 0%, 
-      hsl(var(--button-success)) 50%,
-      hsl(142 76% 20%) 100%);
-  }
-
-  /* WARNING BUTTONS - Yellow/Gold */
-  button[class*="warning"],
-  .bg-warning,
-  button.bg-warning {
-    background: linear-gradient(135deg, 
-      hsl(var(--button-warning)) 0%, 
-      hsl(38 92% 45%) 50%,
-      hsl(38 92% 40%) 100%);
-    color: hsl(var(--button-warning-foreground));
-    box-shadow: 
-      var(--shadow-md),
-      0 4px 12px hsl(var(--button-warning) / 0.25),
-      inset 0 1px 0 hsl(var(--button-warning) / 0.2);
-    border: 1px solid hsl(var(--button-warning) / 0.3);
-  }
-
-  button[class*="warning"]:hover,
-  .bg-warning:hover,
-  button.bg-warning:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 
-      var(--shadow-lg),
-      0 8px 25px hsl(var(--button-warning) / 0.35),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    background: linear-gradient(135deg, 
-      hsl(38 92% 55%) 0%, 
-      hsl(var(--button-warning)) 50%,
-      hsl(38 92% 35%) 100%);
-  }
-
-  /* INFO BUTTONS - Light Blue */
-  button[class*="info"],
-  .bg-info,
-  button.bg-info {
-    background: linear-gradient(135deg, 
-      hsl(var(--button-info)) 0%, 
-      hsl(199 89% 42%) 50%,
-      hsl(199 89% 38%) 100%);
-    color: hsl(var(--button-info-foreground));
-    box-shadow: 
-      var(--shadow-md),
-      0 4px 12px hsl(var(--button-info) / 0.25),
-      inset 0 1px 0 hsl(var(--button-info) / 0.2);
-    border: 1px solid hsl(var(--button-info) / 0.3);
-  }
-
-  button[class*="info"]:hover,
-  .bg-info:hover,
-  button.bg-info:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 
-      var(--shadow-lg),
-      0 8px 25px hsl(var(--button-info) / 0.35),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    background: linear-gradient(135deg, 
-      hsl(199 89% 55%) 0%, 
-      hsl(var(--button-info)) 50%,
-      hsl(199 89% 35%) 100%);
-  }
-
-  /* PURPLE BUTTONS */
-  button[class*="purple"],
-  .bg-purple,
-  button.bg-purple {
-    background: linear-gradient(135deg, 
-      hsl(var(--button-purple)) 0%, 
-      hsl(262 83% 52%) 50%,
-      hsl(262 83% 48%) 100%);
-    color: hsl(var(--button-purple-foreground));
-    box-shadow: 
-      var(--shadow-md),
-      0 4px 12px hsl(var(--button-purple) / 0.25),
-      inset 0 1px 0 hsl(var(--button-purple) / 0.2);
-    border: 1px solid hsl(var(--button-purple) / 0.3);
-  }
-
-  button[class*="purple"]:hover,
-  .bg-purple:hover,
-  button.bg-purple:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 
-      var(--shadow-lg),
-      0 8px 25px hsl(var(--button-purple) / 0.35),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    background: linear-gradient(135deg, 
-      hsl(262 83% 65%) 0%, 
-      hsl(var(--button-purple)) 50%,
-      hsl(262 83% 45%) 100%);
-  }
-
-  /* DESTRUCTIVE BUTTONS - Red */
-  button[class*="destructive"],
-  .bg-destructive,
-  button.bg-destructive {
-    background: linear-gradient(135deg, 
-      hsl(var(--destructive)) 0%, 
-      hsl(0 85% 50%) 50%,
-      hsl(0 85% 45%) 100%);
-    color: hsl(var(--destructive-foreground));
-    box-shadow: 
-      var(--shadow-md),
-      0 4px 12px hsl(var(--destructive) / 0.25),
-      inset 0 1px 0 hsl(var(--destructive) / 0.2);
-    border: 1px solid hsl(var(--destructive) / 0.3);
-  }
-
-  button[class*="destructive"]:hover,
-  .bg-destructive:hover,
-  button.bg-destructive:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 
-      var(--shadow-lg),
-      0 8px 25px hsl(var(--destructive) / 0.35),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    background: linear-gradient(135deg, 
-      hsl(0 85% 60%) 0%, 
-      hsl(var(--destructive)) 50%,
-      hsl(0 85% 40%) 100%);
-  }
-
-  /* GHOST/OUTLINE BUTTONS - Subtle */
-  button[class*="ghost"],
-  button[class*="outline"],
-  .bg-ghost,
-  button.bg-ghost {
-    background: transparent;
-    color: hsl(var(--foreground));
-    border: 1px solid hsl(var(--border));
-    box-shadow: none;
-  }
-
-  button[class*="ghost"]:hover,
-  button[class*="outline"]:hover,
-  .bg-ghost:hover,
-  button.bg-ghost:hover {
-    background: hsl(var(--muted) / 0.5);
-    border-color: hsl(var(--primary));
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
-  }
-
-  /* DISABLED BUTTONS */
-  button:disabled,
-  button[disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none !important;
-  }
-
-  button:disabled:hover,
-  button[disabled]:hover {
-    transform: none !important;
-    box-shadow: none !important;
-  }
-
-  /* BUTTON ACTIVE STATE */
-  button:active:not(:disabled) {
-    transform: translateY(0px) scale(0.98);
+  .animate-pulse-slow {
+    animation: pulse 3s ease-in-out infinite;
   }
 }
