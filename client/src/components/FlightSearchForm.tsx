@@ -68,8 +68,9 @@ export default function FlightSearchForm({
   const [tripType, setTripType] = useState(initialValues?.tripType || "round-trip");
   const [origin, setOrigin] = useState(initialValues?.origin || "");
   const [destination, setDestination] = useState(initialValues?.destination || "");
-  const [departDate, setDepartDate] = useState<Date | undefined>(
-    initialValues?.departDate ? new Date(initialValues.departDate) : undefined
+  const [departDate, setDepartDate] = useState<Date | undefined>(initialValues?.departDate 
+      ? new Date(initialValues.departDate) 
+      : new Date(new Date().setHours(0, 0, 0, 0))
   );
   const [returnDate, setReturnDate] = useState<Date | undefined>(
     initialValues?.returnDate ? new Date(initialValues.returnDate) : undefined
@@ -401,10 +402,10 @@ export default function FlightSearchForm({
                 }
               }}
               className={cn(
-                "flex h-10 w-full rounded-md border bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                "flex h-10 w-full rounded-md border-2 bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 showErrors && errors.origin
                   ? "border-red-500 focus-visible:ring-red-500"
-                  : "border-input"
+                  : "border-border"
               )}
               autoComplete="off"
             />
@@ -413,7 +414,7 @@ export default function FlightSearchForm({
             {showOriginDropdown && originSuggestions.length > 0 && (
               <div
                 ref={originDropdownRef}
-                className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto"
+                className="absolute z-50 w-full mt-1 bg-popover border-2 border-border rounded-md shadow-lg max-h-60 overflow-auto"
               >
                 {originSuggestions.map((airport, index) => (
                   <div
@@ -467,10 +468,10 @@ export default function FlightSearchForm({
                 }
               }}
               className={cn(
-                "flex h-10 w-full rounded-md border bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                "flex h-10 w-full rounded-md border-2 bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 showErrors && errors.destination
                   ? "border-red-500 focus-visible:ring-red-500"
-                  : "border-input"
+                  : "border-border"
               )}
               autoComplete="off"
             />
@@ -479,7 +480,7 @@ export default function FlightSearchForm({
             {showDestinationDropdown && destinationSuggestions.length > 0 && (
               <div
                 ref={destinationDropdownRef}
-                className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto"
+                className="absolute z-50 w-full mt-1 bg-popover border-2 border-border rounded-md shadow-lg max-h-60 overflow-auto"
               >
                 {destinationSuggestions.map((airport, index) => (
                   <div
